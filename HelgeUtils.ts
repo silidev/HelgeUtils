@@ -341,7 +341,7 @@ export namespace HelgeUtils {
   }
 
   export namespace Strings {
-    import assertEquals = HelgeUtils.Tests.assertEquals
+
 
     /** Returns the index of the first occurrence of the given regex in the string.
      *
