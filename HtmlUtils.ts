@@ -378,7 +378,7 @@ export namespace HtmlUtils {
    * This outputs aggressively on top of everything to the user. */
     export const printError = (input: any) => {
       console.log(input)
-      alert(input)
+      // alert(input)
 
       callSwallowingExceptions(() => {
       document.body.insertAdjacentHTML('afterbegin',

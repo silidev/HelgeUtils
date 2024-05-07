@@ -123,7 +123,7 @@ export namespace HelgeUtils {
      * @param msg {String} */
     export const alertAndThrow = (...msg: any) => {
       console.trace()
-      alert(msg)
+      // alert(msg)
       throw new Error(...msg)
     }
 
