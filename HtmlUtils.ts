@@ -331,7 +331,7 @@ export namespace HtmlUtils {
                                    callback: () => void) => {
     const element = buttonWithId(buttonId)
     if (element === null) {
-      printError(`Element with ID ${buttonId} not found.`)
+      printError(`Button with ID ${buttonId} not found.`)
       return
     }
 
