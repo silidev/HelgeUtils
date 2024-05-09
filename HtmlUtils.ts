@@ -509,7 +509,7 @@ export namespace HtmlUtils {
 
 
   export namespace Styles {
-    export const toggleDisplayNone = (element: HTMLElement, visibleDisplayStyle = "block") => {
+    export const toggleDisplayNone = (element: HTMLElement, visibleDisplayStyle) => {
       if (element.style.display === "none") {
         element.style.display = visibleDisplayStyle
       } else {
