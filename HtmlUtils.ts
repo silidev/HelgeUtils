@@ -15,7 +15,21 @@ declare global {
 
 const MAX_COOKIE_SIZE = 4096
 
-export namespace HtmlUtils {
+namespace HtmlUtils {
+
+  export const createFragmentFromHtml = (html: string) => {
+    const fragment = document.createDocumentFragment()
+    {
+      const tempElement = document.createElement('div')
+      tempElement.innerHTML = html
+
+      while (tempElement.firstChild) {
+        fragment.appendChild(tempElement.firstChild)
+      }
+    }
+    return fragment
+  }
+
 
   const memoize = HelgeUtils.memoize
 
@@ -52,12 +66,16 @@ export namespace HtmlUtils {
   export namespace NeverNull {
     import nullFilter = HelgeUtils.Misc.nullFilter
 
+    // eslint-disable-next-line no-shadow
     export const elementWithId = (id: string) =>
         nullFilter<HTMLElement>(HtmlUtils.elementWithId, id)
+    // eslint-disable-next-line no-shadow
     export const buttonWithId = (id: string) =>
         nullFilter<HTMLButtonElement>(HtmlUtils.buttonWithId, id)
+    // eslint-disable-next-line no-shadow
     export const inputElementWithId = (id: string) =>
         nullFilter<HTMLInputElement>(HtmlUtils.inputElementWithId, id)
+    // eslint-disable-next-line no-shadow
     export const textAreaWithId = (id: string) =>
         nullFilter<HTMLTextAreaElement>(HtmlUtils.textAreaWithId, id)
   }
@@ -406,9 +424,6 @@ export namespace HtmlUtils {
   }
   }
 
-  export const printDebug = ErrorHandling.printDebug
-  export const printError = ErrorHandling.printError
-
   export const escapeHtml = (input: string): string => {
     const element = document.createElement("div")
     element.innerText = input
@@ -424,6 +439,7 @@ export namespace HtmlUtils {
    Browser Support: Ensure that the browser you are using supports the Clipboard API.
    Cross-Origin Restrictions: If your script is running in an iframe, it might be subject to cross-origin restrictions.
    */
+  // eslint-disable-next-line no-shadow
   export namespace Clipboard {
     /** @deprecated */
     export const read = () => {
@@ -475,6 +491,7 @@ export namespace HtmlUtils {
   export namespace Menus {
     /** https://www.webcomponents.org/element/@vanillawc/wc-menu-wrapper */
     export namespace WcMenu {
+      // eslint-disable-next-line no-shadow
       import elementWithId = NeverNull.elementWithId
 
       export const close = (menuHeadingId: string) => {
@@ -490,7 +507,7 @@ export namespace HtmlUtils {
       }
     }
   }
-
+  // eslint-disable-next-line no-shadow
   export namespace Keyboard {
     /**
      * Inline this function!
@@ -509,7 +526,7 @@ export namespace HtmlUtils {
 
 
   export namespace Styles {
-    export const toggleDisplayNone = (element: HTMLElement, visibleDisplayStyle) => {
+    export const toggleDisplayNone = (element: HTMLElement, visibleDisplayStyle: string) => {
       if (element.style.display === "none") {
         element.style.display = visibleDisplayStyle
       } else {

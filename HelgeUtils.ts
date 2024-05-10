@@ -276,9 +276,6 @@ export namespace HelgeUtils {
     }
   }
 
-  export const assert = Tests.assert
-  export const assertEquals = Tests.assertEquals
-
   export const consoleLogTmp = (...args: any[]) => {
     args.forEach(arg => console.log(arg))
   }
@@ -317,7 +314,7 @@ export namespace HelgeUtils {
     testTagsArray.push('NotToBeRemoved')
     //print('removeElements test: '
     //  +removeElements(testTagsArray,tagsToRemove)+'<br>')
-    HelgeUtils.assert(
+    assert(
         HelgeUtils.removeElements(testTagsArray, tagsToRemove).length === 1,
         "removeElements failed"
     )
@@ -512,7 +509,7 @@ export namespace HelgeUtils {
     export const removeEmojis = (str: string): string => str.replace(/[^a-zA-Z0-9 _\-üöäÜÖÄß]/g, "")
     export const testRemoveEmojis = () => {
       const runTest = (input: string, expected: string) => {
-        HelgeUtils.assertEquals(Strings.removeEmojis(input), expected
+        assertEquals(Strings.removeEmojis(input), expected
             , "testRemoveEmojis failed")
       }
       runTest("a👨‍👩‍👧‍👦b","ab")
@@ -1736,9 +1733,9 @@ Please note that certain strong accents can possibly cause this mode to transcri
     public static testParseRelaxedIsoDate() {
       const parse = this.parseRelaxedIsoDate
       const expected = new Date('2022-01-01T00:00:00.000Z').toISOString()
-      HelgeUtils.assertEquals((parse('2022-01-01') as Date).toISOString(), expected)
-      HelgeUtils.assertEquals((parse('2022-01-01') as Date).toISOString(), expected)
-      HelgeUtils.assert(parse('not a date') === null)
+      assertEquals((parse('2022-01-01') as Date).toISOString(), expected)
+      assertEquals((parse('2022-01-01') as Date).toISOString(), expected)
+      assert(parse('not a date') === null)
     }
 
 
