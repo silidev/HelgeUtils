@@ -678,8 +678,8 @@ export namespace HelgeUtils {
   export namespace Transcription {
 
     export class TranscriptionError extends Error {
-      public payload: {}
-      constructor(payload: {}) {
+      public payload: object
+      constructor(payload: object) {
         super("TranscriptionError")
         this.name = "TranscriptionError"
         this.payload = payload
@@ -948,7 +948,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
       let rule: RegExpExecArray | null
       const ruleParser = /^"(.+?)"([a-z]*?)(?:\r\n|\r|\n)?->(?:\r\n|\r|\n)?"(.*?)"([a-z]*?)(?:\r\n|\r|\n)?$/gmus
       while (
-          rule = ruleParser.exec(allRules) /* This works fine in a Chrome
+          (rule = ruleParser.exec(allRules)) /* This works fine in a Chrome
            but at least sometimes returns falsely null inside Anki and
             AnkiDroid. */
           ) {
