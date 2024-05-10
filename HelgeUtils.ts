@@ -69,6 +69,7 @@ export namespace HelgeUtils {
             try {
               func(...args)
             } catch (e) {
+              // empty on purpose
             }
           }
         }
@@ -143,6 +144,7 @@ export namespace HelgeUtils {
      */
     export const catchSpecificError = (
         errorType: any
+        // eslint-disable-next-line @typescript-eslint/ban-types
         , callback: Function
         , wantedErrorMsg: string | null = null) => (error: Error) => {
       if (error instanceof errorType
@@ -202,7 +204,7 @@ export namespace HelgeUtils {
    * throw an error, in contrast to {}.whatEver, which
    * will not.
    */
-  export const createImmutableStrictObject = (input: {}) => {
+  export const createImmutableStrictObject = (input: object) => {
     const handler = {
       get: function (target: any, prop: any) {
         if (prop in target) {
@@ -554,6 +556,7 @@ export namespace HelgeUtils {
             "This   is \t\t\n\n\r  a  \t  string   with   multiple   spaces"
         let replaced = this.replaceWhitespaceStretchesWithASingleSpace(str)
         if (replaced === "This is a string with multiple spaces") {
+          // blank on purpose
         } else {
           throw "testReplaceWhitespaceStretchesWithASingleSpace failed."
         }
@@ -598,7 +601,7 @@ export namespace HelgeUtils {
      * const replacements = { name: "John", age: 25 }
      * const result = formatString(input, replacements)
      * // result is now "Hello John, you are 25 years old." */
-    export const formatString = (input: string, replacements: {}): string => input.replace(/\${(.*?)}/g, (_, key) => {
+    export const formatString = (input: string, replacements: object): string => input.replace(/\${(.*?)}/g, (_, key) => {
       // @ts-ignore
       return replacements[key]
     })
@@ -1018,6 +1021,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
      * const elementWithId = (id: string) =>
      *   nullFilter<HTMLElement>(HtmlUtils.elementWithId, id)
      */
+    // eslint-disable-next-line @typescript-eslint/ban-types
     export const nullFilter = <T>(f: Function, ...parameters: any ): T => {
       const untypedNullFilter = (input: any) => {
         if (input === null)
