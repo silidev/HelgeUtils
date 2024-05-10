@@ -1,14 +1,13 @@
-// noinspection JSUnusedGlobalSymbols
-// @ts-ignore
-
-// import {Deepgram} from "../node_modules/@deepgram/sdk/dist/module/index.js";
-
 /**
- * HelgeUtils.ts
+ * HelgeUtils.ts V1.0
  * @description A collection of general utility functions not connected to a
  * specific project.
  *
  * Copyright by Helge Tobias Kosuch 2024 */
+
+// import {Deepgram} from "../node_modules/@deepgram/sdk/dist/module/index.js";
+
+
 export namespace HelgeUtils {
 
   export namespace Exceptions {
