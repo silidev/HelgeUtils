@@ -1538,6 +1538,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
         ["kommst"       ,"komme"               ],
         ["ärgerst"      ,"ärgere"              ],
         ["gewöhnst"     ,"gewöhne"             ],
+        ["steckst"      ,"stecke"              ],
         // ["raufgehst"    ,""                          ],
         // ["anpackst"     ,""                          ],
         // ["einpackst"    ,""                          ],
