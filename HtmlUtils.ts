@@ -15,9 +15,68 @@ declare global {
 
 const MAX_COOKIE_SIZE = 4096
 
-export namespace HtmlUtils {
+namespace HtmlUtils {
 
-  import printError = HtmlUtils.ErrorHandling.printError;
+  import memoize = HelgeUtils.memoize
+
+  export namespace ErrorHandling {
+    import Exceptions = HelgeUtils.Exceptions
+    import callSwallowingExceptions = Exceptions.callSwallowingExceptions
+    import unhandledExceptionAlert = Exceptions.unhandledExceptionAlert
+
+    export namespace ExceptionHandlers {
+      export const installGlobalDefault = () => {
+        window.onerror = (message, source, lineNo, colNo, error) => {
+          const errorMessage = `An error occurred: ${message}\nSource: ${source}\nLine: ${lineNo}\nColumn: ${colNo}\nError Object: ${error}`
+
+          printError(
+              unhandledExceptionAlert(error??errorMessage)
+              /* unhandledExceptionAlert is sometimes executed twice here. I
+               don't know why. The debugger didn't help. This shouldn't
+               happen anyway. Don't invest more time. */
+          )
+          return true; // Prevents the default browser error handling
+        }
+      }
+    }
+
+    /**
+     * Should be named "outputError" because it uses alert and console.log, but
+     * I am used to "printError".
+     * This outputs aggressively on top of everything to the user. */
+        // eslint-disable-next-line no-shadow
+    export const printError = (input: any) => {
+          console.log(input)
+          // alert(input)
+
+          callSwallowingExceptions(() => {
+            document.body.insertAdjacentHTML('afterbegin',
+                `<div 
+              style="position: fixed; z-index: 9999; background-color: #000000; color:red;"> 
+            <p style="font-size: 30px;">###### printDebug</p>
+            <p style="font-size:18px;">${escapeHtml(input.toString())}</p>`
+                + `########</div>`)
+          })
+        }
+
+    /**
+     * This outputs gently. Might not be seen by the user.  */
+    export const printDebug = (str: string, parentElement = document.body) => {
+      showToast(str.substring(0, 80))
+
+      console.log(str)
+      HelgeUtils.Exceptions.callSwallowingExceptions(() => {
+        parentElement.insertAdjacentHTML('beforeend',
+            `<div 
+              style="z-index: 9999; background-color: #00000000; color:red;"> 
+            <p style="font-size:18px;">${escapeHtml(str)}</p>`
+            + `</div>`)
+      })
+    }
+  }
+
+  import printError = HtmlUtils.ErrorHandling.printError
+
   export const createFragmentFromHtml = (html: string) => {
     const fragment = document.createDocumentFragment()
     {
@@ -32,7 +91,6 @@ export namespace HtmlUtils {
   }
 
 
-  const memoize = HelgeUtils.memoize
 
   // ########## Blinking fast and slow ##########
   // https://en.wikipedia.org/wiki/Thinking,_Fast_and_Slow
@@ -369,62 +427,6 @@ export namespace HtmlUtils {
 
   export const scrollToBottom = () => {
     window.scrollBy(0, 100000)
-  }
-
-  export namespace ErrorHandling {
-    import Exceptions = HelgeUtils.Exceptions
-    import callSwallowingExceptions = Exceptions.callSwallowingExceptions
-    import unhandledExceptionAlert = Exceptions.unhandledExceptionAlert
-
-    export namespace ExceptionHandlers {
-      export const installGlobalDefault = () => {
-        window.onerror = (message, source, lineNo, colNo, error) => {
-          const errorMessage = `An error occurred: ${message}\nSource: ${source}\nLine: ${lineNo}\nColumn: ${colNo}\nError Object: ${error}`
-
-          printError(
-              unhandledExceptionAlert(error??errorMessage)
-              /* unhandledExceptionAlert is sometimes executed twice here. I
-                 don't know why. The debugger didn't help. This shouldn't
-                 happen anyway. Don't invest more time. */
-          )
-          return true; // Prevents the default browser error handling
-        }
-      }
-    }
-
-  /**
-     * Should be named "outputError" because it uses alert and console.log, but
-     * I am used to "printError".
-   * This outputs aggressively on top of everything to the user. */
-      // eslint-disable-next-line no-shadow
-    export const printError = (input: any) => {
-      console.log(input)
-      // alert(input)
-
-      callSwallowingExceptions(() => {
-      document.body.insertAdjacentHTML('afterbegin',
-          `<div 
-              style="position: fixed; z-index: 9999; background-color: #000000; color:red;"> 
-            <p style="font-size: 30px;">###### printDebug</p>
-            <p style="font-size:18px;">${escapeHtml(input.toString())}</p>`
-          + `########</div>`)
-    })
-  }
-
-  /**
-   * This outputs gently. Might not be seen by the user.  */
-  export const printDebug = (str: string, parentElement = document.body) => {
-    showToast(str.substring(0, 80))
-
-    console.log(str)
-    HelgeUtils.Exceptions.callSwallowingExceptions(() => {
-      parentElement.insertAdjacentHTML('beforeend',
-          `<div 
-              style="z-index: 9999; background-color: #00000000; color:red;"> 
-            <p style="font-size:18px;">${escapeHtml(str)}</p>`
-          + `</div>`)
-    })
-  }
   }
 
   export const escapeHtml = (input: string): string => {
