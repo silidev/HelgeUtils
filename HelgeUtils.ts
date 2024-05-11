@@ -5,7 +5,7 @@
  *
  * Copyright by Helge Tobias Kosuch 2024 */
 
-// import {Deepgram} from "../node_modules/@deepgram/sdk/dist/module/index.js";
+  // import {Deepgram} from "../node_modules/@deepgram/sdk/dist/module/index.js";
 
 
 export namespace HelgeUtils {
@@ -243,6 +243,7 @@ export namespace HelgeUtils {
       suppressUnusedWarning(RUN_TESTS)
     }
 
+    // eslint-disable-next-line no-shadow
     export const assert = (condition: boolean, ...output: any[]) => {
       if (condition)
           // Everything is fine, just return:
@@ -255,6 +256,7 @@ export namespace HelgeUtils {
     /**
      * V2 27.04.2024
      */
+        // eslint-disable-next-line no-shadow
     export const assertEquals = (actual: any, expected: any, message: string | null = null) => {
       const expectedJson = JSON.stringify(expected)
       const actualJson = JSON.stringify(actual)
@@ -305,6 +307,9 @@ export namespace HelgeUtils {
       }
     }
   }
+
+  import assert = Tests.assert;
+  import assertEquals = Tests.assertEquals;
 
   export const testRemoveElements = () => {
     const tagsToRemove = ['tag1', 'tag2', 'tag3']
