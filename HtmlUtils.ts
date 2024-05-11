@@ -15,8 +15,9 @@ declare global {
 
 const MAX_COOKIE_SIZE = 4096
 
-namespace HtmlUtils {
+export namespace HtmlUtils {
 
+  import printError = HtmlUtils.ErrorHandling.printError;
   export const createFragmentFromHtml = (html: string) => {
     const fragment = document.createDocumentFragment()
     {
@@ -83,6 +84,7 @@ namespace HtmlUtils {
 
   export namespace TextAreas {
 
+    // eslint-disable-next-line no-shadow
     import textAreaWithId = HtmlUtils.NeverNull.textAreaWithId
     import trimExceptASingleNewlineAtTheEnd = HelgeUtils.Strings.trimExceptASingleNewlineAtTheEnd
     import Strings = HelgeUtils.Strings;
@@ -394,6 +396,7 @@ namespace HtmlUtils {
      * Should be named "outputError" because it uses alert and console.log, but
      * I am used to "printError".
    * This outputs aggressively on top of everything to the user. */
+      // eslint-disable-next-line no-shadow
     export const printError = (input: any) => {
       console.log(input)
       // alert(input)
