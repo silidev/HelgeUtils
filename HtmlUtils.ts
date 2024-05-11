@@ -15,7 +15,7 @@ declare global {
 
 const MAX_COOKIE_SIZE = 4096
 
-namespace HtmlUtils {
+export namespace HtmlUtils {
 
   import memoize = HelgeUtils.memoize
 
