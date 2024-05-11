@@ -1037,6 +1037,8 @@ Please note that certain strong accents can possibly cause this mode to transcri
     // noinspection SpellCheckingInspection
     /**
      * Converts "Du" to "Ich" and "Dein" to "Mein" and so on.
+     *
+     * Anki search: ((re:\bdu\b) OR (re:\bdir\b) OR (re:\bdein\b) OR (re:\bdeiner\b) OR (re:\bdeines\b)) -tag:du
      */
     export const du2ich = (input: string) => {
       const wordEndReplacements = [
@@ -2059,7 +2061,16 @@ Please note that certain strong accents can possibly cause this mode to transcri
         ["prägtest"     ,"prägte"               ],
         ["schraubtest"     ,"schraubte"               ],
         ["packtest"     ,"packte"               ],
-        [""     ,""               ],
+
+
+
+        ["ahntest"     ,"ahnte"               ],
+        ["ahnst"     ,"ahne"               ],
+        ["probierst"     ,"probiere"               ],
+        ["probiertest"     ,"probierte"               ],
+
+
+
 
 
 
@@ -2068,6 +2079,9 @@ Please note that certain strong accents can possibly cause this mode to transcri
       // delete:         ["dachtest"     ,"dachte"               ],
 
       const wholeWordReplacements = [
+            ["betreutest"     ,"betreute"               ],
+            ["betreust"     ,"betreue"               ],
+
             ["reppst"     ,"reppe"               ],
             ["müsstest"     ,"müsste"               ],
             ["konntest"     ,"konnte"               ],
@@ -2091,6 +2105,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
             ["deiner","meiner"                     ],
             ["dich","mich"                         ],
             ["dir","mir"                           ],
+            ["deines","meines"                           ],
       ];
 
       let output = input
