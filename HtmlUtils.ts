@@ -41,23 +41,18 @@ export namespace HtmlUtils {
     }
 
     /**
-     * Should be named "outputError" because it uses alert and console.log, but
-     * I am used to "printError".
      * This outputs aggressively on top of everything to the user. */
-        // eslint-disable-next-line no-shadow
+    // eslint-disable-next-line no-shadow
     export const printError = (input: any) => {
-          console.log(input)
-          // alert(input)
+      console.log(input)
+      // alert(input)
 
-          callSwallowingExceptions(() => {
-            document.body.insertAdjacentHTML('afterbegin',
-                `<div 
-              style="position: fixed; z-index: 9999; background-color: #000000; color:red;"> 
-            <p style="font-size: 30px;">###### printDebug</p>
+      document.body.insertAdjacentHTML('afterbegin',
+          `<div style="position: fixed; z-index: 9999; background-color: #000000; color:red;"> 
+            <p style="font-size: 30px;">###### printError</p>
             <p style="font-size:18px;">${escapeHtml(input.toString())}</p>`
-                + `########</div>`)
-          })
-        }
+          + `########</div>`)
+    }
 
     /**
      * This outputs gently. Might not be seen by the user.  */

@@ -11,6 +11,14 @@
 export namespace HelgeUtils {
 
   export namespace Exceptions {
+    export const stackTrace = (e: unknown) => {
+      let str = ""
+      if (e instanceof Error) {
+        str += ", Stack trace:\n"
+        str += e.stack
+      }
+      return str;
+    }
     /**
      * Reporting of exceptions in callbacks is sometimes very bad.
      * Therefore, exceptions should always be caught and then passed
@@ -40,10 +48,7 @@ export namespace HelgeUtils {
      </pre>*/
     export const unhandledExceptionAlert = (e: any) => {
       let str = "Unhandled EXCEPTION! :" + e
-      if (e instanceof Error) {
-        str += ", Stack trace:\n"
-        str += e.stack
-      }
+      str += stackTrace(e)
       /* Do NOT call console.trace() here because the stack trace
          of this place here is not helpful, but instead very
          confusing. */
