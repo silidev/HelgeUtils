@@ -125,7 +125,7 @@ export namespace HelgeUtils {
 
     /**
      * Displays an alert with the given message and throws the message as an exception.
-     *
+     * TODO: Rework this. Seems not well thought through.
      * @param msg {String} */
     export const alertAndThrow = (...msg: any) => {
       console.trace()
