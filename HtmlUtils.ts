@@ -474,7 +474,6 @@ export namespace HtmlUtils {
     /** @deprecated Rather use read() */
     export const readText = () => navigator.clipboard.readText();
 
-    export const writeText = (text: string) => navigator.clipboard.writeText(text);
   }
 
   /**
@@ -577,6 +576,25 @@ export namespace HtmlUtils {
   export const alertAutoDismissing = showToast
 
   export namespace Misc {
+    /** Offers a string or blob as a file to the user for download. */
+    export const downloadOffer = (input: string | Blob, filename: string) => {
+      let blob: Blob
+      // If input is a string convert it to a Blob
+      if (typeof input === 'string') {
+        blob = new Blob([input], {type: 'text/plain'})
+      } else {
+        blob = input
+      }
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = filename
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
+    }
+
     export const loadScript = (srcUri: string,
         afterLoad: ((this: GlobalEventHandlers, ev: Event) => any) | null
         ) =>
