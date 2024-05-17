@@ -21,7 +21,7 @@ export namespace HtmlUtils {
 
   export namespace ErrorHandling {
     import Exceptions = HelgeUtils.Exceptions
-    import callSwallowingExceptions = Exceptions.callSwallowingExceptions
+
     import unhandledExceptionAlert = Exceptions.unhandledExceptionAlert
 
     export namespace ExceptionHandlers {
