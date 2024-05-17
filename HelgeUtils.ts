@@ -1017,6 +1017,13 @@ Please note that certain strong accents can possibly cause this mode to transcri
   }
 
   export namespace Misc {
+
+    /** This is NOT only for unit tests! */
+    export const assertTypeEquals = (retVal: any, expectedType: string) => {
+      if (typeof retVal !== expectedType)
+        throw new Error(expectedType+" expected.")
+    }
+
     /** nullFilter
      *
      * Throws an exception if the input is null.
