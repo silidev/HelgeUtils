@@ -269,16 +269,16 @@ export namespace HelgeUtils {
         if (actual instanceof Date && expected instanceof Date
             && actual.getTime()===expected.getTime())
           return
-        console.log("*************** expected:\n" + expectedJson)
         console.log("*************** actual  :\n" + actualJson)
+        console.log("*************** expected:\n" + expectedJson)
         if (typeof expected === 'string' && typeof actual === 'string') {
           const expectedShortened = expected.substring(0, 20).replace(/\n/g, '')
           const actualShortened = actual.substring(0, 20).replace(/\n/g, '')
           HelgeUtils.Exceptions.alertAndThrow(message
-              || `Assertion failed: Expected ${expectedShortened}, but got ${actualShortened}`)
+              || `Assertion failed: Actual: ${actualShortened}, but expected ${expectedShortened}`)
         }
         HelgeUtils.Exceptions.alertAndThrow(message
-            || `Assertion failed: Expected ${expectedJson}, but got ${actualJson}`)
+            || `Assertion failed: Actual: ${expectedJson}, but expected ${actualJson}`)
       }
     }
   }
@@ -1019,9 +1019,16 @@ Please note that certain strong accents can possibly cause this mode to transcri
   export namespace Misc {
 
     /** This is NOT only for unit tests! */
-    export const assertTypeEquals = (retVal: any, expectedType: string) => {
-      if (typeof retVal !== expectedType)
-        throw new Error(expectedType+" expected.")
+    export const assertTypeEquals = (value: any, expectedType: string) => {
+      const actual = typeof value;
+      if (actual !== expectedType) {
+        throw new Error(
+            `Got type ${actual
+            }, but expected type ${expectedType
+            }/ toString()===${value.toString()
+            }/ JSON===${JSON.stringify(value)
+            }`)
+      }
     }
 
     /** nullFilter
