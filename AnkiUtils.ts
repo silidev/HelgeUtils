@@ -8,7 +8,10 @@
 import printDebug = HtmlUtils.ErrorHandling.printDebug;
 import assertTypeEquals = HelgeUtils.Misc.assertTypeEquals;
 
-/** This contains only simple wrappers for the real JS-API*/
+/** This contains only wrapper methods for the real JS-API
+ *
+ * The main feature of this is that it throws an exception if call the JS API fails.
+ * */
 class JsApi {
   private static mock = isAnkiDesktop
   private static disableDangerousActions = false
@@ -180,6 +183,9 @@ class JsApi {
   public static async cardInterval() {
     return  this.intervalOfCard()
   }
+  public static async showToast() {
+    (await JsApi.CallWithFailNotification.asVoid("ankiShowToast"))
+  }
   public static TTS = class {
     public static readonly QUEUE_ADD = 1
     public static readonly QUEUE_FLUSH = 0
@@ -269,6 +275,11 @@ class JsApi {
           const retVal: boolean = await this.valueAsAnyIfSuccess(methodName)
           assertTypeEquals(retVal,"boolean");
           return retVal
+        }
+    public static asVoid =
+        async (methodName: string): Promise<void> =>
+        {
+          await this.valueAsAnyIfSuccess(methodName)
         }
   }
   // end of JsApi class
@@ -480,9 +491,6 @@ class Anki {
 
     return daysSinceCardWasDue
   }
-  public static async showToast(s: string) {
-    HtmlUtils.showToast(s)
-  }
 
   /* Proxy methods for the JsApi: */
   public static async addTagToCard(): Promise<void> {
@@ -538,9 +546,6 @@ class Anki {
   }
   public static async searchCard(query: string): Promise<void> {
     return JsApi.searchCard(query)
-  }
-  public static async cardInterval(): Promise<number> {
-    return JsApi.cardInterval()
   }
   public static TTS = class {
     public static async setLanguage(language: string): Promise<void> {

@@ -28,6 +28,7 @@ declare global {
     ankiIsDisplayingAnswer: () => Promise<JsApiBoolean>,
     ankiSearchCard: (query: string) => Promise<any>,
     ankiSetCardDue: (days: number) => Promise<void>,
+    ankiShowToast: (msg: string) => Promise<void>,
     init: (str?: string) => Promise<any>,
     mocked: boolean,
     ankiGetCardFactor: () => Promise<JsApiNumber>,
@@ -91,6 +92,8 @@ declare global {
     init(str: string | undefined): Promise<string>;
 
     mocked: boolean;
+
+    ankiShowToast(msg: string): Promise<void>;
   }
 
   // eslint-disable-next-line no-shadow

@@ -7,7 +7,8 @@
  * https://github.com/ankidroid/Anki-Android/wiki/AnkiDroid-Javascript-API */
 var printDebug = HtmlUtils.ErrorHandling.printDebug;
 var assertTypeEquals = HelgeUtils.Misc.assertTypeEquals;
-class Anki {
+/** This contains only simple wrappers for the real JS-API*/
+class JsApi {
     static mock = isAnkiDesktop;
     static disableDangerousActions = false;
     static api;
@@ -18,35 +19,247 @@ class Anki {
             new AnkiDroidJS({ version: "0.0.3", developer: "only_for_myself@nowhere" });
         return this.api;
     }
-    static numToStr = HelgeUtils.Strings.numToStr;
-    /** The date when the collection was created.
-     * Unconveniently, this is needed to calculate the due date from
-     * the value the API returns. */
-    static dateOfCreationOfCollection = new Date(2023, 5, 12);
     static async addTagToCard() {
-        if (Anki.mock)
+        if (JsApi.mock)
             return;
-        await (await Anki.getApi()).ankiAddTagToCard();
+        await (await JsApi.getApi()).ankiAddTagToCard();
     }
     static async buryCard() {
-        if (Anki.mock || Anki.disableDangerousActions)
+        if (JsApi.mock || JsApi.disableDangerousActions)
             return;
-        await (await Anki.getApi()).ankiBuryCard();
+        await (await JsApi.getApi()).ankiBuryCard();
     }
     static answerEase(easeButtonNumber) {
-        if (Anki.mock || Anki.disableDangerousActions)
+        if (JsApi.mock || JsApi.disableDangerousActions)
             return;
         if (isMobile)
             window["buttonAnswerEase" + easeButtonNumber]();
         else if (debug)
             console.log("Called buttonAnswerEase" + easeButtonNumber);
     }
+    static wrapString = (value) => {
+        return { success: true, value: value };
+    };
+    static nextTimeStringForButtonRaw = async (i) => {
+        if (JsApi.mock)
+            return JSON.stringify(this.wrapString("2mock"));
+        return await (await JsApi.getApi())["ankiGetNextTime" + i]();
+    };
+    /**
+     * Returns card type
+     *
+     * 0 = new
+     * 1 = learning
+     * 2 = review
+     * 3 = relearning
+     *
+     * https://github.com/ankidroid/Anki-Android/wiki/AnkiDroid-Javascript-API#card-type
+     */
+    static async cardStatus() {
+        if (JsApi.mock) {
+            return 2;
+        }
+        return (await JsApi.CallWithFailNotification.asNumber("ankiGetCardType"));
+    }
+    /**
+     * new: note id or random int
+     * due: integer day, relative to the collection's creation time
+     * learning: integer timestamp
+     *
+     * source: https://github.com/ankidroid/Anki-Android/wiki/AnkiDroid-Javascript-API#due
+     */
+    static async cardDue() {
+        if (JsApi.mock)
+            return 0;
+        return (await JsApi.CallWithFailNotification.asNumber("ankiGetCardDue"));
+    }
+    static async cardDueRaw() {
+        if (JsApi.mock)
+            return { value: 0 };
+        return (await (await JsApi.getApi()).ankiGetCardDue());
+    }
+    /**
+     * original due: In filtered decks, it's the original due date that the card had before moving to filtered. (integer
+     * day, relative to the collection's creation time)
+     *                     -- If the card lapsed in scheduler1, then it's the value before the lapse. (This is used when
+     * switching to scheduler
+     * 2. At this time, cards in learning becomes due again, with their previous due date)
+     *                     -- In any other case it's 0.
+     * Source: https://github.com/ankidroid/Anki-Android/wiki/AnkiDroid-Javascript-API#original-due
+     */
+    static async cardOriginalDue() {
+        if (JsApi.mock)
+            return 0;
+        return (await JsApi.CallWithFailNotification.asNumber("ankiGetCardODue"));
+    }
+    static async intervalOfCard() {
+        if (JsApi.mock)
+            return 42;
+        return (await JsApi.CallWithFailNotification.asNumber("ankiGetCardInterval"));
+    }
+    /**
+     * @return Return ease factor of the card in permille (parts per thousand)
+     *
+     * Gotchas: Yes, really permille, not percent, in contrast to the UI where it is percent.
+     *
+     * https://github.com/ankidroid/Anki-Android/wiki/AnkiDroid-Javascript-API/9fb80befe5c3551665a0a07886138025bcd9b4f1#card-ease-factor
+     */
+    static async ease() {
+        if (JsApi.mock)
+            return 2500;
+        return (await JsApi.CallWithFailNotification.asNumber("ankiGetCardFactor"));
+    }
+    static showAnswer() {
+        window["showAnswer"]();
+    }
+    /**
+     * Reschedule card with x days
+     *
+     * "This will set the interval of the card to x (cf this issue)"
+     *
+     * https://github.com/ankidroid/Anki-Android/wiki/AnkiDroid-Javascript-API#reschedule-card-with-x-days
+     *
+     * "Turn cards into review cards, and make them due on a certain date. This can be useful for moving cards forward
+     * or back a few days when your study schedule is interrupted. Entering a range like 60-90 will make the selected
+     * cards due between 60 and 90 days from now. New cards will have their interval set to the same delay, but
+     * reviews will be rescheduled without changing their current interval, unless '!' is included at the end of the
+     * range. (Note that answer time is not recorded when manually scheduling cards, since the action can be performed
+     * even outside of review, and Anki isn’t aware of which card may or may not be shown at the time.)" Source:
+     * https://docs.ankiweb.net/browsing.html#cards
+     */
+    static async setCardDue(days) {
+        if (JsApi.mock || JsApi.disableDangerousActions)
+            return;
+        await (await JsApi.getApi()).ankiSetCardDue(days);
+    }
+    static async cardId() {
+        if (JsApi.mock)
+            return 12345;
+        return (await JsApi.CallWithFailNotification.asNumber("ankiGetCardId"));
+    }
+    /**
+     https://github.com/ankidroid/Anki-Android/wiki/AnkiDroid-Javascript-API#last-modified-time-of-card
+     If a card was never modified, this does NOT give the time when it was added,
+     but some other unknown value, which does not seem to be in relation to to the
+     added time. Maybe it is like the return value of the "cardDue" API method which returns "note id or random int" for new cards.
+     */
+    static async cardMod() {
+        if (JsApi.mock)
+            return 0;
+        return await this.CallWithFailNotification.asNumber("ankiGetCardMod");
+    }
+    static async toggleFlag() {
+        if (JsApi.mock)
+            return;
+        return (await JsApi.getApi())["ankiToggleFlag"]();
+    }
+    static async toggleMarkCard() {
+        if (JsApi.mock)
+            return;
+        return (await JsApi.getApi())["ankiMarkCard"]();
+    }
+    static async eta() {
+        if (JsApi.mock)
+            return 1;
+        return await this.CallWithFailNotification.asNumber("ankiGetETA");
+    }
+    static async searchCard(query) {
+        if (JsApi.mock)
+            return;
+        await (await JsApi.getApi())["ankiSearchCard"](query);
+    }
+    /** @deprecated */
+    static async cardInterval() {
+        return this.intervalOfCard();
+    }
+    static async showToast() {
+        (await JsApi.CallWithFailNotification.asVoid("ankiShowToast"));
+    }
+    static TTS = class {
+        static QUEUE_ADD = 1;
+        static QUEUE_FLUSH = 0;
+        static async setLanguage(language) {
+            if (JsApi.mock)
+                return;
+            await (await JsApi.getApi())["ankiTtsSetLanguage"](language);
+        }
+        /**
+         * https://github.com/ankidroid/Anki-Android/wiki/AnkiDroid-Javascript-API#speak
+         */
+        static async speak(text, queueMode = 0) {
+            if (JsApi.mock)
+                return;
+            await (await JsApi.getApi())["ankiTtsSpeak"](text, queueMode);
+        }
+        /**
+         * https://github.com/ankidroid/Anki-Android/wiki/AnkiDroid-Javascript-API#set-tts-speed
+         */
+        static async setSpeed(speed) {
+            if (JsApi.mock)
+                return;
+            await (await JsApi.getApi())["ankiTtsSetSpeechRate"](speed);
+        }
+        static async stop() {
+            if (JsApi.mock)
+                return;
+            await (await JsApi.getApi())["ankiTtsStop"]();
+        }
+        static async isSpeaking() {
+            if (JsApi.mock)
+                return false;
+            return JsApi.CallWithFailNotification.asBoolean("ankiTtsIsSpeaking");
+        }
+        static async english() {
+            if (JsApi.mock)
+                return;
+            await (await JsApi.getApi())["ankiTtsSetLanguage"]('en-US');
+        }
+        static async german() {
+            if (JsApi.mock)
+                return;
+            await (await JsApi.getApi())["ankiTtsSetLanguage"]('de-de');
+        }
+        static async flushQueue() {
+            await JsApi.TTS.speak("", JsApi.TTS.QUEUE_FLUSH);
+        }
+    };
+    static CallWithFailNotification = class {
+        static valueAsAnyIfSuccess = async (methodName) => {
+            const retVal = await (await JsApi.getApi())[methodName]();
+            if (retVal?.success !== true)
+                printError("JS API did NOT return success===true");
+            return retVal["value"];
+        };
+        static asString = async (methodName) => {
+            const retVal = await this.valueAsAnyIfSuccess(methodName);
+            assertTypeEquals(retVal, "string");
+            return retVal;
+        };
+        static asNumber = async (methodName) => {
+            const retVal = await this.valueAsAnyIfSuccess(methodName);
+            assertTypeEquals(retVal, "number");
+            return retVal;
+        };
+        static asBoolean = async (methodName) => {
+            const retVal = await this.valueAsAnyIfSuccess(methodName);
+            assertTypeEquals(retVal, "boolean");
+            return retVal;
+        };
+        static asVoid = async (methodName) => {
+            await this.valueAsAnyIfSuccess(methodName);
+        };
+    };
+}
+class Anki {
+    static numToStr = HelgeUtils.Strings.numToStr;
+    /** The date when the collection was created.
+     * Unconveniently, this is needed to calculate the due date from
+     * the value the API returns. */
+    static dateOfCreationOfCollection = new Date(2023, 5, 12);
     /**
      * @param i A number between 1 and 4.
      */
     static async answerButtonLabel(i) {
-        if (Anki.mock)
-            return "2 mock";
         const nextTimeString = await this.nextTimeStringForButton(i);
         const nextTimeValueAndUnit = this.parseButtonTimeStrNumberAndUnit(nextTimeString);
         let value = nextTimeValueAndUnit.value;
@@ -77,9 +290,7 @@ class Anki {
         return buttonRatio + daysStr(ifNumberAppendD(next));
     }
     static async nextTimeStringForButton(i) {
-        if (Anki.mock)
-            return "1mocked";
-        const returnValueFromApi = await Anki.nextTimeStringForButtonRaw(i);
+        const returnValueFromApi = await JsApi.nextTimeStringForButtonRaw(i);
         let corrected;
         const retType = typeof returnValueFromApi;
         if (retType === "string") {
@@ -93,14 +304,6 @@ class Anki {
             printDebug("JS API returned success===false");
         return corrected.value;
     }
-    static wrapString = (value) => {
-        return { success: true, value: value };
-    };
-    static nextTimeStringForButtonRaw = async (i) => {
-        if (Anki.mock)
-            return JSON.stringify(this.wrapString("2mock"));
-        return await (await Anki.getApi())["ankiGetNextTime" + i]();
-    };
     static async nextTimeValueAndUnitForButton(i) {
         return this.parseButtonTimeStrNumberAndUnit(await this.nextTimeStringForButton(i));
     }
@@ -128,22 +331,6 @@ class Anki {
         catch (err) {
             return ""; // Intentially swallowed.
         }
-    }
-    /**
-     * Returns card type
-     *
-     * 0 = new
-     * 1 = learning
-     * 2 = review
-     * 3 = relearning
-     *
-     * https://github.com/ankidroid/Anki-Android/wiki/AnkiDroid-Javascript-API#card-type
-     */
-    static async cardStatus() {
-        if (Anki.mock) {
-            return 2;
-        }
-        return (await Anki.CallWithFailNotification.asNumber("ankiGetCardType"));
     }
     static parseButtonTimeStrNumberAndUnit(input) {
         if (!input) {
@@ -194,7 +381,7 @@ class Anki {
         }
     }
     static async daysSinceCardModified() {
-        const unixTimestamp = await this.cardMod();
+        const unixTimestamp = await JsApi.cardMod();
         // 10 digits, in the number of seconds since the Unix Epoch (January 1 1970 00:00:00 GMT).
         const cardModDate = new Date(unixTimestamp * 1000 // convert to milliseconds
         );
@@ -213,7 +400,7 @@ class Anki {
     static async daysSinceCardWasDue() {
         const daysSinceCreationOfCollection = this.daysSinceCreationOfCollection();
         {
-            const due = await this.cardDue();
+            const due = await JsApi.cardDue();
             if (0 <= due && due < 10 * 365)
                 return daysSinceCreationOfCollection - due;
         }
@@ -221,83 +408,12 @@ class Anki {
         // for which the API function above returns a random integer.
         // Let's try something else:
         {
-            const oDue = await this.cardOriginalDue(); /*original due: In filtered decks, it's the original due date that the
+            const oDue = await JsApi.cardOriginalDue(); /*original due: In filtered decks, it's the original due date that the
              card had before moving to filtered. https://github.com/ankidroid/Anki-Android/wiki/AnkiDroid-Javascript-API#original-due*/
             if (0 < oDue && oDue < 10 * 365)
                 return daysSinceCreationOfCollection - oDue;
         }
         return Math.round(await this.daysSinceCardModified());
-    }
-    /**
-     * new: note id or random int
-     * due: integer day, relative to the collection's creation time
-     * learning: integer timestamp
-     *
-     * source: https://github.com/ankidroid/Anki-Android/wiki/AnkiDroid-Javascript-API#due
-     */
-    static async cardDue() {
-        if (Anki.mock)
-            return 0;
-        return (await Anki.CallWithFailNotification.asNumber("ankiGetCardDue"));
-    }
-    static async cardDueRaw() {
-        if (Anki.mock)
-            return { value: 0 };
-        return (await (await Anki.getApi()).ankiGetCardDue());
-    }
-    /**
-     * original due: In filtered decks, it's the original due date that the card had before moving to filtered. (integer
-     * day, relative to the collection's creation time)
-     *                     -- If the card lapsed in scheduler1, then it's the value before the lapse. (This is used when
-     * switching to scheduler
-     * 2. At this time, cards in learning becomes due again, with their previous due date)
-     *                     -- In any other case it's 0.
-     * Source: https://github.com/ankidroid/Anki-Android/wiki/AnkiDroid-Javascript-API#original-due
-     */
-    static async cardOriginalDue() {
-        if (Anki.mock)
-            return 0;
-        return (await Anki.CallWithFailNotification.asNumber("ankiGetCardODue"));
-    }
-    static async intervalOfCard() {
-        if (Anki.mock)
-            return 42;
-        return (await Anki.CallWithFailNotification.asNumber("ankiGetCardInterval"));
-    }
-    /**
-     * @return Return ease factor of the card in permille (parts per thousand)
-     *
-     * Gotchas: Yes, really permille, not percent, in contrast to the UI where it is percent.
-     *
-     * https://github.com/ankidroid/Anki-Android/wiki/AnkiDroid-Javascript-API/9fb80befe5c3551665a0a07886138025bcd9b4f1#card-ease-factor
-     */
-    static async ease() {
-        if (Anki.mock)
-            return 2500;
-        return (await Anki.CallWithFailNotification.asNumber("ankiGetCardFactor"));
-    }
-    static showAnswer() {
-        window["showAnswer"]();
-    }
-    /**
-     * Reschedule card with x days
-     *
-     * "This will set the interval of the card to x (cf this issue)"
-     *
-     * https://github.com/ankidroid/Anki-Android/wiki/AnkiDroid-Javascript-API#reschedule-card-with-x-days
-     *
-     * "Turn cards into review cards, and make them due on a certain date. This can be useful for moving cards forward
-     * or back a few days when your study schedule is interrupted. Entering a range like 60-90 will make the selected
-     * cards due between 60 and 90 days from now. New cards will have their interval set to the same delay, but
-     * reviews will be rescheduled without changing their current interval, unless '!' is included at the end of the
-     * range. (Note that answer time is not recorded when manually scheduling cards, since the action can be performed
-     * even outside of review, and Anki isn’t aware of which card may or may not be shown at the time.)" Source:
-     * https://docs.ankiweb.net/browsing.html#cards
-     */
-    static async setCardDue(days) {
-        if (Anki.mock || Anki.disableDangerousActions)
-            return;
-        await (await Anki.getApi()).ankiSetCardDue(days);
     }
     /**
      * @return the time since the card was last shown to the user
@@ -322,124 +438,90 @@ class Anki {
         if (daysSinceCardWasDue === 0) {
             return 0;
         }
-        if (await this.cardStatus() === 2)
-            return daysSinceCardWasDue + await this.intervalOfCard();
+        if (await JsApi.cardStatus() === 2)
+            return daysSinceCardWasDue + await JsApi.intervalOfCard();
         return daysSinceCardWasDue;
     }
-    static async cardId() {
-        if (Anki.mock)
-            return 12345;
-        return (await Anki.CallWithFailNotification.asNumber("ankiGetCardId"));
+    /* Proxy methods for the JsApi: */
+    static async addTagToCard() {
+        return JsApi.addTagToCard();
     }
-    /**
-     https://github.com/ankidroid/Anki-Android/wiki/AnkiDroid-Javascript-API#last-modified-time-of-card
-     If a card was never modified, this does NOT give the time when it was added,
-     but some other unknown value, which does not seem to be in relation to to the
-     added time. Maybe it is like the return value of the "cardDue" API method which returns "note id or random int" for new cards.
-     */
+    static async buryCard() {
+        return JsApi.buryCard();
+    }
+    static answerEase(easeButtonNumber) {
+        JsApi.answerEase(easeButtonNumber);
+    }
+    static async nextTimeStringForButtonRaw(i) {
+        return JsApi.nextTimeStringForButtonRaw(i);
+    }
+    static async cardStatus() {
+        return JsApi.cardStatus();
+    }
+    static async cardDue() {
+        return JsApi.cardDue();
+    }
+    static async cardDueRaw() {
+        return JsApi.cardDueRaw();
+    }
+    static async cardOriginalDue() {
+        return JsApi.cardOriginalDue();
+    }
+    static async intervalOfCard() {
+        return JsApi.intervalOfCard();
+    }
+    static async ease() {
+        return JsApi.ease();
+    }
+    static showAnswer() {
+        JsApi.showAnswer();
+    }
+    static async setCardDue(days) {
+        return JsApi.setCardDue(days);
+    }
+    static async cardId() {
+        return JsApi.cardId();
+    }
     static async cardMod() {
-        if (Anki.mock)
-            return 0;
-        return await this.CallWithFailNotification.asNumber("ankiGetCardMod");
+        return JsApi.cardMod();
     }
     static async toggleFlag() {
-        if (Anki.mock)
-            return;
-        return (await Anki.getApi())["ankiToggleFlag"]();
+        return JsApi.toggleFlag();
     }
     static async toggleMarkCard() {
-        if (Anki.mock)
-            return;
-        return (await Anki.getApi())["ankiMarkCard"]();
+        return JsApi.toggleMarkCard();
     }
-    // noinspection JSUnusedGlobalSymbols
-    static TTS = class {
-        static QUEUE_ADD = 1;
-        static QUEUE_FLUSH = 0;
-        static async setLanguage(language) {
-            if (Anki.mock)
-                return;
-            await (await Anki.getApi())["ankiTtsSetLanguage"](language);
-        }
-        /**
-         * https://github.com/ankidroid/Anki-Android/wiki/AnkiDroid-Javascript-API#speak
-         */
-        static async speak(text, queueMode = 0) {
-            if (Anki.mock)
-                return;
-            await (await Anki.getApi())["ankiTtsSpeak"](text, queueMode);
-        }
-        /**
-         * https://github.com/ankidroid/Anki-Android/wiki/AnkiDroid-Javascript-API#set-tts-speed
-         */
-        static async setSpeed(speed) {
-            if (Anki.mock)
-                return;
-            await (await Anki.getApi())["ankiTtsSetSpeechRate"](speed);
-        }
-        static async stop() {
-            if (Anki.mock)
-                return;
-            await (await Anki.getApi())["ankiTtsStop"]();
-        }
-        static async isSpeaking() {
-            if (Anki.mock)
-                return false;
-            return Anki.CallWithFailNotification.asBoolean("ankiTtsIsSpeaking");
-        }
-        static async english() {
-            if (Anki.mock)
-                return;
-            await (await Anki.getApi())["ankiTtsSetLanguage"]('en-US');
-        }
-        static async german() {
-            if (Anki.mock)
-                return;
-            await (await Anki.getApi())["ankiTtsSetLanguage"]('de-de');
-        }
-        static async flushQueue() {
-            await Anki.TTS.speak("", Anki.TTS.QUEUE_FLUSH);
-        }
-    };
     static async eta() {
-        if (Anki.mock)
-            return 1;
-        return await this.CallWithFailNotification.asNumber("ankiGetETA");
+        return JsApi.eta();
     }
     static async searchCard(query) {
-        if (Anki.mock)
-            return;
-        await (await Anki.getApi())["ankiSearchCard"](query);
+        return JsApi.searchCard(query);
     }
-    /** @deprecated */
-    static async cardInterval() {
-        return this.intervalOfCard();
-    }
-    static async showToast(s) {
-        HtmlUtils.showToast(s);
-    }
-    static CallWithFailNotification = class {
-        static valueAsAnyIfSuccess = async (methodName) => {
-            const retVal = await (await Anki.getApi())[methodName]();
-            if (retVal?.success !== true)
-                printError("JS API did NOT return success===true");
-            return retVal["value"];
-        };
-        static asString = async (methodName) => {
-            const retVal = await this.valueAsAnyIfSuccess(methodName);
-            assertTypeEquals(retVal, "string");
-            return retVal;
-        };
-        static asNumber = async (methodName) => {
-            const retVal = await this.valueAsAnyIfSuccess(methodName);
-            assertTypeEquals(retVal, "number");
-            return retVal;
-        };
-        static asBoolean = async (methodName) => {
-            const retVal = await this.valueAsAnyIfSuccess(methodName);
-            assertTypeEquals(retVal, "boolean");
-            return retVal;
-        };
+    static TTS = class {
+        static async setLanguage(language) {
+            return JsApi.TTS.setLanguage(language);
+        }
+        static async speak(text, queueMode = 0) {
+            return JsApi.TTS.speak(text, queueMode);
+        }
+        static async setSpeed(speed) {
+            return JsApi.TTS.setSpeed(speed);
+        }
+        static async stop() {
+            return JsApi.TTS.stop();
+        }
+        static async isSpeaking() {
+            return JsApi.TTS.isSpeaking();
+        }
+        static async english() {
+            return JsApi.TTS.english();
+        }
+        static async german() {
+            return JsApi.TTS.german();
+        }
+        static async flushQueue() {
+            return JsApi.TTS.flushQueue();
+        }
     };
 }
 //# sourceMappingURL=AnkiUtils.js.map
