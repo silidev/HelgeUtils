@@ -1,5 +1,7 @@
 "use strict";
 /**
+ * Updates: https://github.com/silidev/HelgeUtils/blob/main/HelgeUtils.ts
+ *
  * HelgeUtils.ts V1.0
  * @description A collection of general utility functions not connected to a
  * specific project.
@@ -10,6 +12,17 @@ var HelgeUtils;
 (function (HelgeUtils) {
     let Exceptions;
     (function (Exceptions) {
+        /**
+         * This is just a template to inline. */
+        Exceptions.defineCustom = () => {
+            class MyCustomException extends Error {
+                constructor(message) {
+                    super(message);
+                    this.name = "MyCustomException";
+                }
+            }
+            HelgeUtils.suppressUnusedWarning(MyCustomException);
+        };
         Exceptions.stackTrace = (e) => {
             let str = "";
             if (e instanceof Error) {
@@ -55,7 +68,6 @@ var HelgeUtils;
             alert(str);
             return str;
         };
-        // noinspection JSArrowFunctionBracesCanBeRemoved
         /** swallowAll
          * Wraps the given void function in a try-catch block and swallows any exceptions.
          *
@@ -127,6 +139,8 @@ var HelgeUtils;
         };
         /**
          *
+         * See also {@link Exceptions.defineCustom}
+         *
          * Example:
          * <pre>
          try {
@@ -139,9 +153,7 @@ var HelgeUtils;
          * @param callback
          * @param wantedErrorMsg
          */
-        Exceptions.catchSpecificError = (errorType
-        // eslint-disable-next-line @typescript-eslint/ban-types
-        , callback, wantedErrorMsg = null) => (error) => {
+        Exceptions.catchSpecificError = (errorType, callback, wantedErrorMsg = null) => (error) => {
             if (error instanceof errorType
                 && (wantedErrorMsg === null && error.message === wantedErrorMsg)) {
                 callback(error);
@@ -150,6 +162,10 @@ var HelgeUtils;
                 throw error;
             }
         };
+    })(Exceptions = HelgeUtils.Exceptions || (HelgeUtils.Exceptions = {}));
+    let Eval;
+    (function (Eval) {
+        var alertAndThrow = HelgeUtils.Exceptions.alertAndThrow;
         /**
          * Like "eval(...)" but a little safer and with better performance.
          *
@@ -157,32 +173,63 @@ var HelgeUtils;
          * injection of code through this is easy. This is intentional to
          * allow important features.
          * */
-        Exceptions.evalBetter = function (codeStr, args) {
+        Eval.evalBetter = function (codeStr, args) {
             if (Strings.isBlank(codeStr)) {
-                Exceptions.alertAndThrow("evalBetter(): codeStr must not be empty");
+                alertAndThrow("evalBetter(): codeStr must not be empty");
             }
-            return HelgeUtils.executeFunctionBody(" return (" + codeStr + ")", args);
+            return Eval.executeFunctionBody(" return (" + codeStr + ")", args);
         };
-        // end of Exceptions
-    })(Exceptions = HelgeUtils.Exceptions || (HelgeUtils.Exceptions = {}));
-    /**
-     * Somewhat like eval(...) but a little safer and with better performance.
-     *
-     * In contrast to {@link evalBetter} here you can and must use a return
-     * statement if you want to return a value.
-     *
-     * Docs about the method: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval
-     *
-     * @param functionBodyStr
-     * @param args {object} An object with entities, which you want to give the code
-     *        in the string access to.
-     * */
-    HelgeUtils.executeFunctionBody = (functionBodyStr, args) => Function(`
-          "use strict"
-          return function(args) {
-              ` + functionBodyStr + `
-          }
-        `)()(args);
+        /**
+         * Somewhat like eval(...) but a little safer and with better performance.
+         *
+         * In contrast to {@link evalBetter} here you can and must use a return
+         * statement if you want to return a value.
+         *
+         * Docs about the method: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval
+         *
+         * @param functionBodyStr
+         * @param args {object} An object with entities, which you want to give the code
+         *        in the string access to.
+         * */
+        Eval.executeFunctionBody = (functionBodyStr, args) => Function(`
+            "use strict"
+            return function(args) {
+                ` + functionBodyStr + `
+            }
+          `)()(args);
+    })(Eval = HelgeUtils.Eval || (HelgeUtils.Eval = {}));
+    let Types;
+    (function (Types) {
+        class TypeException extends Error {
+            constructor(message) {
+                super(message);
+                this.name = "MyCustomException";
+            }
+        }
+        Types.TypeException = TypeException;
+        let SafeConversions;
+        (function (SafeConversions) {
+            SafeConversions.toNumber = (input) => {
+                const result = parseFloat(input);
+                if (isNaN(result)) {
+                    throw new Error(`Not a number: "${input}"`);
+                }
+                return result;
+            };
+            SafeConversions.toBoolean = (resultAsString) => {
+                switch (resultAsString.trim()) {
+                    case "t":
+                    case "true":
+                        return true;
+                    case "f":
+                    case "false":
+                        return false;
+                    default:
+                        throw new TypeException(`Not a boolean: "${resultAsString}"`);
+                }
+            };
+        })(SafeConversions = Types.SafeConversions || (Types.SafeConversions = {}));
+    })(Types = HelgeUtils.Types || (HelgeUtils.Types = {}));
     /** Returns true if the parameter is not undefined. */
     HelgeUtils.isDefined = (x) => {
         let u;
@@ -190,6 +237,8 @@ var HelgeUtils;
         return x !== u;
     };
     /**
+     * This is only useful in JS. Not needed in TS.
+     *
      * createImmutableStrictObject({}).doesNotExist will
      * throw an error, in contrast to {}.whatEver, which
      * will not.
@@ -271,12 +320,12 @@ var HelgeUtils;
     };
     HelgeUtils.consoleLogTheDifference = (actual, expected) => {
         console.log("*************** actual  :\n" + actual);
-        // @ts-ignore
+        // @ts-expect-error
         if (1 === 0) {
             console.log("*************** expected:\n" + expected);
         }
         let diffCount = 0;
-        // @ts-ignore
+        // @ts-expect-error
         if (1 === 0) {
             for (let i = 0; i < Math.max(expected.length, actual.length); i++) {
                 if (expected[i] !== actual[i]) {
@@ -474,7 +523,6 @@ var HelgeUtils;
          * const result = formatString(input, replacements)
          * // result is now "Hello John, you are 25 years old." */
         Strings.formatString = (input, replacements) => input.replace(/\${(.*?)}/g, (_, key) => {
-            // @ts-ignore
             return replacements[key];
         });
         Strings.isBlank = (input) => {
