@@ -228,6 +228,21 @@ export namespace HelgeUtils {
     return new Proxy(input, handler)
   }
 
+  export namespace MarkDown {
+    /** Returns the text of only the == ==-highlighted text. */
+    export const extractHighlights = (input: string): string[] => {
+      const regex = /={2,3}([^=]+)={2,3}/g
+      let matches: string[] = []
+      let match: string[] | null
+
+      while ((match = regex.exec(input)) !== null) {
+        matches.push(match[1].trim())
+      }
+
+      return matches
+    }
+  }
+
   /**
    * A function that does nothing. I use it to avoid "unused variable" warnings.
    *
@@ -1002,18 +1017,6 @@ Please note that certain strong accents can possibly cause this mode to transcri
         return result
       }
     }
-  }
-
-  export const extractHighlights = (input: string): string[] => {
-    const regex = /={2,3}([^=]+)={2,3}/g
-    let matches: string[] = []
-    let match: string[] | null
-
-    while ((match = regex.exec(input)) !== null) {
-      matches.push(match[1].trim())
-    }
-
-    return matches
   }
 
   export namespace Misc {
