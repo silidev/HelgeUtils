@@ -260,7 +260,6 @@ var HtmlUtils;
         /** https://www.webcomponents.org/element/@vanillawc/wc-menu-wrapper */
         let WcMenu;
         (function (WcMenu) {
-            // eslint-disable-next-line no-shadow
             var elementWithId = NeverNull.elementWithId;
             WcMenu.close = (menuHeadingId) => {
                 elementWithId(menuHeadingId).dispatchEvent(new CustomEvent('rootMenuClose'));

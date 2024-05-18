@@ -153,9 +153,7 @@ var HelgeUtils;
          * @param callback
          * @param wantedErrorMsg
          */
-        Exceptions.catchSpecificError = (errorType
-        // eslint-disable-next-line @typescript-eslint/ban-types
-        , callback, wantedErrorMsg = null) => (error) => {
+        Exceptions.catchSpecificError = (errorType, callback, wantedErrorMsg = null) => (error) => {
             if (error instanceof errorType
                 && (wantedErrorMsg === null && error.message === wantedErrorMsg)) {
                 callback(error);

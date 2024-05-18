@@ -165,7 +165,6 @@ export namespace HelgeUtils {
      */
     export const catchSpecificError = (
         errorType: any
-        // eslint-disable-next-line @typescript-eslint/ban-types
         , callback: (error: Error) => void
         , wantedErrorMsg: string | null = null) => (error: Error) => {
       if (error instanceof errorType
