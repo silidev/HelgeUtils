@@ -289,12 +289,12 @@ export namespace HelgeUtils {
 
   export const consoleLogTheDifference = (actual: string, expected: string) => {
     console.log("*************** actual  :\n" + actual)
-    // @ts-ignore
+    // @ts-expect-error
     if (1 === 0) {
       console.log("*************** expected:\n" + expected)
     }
     let diffCount = 0
-    // @ts-ignore
+    // @ts-expect-error
     if (1 === 0) {
       for (let i = 0; i < Math.max(expected.length, actual.length); i++) {
         if (expected[i] !== actual[i]) {
@@ -609,7 +609,7 @@ export namespace HelgeUtils {
      * const result = formatString(input, replacements)
      * // result is now "Hello John, you are 25 years old." */
     export const formatString = (input: string, replacements: object): string => input.replace(/\${(.*?)}/g, (_, key) => {
-      // @ts-ignore
+      // @ts-expect-error
       return replacements[key]
     })
 
@@ -862,7 +862,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
               await withDeepgram(audioBlob, apiKey, true)
           : api === "Deepgram-nova-2" ?
               await withDeepgram(audioBlob, apiKey)
-      // @ts-ignore
+      // @ts-expect-error
           : api === "Speechmatics" ?
               await withSpeechmatics(audioBlob, apiKey)
 
@@ -1011,7 +1011,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
 
     while ((match = regex.exec(input)) !== null) {
       matches.push(match[1].trim())
-}
+    }
 
     return matches
   }
@@ -2193,7 +2193,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
         });
 
         if (this.autorun && !this.running) {
-          // @ts-ignore
+          // @ts-expect-error
           this.dequeue();
         }
         return this;
@@ -2226,7 +2226,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
 
       setTimeout(function () {
         // start the queue
-        // @ts-ignore
+        // @ts-expect-error
         q.next();
       }, 2000);
     }
