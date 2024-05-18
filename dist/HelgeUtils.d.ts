@@ -1,4 +1,6 @@
 /**
+ * Updates: https://github.com/silidev/HelgeUtils/blob/main/HelgeUtils.ts
+ *
  * HelgeUtils.ts V1.0
  * @description A collection of general utility functions not connected to a
  * specific project.
@@ -6,6 +8,9 @@
  * Copyright by Helge Tobias Kosuch 2024 */
 declare namespace HelgeUtils {
     export namespace Exceptions {
+        /**
+         * This is just a template to inline. */
+        const defineCustom: () => void;
         const stackTrace: (e: unknown) => string;
         /**
          * Reporting of exceptions in callbacks is sometimes very bad.
@@ -77,6 +82,8 @@ declare namespace HelgeUtils {
         const alertAndThrow: (...msg: any) => never;
         /**
          *
+         * See also {@link Exceptions.defineCustom}
+         *
          * Example:
          * <pre>
          try {
@@ -89,7 +96,9 @@ declare namespace HelgeUtils {
          * @param callback
          * @param wantedErrorMsg
          */
-        const catchSpecificError: (errorType: any, callback: Function, wantedErrorMsg?: string | null) => (error: Error) => void;
+        const catchSpecificError: (errorType: any, callback: (error: Error) => void, wantedErrorMsg?: string | null) => (error: Error) => void;
+    }
+    export namespace Eval {
         /**
          * Like "eval(...)" but a little safer and with better performance.
          *
@@ -98,23 +107,34 @@ declare namespace HelgeUtils {
          * allow important features.
          * */
         const evalBetter: (codeStr: string, args: any) => any;
+        /**
+         * Somewhat like eval(...) but a little safer and with better performance.
+         *
+         * In contrast to {@link evalBetter} here you can and must use a return
+         * statement if you want to return a value.
+         *
+         * Docs about the method: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval
+         *
+         * @param functionBodyStr
+         * @param args {object} An object with entities, which you want to give the code
+         *        in the string access to.
+         * */
+        const executeFunctionBody: (functionBodyStr: string, args: object) => any;
     }
-    /**
-     * Somewhat like eval(...) but a little safer and with better performance.
-     *
-     * In contrast to {@link evalBetter} here you can and must use a return
-     * statement if you want to return a value.
-     *
-     * Docs about the method: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval
-     *
-     * @param functionBodyStr
-     * @param args {object} An object with entities, which you want to give the code
-     *        in the string access to.
-     * */
-    export const executeFunctionBody: (functionBodyStr: string, args: object) => any;
+    export namespace Types {
+        class TypeException extends Error {
+            constructor(message: string);
+        }
+        namespace SafeConversions {
+            const toNumber: (input: string) => number;
+            const toBoolean: (resultAsString: string) => boolean;
+        }
+    }
     /** Returns true if the parameter is not undefined. */
     export const isDefined: (x: any) => boolean;
     /**
+     * This is only useful in JS. Not needed in TS.
+     *
      * createImmutableStrictObject({}).doesNotExist will
      * throw an error, in contrast to {}.whatEver, which
      * will not.
