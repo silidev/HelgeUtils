@@ -1,4 +1,6 @@
 /**
+ * Updates: https://github.com/silidev/HelgeUtils/blob/main/HelgeUtils.ts
+ *
  * HelgeUtils.ts V1.0
  * @description A collection of general utility functions not connected to a
  * specific project.
@@ -11,6 +13,19 @@
 export namespace HelgeUtils {
 
   export namespace Exceptions {
+    /**
+     * This is just a template to inline. */
+    export const defineCustom = () => {
+      class MyCustomException
+          extends Error {
+        constructor(message: string) {
+          super(message)
+          this.name = "MyCustomException"
+        }
+      }
+      suppressUnusedWarning(MyCustomException)
+    }
+
     export const stackTrace = (e: unknown) => {
       let str = ""
       if (e instanceof Error) {
@@ -57,7 +72,6 @@ export namespace HelgeUtils {
       return str
     }
 
-    // noinspection JSArrowFunctionBracesCanBeRemoved
     /** swallowAll
      * Wraps the given void function in a try-catch block and swallows any exceptions.
      *
@@ -135,6 +149,8 @@ export namespace HelgeUtils {
 
     /**
      *
+     * See also {@link Exceptions.defineCustom}
+     *
      * Example:
      * <pre>
      try {
@@ -150,7 +166,7 @@ export namespace HelgeUtils {
     export const catchSpecificError = (
         errorType: any
         // eslint-disable-next-line @typescript-eslint/ban-types
-        , callback: Function
+        , callback: (error: Error) => void
         , wantedErrorMsg: string | null = null) => (error: Error) => {
       if (error instanceof errorType
           && (wantedErrorMsg === null && error.message === wantedErrorMsg)) {
@@ -159,7 +175,10 @@ export namespace HelgeUtils {
         throw error
       }
     }
+  }
 
+  export namespace Eval {
+    import alertAndThrow = HelgeUtils.Exceptions.alertAndThrow;
     /**
      * Like "eval(...)" but a little safer and with better performance.
      *
@@ -174,27 +193,57 @@ export namespace HelgeUtils {
       return executeFunctionBody(" return (" + codeStr + ")", args)
     }
 
-    // end of Exceptions
+    /**
+     * Somewhat like eval(...) but a little safer and with better performance.
+     *
+     * In contrast to {@link evalBetter} here you can and must use a return
+     * statement if you want to return a value.
+     *
+     * Docs about the method: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval
+     *
+     * @param functionBodyStr
+     * @param args {object} An object with entities, which you want to give the code
+     *        in the string access to.
+     * */
+    export const executeFunctionBody = (functionBodyStr: string, args: object) => Function(`
+            "use strict"
+            return function(args) {
+                ` + functionBodyStr + `
+            }
+          `)()(args)
   }
 
-  /**
-   * Somewhat like eval(...) but a little safer and with better performance.
-   *
-   * In contrast to {@link evalBetter} here you can and must use a return
-   * statement if you want to return a value.
-   *
-   * Docs about the method: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval
-   *
-   * @param functionBodyStr
-   * @param args {object} An object with entities, which you want to give the code
-   *        in the string access to.
-   * */
-  export const executeFunctionBody = (functionBodyStr: string, args: object) => Function(`
-          "use strict"
-          return function(args) {
-              ` + functionBodyStr + `
-          }
-        `)()(args)
+  export namespace Types {
+    export class TypeException extends Error {
+      constructor(message: string) {
+        super(message)
+        this.name = "MyCustomException"
+      }
+    }
+
+    export namespace SafeConversions {
+      export const toNumber = (input: string): number => {
+        const result = parseFloat(input)
+        if (isNaN(result)) {
+          throw new Error(`Not a number: "${input}"`)
+        }
+        return result
+      }
+
+      export const toBoolean = (resultAsString: string) => {
+        switch (resultAsString.trim()) {
+          case "t":
+          case "true":
+            return true
+          case "f":
+          case "false":
+            return false
+          default:
+            throw new TypeException(`Not a boolean: "${resultAsString}"`)
+        }
+      }
+    }
+  }
 
 
   /** Returns true if the parameter is not undefined. */
@@ -205,6 +254,8 @@ export namespace HelgeUtils {
   }
 
   /**
+   * This is only useful in JS. Not needed in TS.
+   *
    * createImmutableStrictObject({}).doesNotExist will
    * throw an error, in contrast to {}.whatEver, which
    * will not.
