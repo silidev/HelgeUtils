@@ -104,12 +104,7 @@ export namespace HtmlUtils {
 
 
   export const elementWithId = memoize((id: string): HTMLElement | null => {
-    const element = document.getElementById(id);
-    if (element === null) {
-      printError(`Element with ID ${id} not found.`);
-      return null;
-    }
-    return element as HTMLElement
+    return document.getElementById(id) as HTMLElement
   })
 
   export const buttonWithId = elementWithId as (id: string) => HTMLButtonElement | null
@@ -120,15 +115,19 @@ export namespace HtmlUtils {
   export namespace NeverNull {
     import nullFilter = HelgeUtils.Misc.nullFilter
 
+    /** @see NeverNull */
     // eslint-disable-next-line no-shadow
     export const elementWithId = (id: string) =>
         nullFilter<HTMLElement>(HtmlUtils.elementWithId, id)
+    /** @see NeverNull */
     // eslint-disable-next-line no-shadow
     export const buttonWithId = (id: string) =>
         nullFilter<HTMLButtonElement>(HtmlUtils.buttonWithId, id)
+    /** @see NeverNull */
     // eslint-disable-next-line no-shadow
     export const inputElementWithId = (id: string) =>
         nullFilter<HTMLInputElement>(HtmlUtils.inputElementWithId, id)
+    /** @see NeverNull */
     // eslint-disable-next-line no-shadow
     export const textAreaWithId = (id: string) =>
         nullFilter<HTMLTextAreaElement>(HtmlUtils.textAreaWithId, id)
