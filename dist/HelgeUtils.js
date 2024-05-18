@@ -262,6 +262,19 @@ var HelgeUtils;
         };
         return new Proxy(input, handler);
     };
+    let MarkDown;
+    (function (MarkDown) {
+        /** Returns the text of only the == ==-highlighted text. */
+        MarkDown.extractHighlights = (input) => {
+            const regex = /={2,3}([^=]+)={2,3}/g;
+            let matches = [];
+            let match;
+            while ((match = regex.exec(input)) !== null) {
+                matches.push(match[1].trim());
+            }
+            return matches;
+        };
+    })(MarkDown = HelgeUtils.MarkDown || (HelgeUtils.MarkDown = {}));
     /**
      * A function that does nothing. I use it to avoid "unused variable" warnings.
      *
@@ -598,15 +611,6 @@ var HelgeUtils;
                 return result;
             }
         };
-    };
-    HelgeUtils.extractHighlights = (input) => {
-        const regex = /={2,3}([^=]+)={2,3}/g;
-        let matches = [];
-        let match;
-        while ((match = regex.exec(input)) !== null) {
-            matches.push(match[1].trim());
-        }
-        return matches;
     };
     let Misc;
     (function (Misc) {
