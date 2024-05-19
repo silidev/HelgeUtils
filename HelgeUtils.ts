@@ -137,14 +137,9 @@ export namespace HelgeUtils {
       }
     }
 
-    /**
-     * Displays an alert with the given message and throws the message as an exception.
-     * TODO: Rework this. Seems not well thought through.
-     * @param msg {String} */
-    export const alertAndThrow = (...msg: any) => {
-      console.trace()
-      // alert(msg)
-      throw new Error(...msg)
+    /** @deprecated Inline this everywhere! */
+    export const throwError = (msg: string) => {
+      throw new Error(msg)
     }
 
     /**
@@ -177,7 +172,7 @@ export namespace HelgeUtils {
   }
 
   export namespace Eval {
-    import alertAndThrow = HelgeUtils.Exceptions.alertAndThrow;
+
     /**
      * Like "eval(...)" but a little safer and with better performance.
      *
@@ -187,7 +182,7 @@ export namespace HelgeUtils {
      * */
     export const evalBetter = function (codeStr: string, args: any) {
       if (Strings.isBlank(codeStr)) {
-        alertAndThrow("evalBetter(): codeStr must not be empty")
+        throw ("evalBetter(): codeStr must not be empty")
       }
       return executeFunctionBody(" return (" + codeStr + ")", args)
     }
@@ -307,7 +302,8 @@ export namespace HelgeUtils {
     }
   }
   export namespace Tests {
-    /** Inline this function! */
+
+    /** This function is a copy template. */
     export const runTestsOnlyToday = () => {
       const RUN_TESTS = new Date().toISOString().slice(0, 10) === "2024-01-24"
       suppressUnusedWarning(RUN_TESTS)
@@ -320,7 +316,7 @@ export namespace HelgeUtils {
         return
       // It is NOT fine! Throw an error:
       console.log(...output)
-      HelgeUtils.Exceptions.alertAndThrow(...output)
+      throw new Error(output.join(","))
     }
 
     /**
@@ -339,10 +335,10 @@ export namespace HelgeUtils {
         if (typeof expected === 'string' && typeof actual === 'string') {
           const expectedShortened = expected.substring(0, 20).replace(/\n/g, '')
           const actualShortened = actual.substring(0, 20).replace(/\n/g, '')
-          HelgeUtils.Exceptions.alertAndThrow(message
+          throw new Error(message
               || `Assertion failed: Actual: ${actualShortened}, but expected ${expectedShortened}`)
         }
-        HelgeUtils.Exceptions.alertAndThrow(message
+        throw new Error(message
             || `Assertion failed: Actual: ${expectedJson}, but expected ${actualJson}`)
       }
     }
@@ -1071,6 +1067,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
 
   export namespace Misc {
 
+
     /** This is NOT only for unit tests! */
     export const assertTypeEquals = (value: any, expectedType: string) => {
       const actual = typeof value;
@@ -1099,7 +1096,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
     export const nullFilter = <T>(f: Function, ...parameters: any ): T => {
       const untypedNullFilter = (input: any) => {
         if (input === null)
-          Exceptions.alertAndThrow(`Unexpected null value.`)
+          throw new Error(`Unexpected null value.`)
         return input
       }
       return untypedNullFilter(f(...parameters)) as T
