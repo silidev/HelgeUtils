@@ -7,7 +7,10 @@
  * https://github.com/ankidroid/Anki-Android/wiki/AnkiDroid-Javascript-API */
 var printDebug = HtmlUtils.ErrorHandling.printDebug;
 var assertTypeEquals = HelgeUtils.Misc.assertTypeEquals;
-/** This contains only simple wrappers for the real JS-API*/
+/** This contains only wrapper methods for the real JS-API
+ *
+ * The main feature of this is that it throws an exception if call the JS API fails.
+ * */
 class JsApi {
     static mock = isAnkiDesktop;
     static disableDangerousActions = false;

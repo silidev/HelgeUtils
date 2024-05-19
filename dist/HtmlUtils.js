@@ -4,14 +4,18 @@
  *
  * Should be named DomUtils... but I am used to HtmlUtils.
  * */
+// Merge help: The following lines must be commented out in the Project Anca:
 /*
-declare global {
+ import {HelgeUtils} from "./HelgeUtils.js"
+
+ declare global {
   interface Window {
     getCaretCoordinates: (element: HTMLElement, position: number) => {
       top: number, left: number }
   }
 }
 */
+// Merge help end
 const MAX_COOKIE_SIZE = 4096;
 var HtmlUtils;
 (function (HtmlUtils) {
@@ -103,6 +107,8 @@ var HtmlUtils;
         /** @see NeverNull */
         NeverNull.textAreaWithId = (id) => nullFilter(HtmlUtils.textAreaWithId, id);
     })(NeverNull = HtmlUtils.NeverNull || (HtmlUtils.NeverNull = {}));
+    // Merge help: The following lines must be commented out in the Project Anca:
+    // end of Merge help
     let Media;
     (function (Media) {
         Media.releaseMicrophone = (stream) => {
