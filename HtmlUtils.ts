@@ -4,6 +4,8 @@
  *
  * Should be named DomUtils... but I am used to HtmlUtils.
  * */
+
+// Merge help: The following lines must be commented out in the Project Anca:
 import {HelgeUtils} from "./HelgeUtils.js"
 
 declare global {
@@ -12,6 +14,7 @@ declare global {
       top: number, left: number }
   }
 }
+// Merge help end
 
 const MAX_COOKIE_SIZE = 4096
 
@@ -133,7 +136,7 @@ export namespace HtmlUtils {
         nullFilter<HTMLTextAreaElement>(HtmlUtils.textAreaWithId, id)
   }
 
-
+  // Merge help: The following lines must be commented out in the Project Anca:
   export namespace TextAreas {
 
     // eslint-disable-next-line no-shadow
@@ -314,6 +317,7 @@ export namespace HtmlUtils {
       }
     }
   }
+  // end of Merge help
 
   export namespace Media {
     export const releaseMicrophone = (stream: MediaStream) => {
