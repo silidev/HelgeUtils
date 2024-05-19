@@ -119,19 +119,19 @@ export namespace HtmlUtils {
     import nullFilter = HelgeUtils.Misc.nullFilter
 
     /** @see NeverNull */
-    // eslint-disable-next-line no-shadow
+     
     export const elementWithId = (id: string) =>
         nullFilter<HTMLElement>(HtmlUtils.elementWithId, id)
     /** @see NeverNull */
-    // eslint-disable-next-line no-shadow
+     
     export const buttonWithId = (id: string) =>
         nullFilter<HTMLButtonElement>(HtmlUtils.buttonWithId, id)
     /** @see NeverNull */
-    // eslint-disable-next-line no-shadow
+     
     export const inputElementWithId = (id: string) =>
         nullFilter<HTMLInputElement>(HtmlUtils.inputElementWithId, id)
     /** @see NeverNull */
-    // eslint-disable-next-line no-shadow
+     
     export const textAreaWithId = (id: string) =>
         nullFilter<HTMLTextAreaElement>(HtmlUtils.textAreaWithId, id)
   }
@@ -493,7 +493,7 @@ export namespace HtmlUtils {
   export namespace Menus {
     /** https://www.webcomponents.org/element/@vanillawc/wc-menu-wrapper */
     export namespace WcMenu {
-      // eslint-disable-next-line no-shadow
+       
       import elementWithId = NeverNull.elementWithId
 
       export const close = (menuHeadingId: string) => {
