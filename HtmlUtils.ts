@@ -143,76 +143,63 @@ export namespace HtmlUtils {
     import textAreaWithId = HtmlUtils.NeverNull.textAreaWithId
     import trimExceptASingleNewlineAtTheEnd = HelgeUtils.Strings.trimExceptASingleNewlineAtTheEnd
     import Strings = HelgeUtils.Strings;
+    import escapeRegExp = HelgeUtils.Strings.escapeRegExp;
     // npm import textarea-caret:
 
     export class TextAreaWrapper {
       constructor(private textArea: HTMLTextAreaElement) {
       }
-
-      public findAndSelect(search: string) {
-        TextAreas.findAndSelect(this.textArea, search)
+      public findWholeWordCaseInsensitiveAndSelect(search: string) {
+        TextAreas.FindCaseInsensitiveAndSelect.wholeWord(this.textArea, search)
         return this
       }
-
       public appendTextAndPutCursorAfter(text: string) {
         TextAreas.appendTextAndCursor(this.textArea, text)
         return this
       }
-
       public append(text: string) {
         TextAreas.append(this.textArea, text)
         return this
       }
-
       public selectedText() {
         const start = this.textArea.selectionStart
         const end = this.textArea.selectionEnd
         return this.textArea.value.substring(start, end)
       }
-
       public setCursor(position: number) {
         TextAreas.setCursor(this.textArea, position)
         return this
       }
-
       public insertAndPutCursorAfter(addedText: string) {
         TextAreas.insertAndPutCursorAfter(this.textArea, addedText)
         return this
       }
-
       public getCursor() {
         return TextAreas.getCursor(this.textArea)
       }
-
       public setAutoSave(cookieName: string, handleError: (msg: string) => void, storage: BrowserStorage.BsProvider) {
         TextAreas.setAutoSave(cookieName, this.textArea.id, handleError, storage)
         return this
       }
-
       public value() {
         return this.textArea.value
       }
-
       public setValue(value: string) {
         this.textArea.value = value
         return this
       }
-
       public focus() {
         this.textArea.focus()
         return this
       }
-
       public setCursorAtEnd() {
         this.setCursor(this.textArea.value.length)
         return this
       }
-
       public trim() {
         this.textArea.value = trimExceptASingleNewlineAtTheEnd(this.textArea.value)
         return this
       }
-
       /**
        * @deprecated */
       public goToEnd() {
@@ -220,16 +207,13 @@ export namespace HtmlUtils {
       }
     }
 
-
     export const appendTextAndCursor = (textArea: HTMLTextAreaElement, text: string) => {
       append(textArea, text)
       setCursor(textArea, textArea.value.length)
     }
-
     export const append = (textArea: HTMLTextAreaElement, text: string) => {
       textArea.value += text
     }
-
     export const selectedText = (textArea: HTMLTextAreaElement) => {
       const start = textArea.selectionStart
       const end = textArea.selectionEnd
@@ -289,31 +273,39 @@ export namespace HtmlUtils {
      * It can also scroll the found occurrence into view, IF
      * script type="module" src="node_modules/textarea-caret/index.js">
      *   /script>
-     * "^3.1.0" is included in the HTML file.
-     * */
-    export const findAndSelect = (textArea: HTMLTextAreaElement,
-                                  target: string) => {
-      const regex = new RegExp(`\\b${target.toLowerCase()}\\b`);
-      const cursor = Strings.regexIndexOf(textArea.value.toLowerCase(),
-          regex,
-          textArea.selectionEnd);
-      if (cursor >= 0) {
-        textArea.setSelectionRange(cursor, cursor + target.length)
-      } else {
-        // not found, start from the beginning
-        setCursor(textArea, 0)
-      }
-      textArea.focus()
-
-      // Scroll to selectionStart:
-      {
-        /** Needs
-         * script type="module" src="node_modules/textarea-caret/index.js">
-         *   /script>*/
-        const getCaretCoordinates = window["getCaretCoordinates"]
-        if (typeof getCaretCoordinates !== 'undefined') {
-          textArea.scrollTop = getCaretCoordinates(textArea, textArea.selectionEnd).top
+     * "^3.1.0" is included in the HTML file. */
+    export namespace FindCaseInsensitiveAndSelect {
+      const step2 = (cursor: number, textArea: HTMLTextAreaElement, target: string) => {
+        if (cursor >= 0) {
+          textArea.setSelectionRange(cursor, cursor + target.length)
+        } else {
+          // not found, start from the beginning
+          setCursor(textArea, 0)
         }
+        textArea.focus()
+
+        // Scroll to selectionStart:
+        {
+          /** Needs
+           * script type="module" src="node_modules/textarea-caret/index.js">
+           *   /script>*/
+          const getCaretCoordinates = window["getCaretCoordinates"]
+          if (typeof getCaretCoordinates !== 'undefined') {
+            textArea.scrollTop = getCaretCoordinates(textArea, textArea.selectionEnd).top
+          }
+        }
+      }
+      export const wholeWord = (textArea: HTMLTextAreaElement,
+                                target: string) => {
+        const regex = new RegExp(`\\b${escapeRegExp(target).toLowerCase()}\\b`);
+        const cursor =
+            Strings.regexIndexOf(textArea.value.toLowerCase(),regex, textArea.selectionEnd)
+        step2(cursor, textArea, target)
+      }
+      export const normal = (textArea: HTMLTextAreaElement, target: string) => {
+        const cursor =
+            textArea.value.toLowerCase().indexOf(target, textArea.selectionEnd)
+        step2(cursor, textArea, target)
       }
     }
   }
