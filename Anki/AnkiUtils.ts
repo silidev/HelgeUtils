@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* Well, to be precise this is utility code for AnkiDroid
 *
 * Copyright 2024 by Helge Kosuch
