@@ -773,9 +773,9 @@ export namespace HelgeUtils {
       formData.append('config', JSON.stringify({
         // docs: https://docs.speechmatics.com/jobsapi#tag/JobConfig
         type: 'transcription',
-        transcription_config: { //TODO
+        transcription_config: {
           operating_point: 'enhanced',
-          language: 'de' //TODO
+          language: 'de'
         }
       }))
 
