@@ -184,8 +184,8 @@ class JsApi {
   public static async cardInterval() {
     return  this.intervalOfCard()
   }
-  public static async showToast() {
-    (await JsApi.CallWithFailNotification.asVoid("ankiShowToast"))
+  public static async showToast(msg: string) {
+    await (await JsApi.getApi())["ankiShowToast"](msg)
   }
   public static TTS = class {
     public static readonly QUEUE_ADD = 1
@@ -535,6 +535,9 @@ class Anki {
   }
   public static async cardMod(): Promise<number> {
     return JsApi.cardMod()
+  }
+  public static async showToast(msg: string): Promise<void> {
+    JsApi.showToast(msg)
   }
   public static async toggleFlag(): Promise<void> {
     return JsApi.toggleFlag()
