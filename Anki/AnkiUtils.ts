@@ -185,6 +185,10 @@ class JsApi {
     return  this.intervalOfCard()
   }
   public static async showToast(msg: string) {
+    if (testingMode) {
+      console.log(msg)
+      return
+    }
     await (await JsApi.getApi())["ankiShowToast"](msg)
   }
   public static TTS = class {
