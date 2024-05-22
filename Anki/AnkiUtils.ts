@@ -541,7 +541,7 @@ class Anki {
     return JsApi.cardMod()
   }
   public static async showToast(msg: string): Promise<void> {
-    JsApi.showToast(msg)
+    await JsApi.showToast(msg)
   }
   public static async toggleFlag(): Promise<void> {
     return JsApi.toggleFlag()
