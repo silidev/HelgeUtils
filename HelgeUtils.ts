@@ -207,6 +207,22 @@ export namespace HelgeUtils {
           `)()(args)
   }
 
+  export namespace Conversions {
+    export const parseIntWithNull = (input: string | null) => {
+      if (input==null) {
+        return null
+      }
+      return parseInt(input)
+    }
+
+    export const parseFloatWithNull = (input: string | null) => {
+      if (input==null) {
+        return null
+      }
+      return parseFloat(input)
+    }
+  }
+
   export namespace Types {
     export class TypeException extends Error {
       constructor(message: string) {
