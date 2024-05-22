@@ -1110,6 +1110,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
      * Anki search: ((re:\bdu\b) OR (re:\bdir\b) OR (re:\bdein\b) OR (re:\bdeiner\b) OR (re:\bdeines\b)) -tag:du
      */
     export const du2ich = (input: string) => {
+      // noinspection SpellCheckingInspection
       const wordEndReplacements = [
         ["abstellst","abstelle"                ],
         ["aktivierst","aktiviere"              ],
@@ -1643,7 +1644,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
         ["bearbeitetest","bearbeitete"             ],
         ["bedanktest","bedankte"                  ],
         ["bedecktest","bedeckte"                  ],
-        ["bedenktest","bedenkte"                  ],
+        ["bedachest","bedachte"                  ],
         ["bedeutetest","bedeutete"                 ],
         ["bedientest","bediente"                  ],
         ["beeinflusstest","beeinflusste"           ],
@@ -2147,6 +2148,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
 
       // delete:         ["dachtest"     ,"dachte"               ],
 
+      // noinspection SpellCheckingInspection
       const wholeWordReplacements = [
             ["betreutest"     ,"betreute"               ],
             ["betreust"     ,"betreue"               ],

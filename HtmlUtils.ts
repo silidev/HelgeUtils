@@ -123,7 +123,7 @@ export namespace HtmlUtils {
     export const elementWithId = (id: string) =>
         nullFilter<HTMLElement>(HtmlUtils.elementWithId, id)
     /** @see NeverNull */
-     
+
     export const buttonWithId = (id: string) =>
         nullFilter<HTMLButtonElement>(HtmlUtils.buttonWithId, id)
     /** @see NeverNull */
