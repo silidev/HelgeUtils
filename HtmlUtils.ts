@@ -341,6 +341,7 @@ export namespace HtmlUtils {
     }
 
     export namespace LocalStorage {
+      import parseFloatWithNull = HelgeUtils.Conversions.parseFloatWithNull;
       /**
        * Sets a local storage item with the given name and value.
        *
@@ -348,9 +349,14 @@ export namespace HtmlUtils {
       export const set = (itemName: string, itemValue: string) => {
         localStorage.setItem(itemName, itemValue)
       }
-
       export const get = (name: string) => {
         return localStorage.getItem(name)
+      }
+      export const getNumber = (name: string) => {
+        return parseFloatWithNull(get(name))
+      }
+      export function setNumber(name: string, value: number) {
+        set(name,value.toString())
       }
     }
 
