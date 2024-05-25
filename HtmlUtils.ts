@@ -115,22 +115,23 @@ export namespace HtmlUtils {
   export const inputElementWithId = elementWithId as (id: string) => HTMLInputElement | null
 
   /** These never return null. Instead, they throw a runtime error. */
-  export namespace NeverNull {
+  export namespace NullFiltered {
     import nullFilter = HelgeUtils.Misc.nullFilter
-
-    /** @see NeverNull */
-     
+    /** @see NullFiltered */
+    export const querySelector = (element: DocumentFragment, selector: string) => {
+      return nullFilter<HTMLElement>(element.querySelector(selector))
+    }
+    /** @see NullFiltered */
     export const elementWithId = (id: string) =>
         nullFilter<HTMLElement>(HtmlUtils.elementWithId(id))
-    /** @see NeverNull */
-
+    /** @see NullFiltered */
     export const buttonWithId = (id: string) =>
         nullFilter<HTMLButtonElement>(HtmlUtils.buttonWithId(id))
-    /** @see NeverNull */
+    /** @see NullFiltered */
      
     export const inputElementWithId = (id: string) =>
         nullFilter<HTMLInputElement>(HtmlUtils.inputElementWithId(id))
-    /** @see NeverNull */
+    /** @see NullFiltered */
      
     export const textAreaWithId = (id: string) =>
         nullFilter<HTMLTextAreaElement>(HtmlUtils.textAreaWithId(id))
@@ -492,7 +493,7 @@ export namespace HtmlUtils {
     /** https://www.webcomponents.org/element/@vanillawc/wc-menu-wrapper */
     export namespace WcMenu {
        
-      import elementWithId = NeverNull.elementWithId
+      import elementWithId = NullFiltered.elementWithId
 
       export const close = (menuHeadingId: string) => {
         elementWithId(menuHeadingId).dispatchEvent(new CustomEvent('rootMenuClose'))
