@@ -1101,21 +1101,18 @@ Please note that certain strong accents can possibly cause this mode to transcri
      *
      * Throws an exception if the input is null.
      *
+     * This canNOT be replace with the ?? in assignments.
+     *
      * I use "strictNullChecks": true to avoid bugs. Therefore, I need this
      * where that is too strict.
      *
      * Use example:
      * const elementWithId = (id: string) =>
-     *   nullFilter<HTMLElement>(HtmlUtils.elementWithId, id)
-     */
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    export const nullFilter = <T>(f: Function, ...parameters: any ): T => {
-      const untypedNullFilter = (input: any) => {
-        if (input === null)
-          throw new Error(`Unexpected null value.`)
-        return input
-      }
-      return untypedNullFilter(f(...parameters)) as T
+     *   nullFilter<HTMLElement>(HtmlUtils.elementWithId(id)) */
+    export const nullFilter = <U>(input: U | null): U => {
+      if (input === null)
+        throw new Error(`Unexpected null value.`)
+      return input
     }
 
 

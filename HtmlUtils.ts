@@ -121,19 +121,19 @@ export namespace HtmlUtils {
     /** @see NeverNull */
      
     export const elementWithId = (id: string) =>
-        nullFilter<HTMLElement>(HtmlUtils.elementWithId, id)
+        nullFilter<HTMLElement>(HtmlUtils.elementWithId(id))
     /** @see NeverNull */
 
     export const buttonWithId = (id: string) =>
-        nullFilter<HTMLButtonElement>(HtmlUtils.buttonWithId, id)
+        nullFilter<HTMLButtonElement>(HtmlUtils.buttonWithId(id))
     /** @see NeverNull */
      
     export const inputElementWithId = (id: string) =>
-        nullFilter<HTMLInputElement>(HtmlUtils.inputElementWithId, id)
+        nullFilter<HTMLInputElement>(HtmlUtils.inputElementWithId(id))
     /** @see NeverNull */
      
     export const textAreaWithId = (id: string) =>
-        nullFilter<HTMLTextAreaElement>(HtmlUtils.textAreaWithId, id)
+        nullFilter<HTMLTextAreaElement>(HtmlUtils.textAreaWithId(id))
   }
 
   // Merge help: The following lines must be commented out in the Project Anca:
