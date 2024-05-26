@@ -12,6 +12,19 @@
 
 export namespace HelgeUtils {
 
+  /** Config */
+  /** You can turn this off for debugging */
+  export namespace Config {
+    export namespace Debug {
+      export let debug = false;
+
+      export namespace Misc {
+        /** Misc because these are used in the Misc namespace below */
+        export let bufferFunctionReturnValues = debug
+      }
+    }
+  }
+
   export namespace Exceptions {
     /**
      * This is just a template to inline. */
@@ -1071,7 +1084,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
 
     return (...args: T[]): R => {
       const key = JSON.stringify(args)
-      if (cache.has(key)) {
+      if (cache.has(key) && Config.Debug.Misc.bufferFunctionReturnValues) {
         return cache.get(key)!
       } else {
         const result = func(...args)
