@@ -141,7 +141,7 @@ export namespace HtmlUtils {
   export namespace TextAreas {
 
     // eslint-disable-next-line no-shadow
-    import textAreaWithId = HtmlUtils.NeverNull.textAreaWithId
+    import textAreaWithId = HtmlUtils.NullFiltered.textAreaWithId
     import trimExceptASingleNewlineAtTheEnd = HelgeUtils.Strings.trimExceptASingleNewlineAtTheEnd
     import Strings = HelgeUtils.Strings;
     import escapeRegExp = HelgeUtils.Strings.escapeRegExp;
