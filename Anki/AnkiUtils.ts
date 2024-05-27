@@ -1,13 +1,56 @@
-// @ts-nocheck
 /* Well, to be precise this is utility code for AnkiDroid
-*
-* Copyright 2024 by Helge Kosuch
-* */
+ * Especially a wrapper around the AnkDroid API.
+ * https://github.com/ankidroid/Anki-Android/wiki/AnkiDroid-Javascript-API
+ *
+ * Copyright 2024 by Helge Kosuch
+ */
 
-/* Wrapper around the AnkDroid API.
- * https://github.com/ankidroid/Anki-Android/wiki/AnkiDroid-Javascript-API */
 import printDebug = HtmlUtils.ErrorHandling.printDebug;
 import assertTypeEquals = HelgeUtils.Misc.assertTypeEquals;
+
+/** I store config values which are needed on front and back in the CSS, because
+ * the CSS is accessible from front and back.
+ *
+ * Example:
+ CSS:
+ :root {
+ --skipUndueCards: false;
+ }
+ TS: CssVars.asBoolean("--someVar") !== true
+ */
+namespace CssVars {
+  import toBoolean = HelgeUtils.Types.SafeConversions.toBoolean
+  import TypeException = HelgeUtils.Types.TypeException
+
+  export const asString = (varName: string):string => {
+    const propertyValue: string =
+        getComputedStyle(document.documentElement).getPropertyValue(varName)
+    ;
+    return propertyValue
+  }
+
+  export const asBoolean = (varName: string): boolean => {
+    const resultAsString = asString(varName)
+    try {
+      return toBoolean(resultAsString)
+    } catch (e) {
+      throw new TypeException(`CSS var ${varName
+      } does not contain a boolean: "${resultAsString
+      }"`)
+    }
+  }
+
+  export const asNumber = (varName: string): number => {
+    const resultAsString = asString(varName)
+    const result = parseFloat(resultAsString)
+    if (isNaN(result)) {
+      throw new Error(`CSS var ${varName
+      } does not contain a number: "${resultAsString
+      }"`)
+    }
+    return result
+  }
+}
 
 /** This contains only wrapper methods for the real JS-API
  *
@@ -15,7 +58,7 @@ import assertTypeEquals = HelgeUtils.Misc.assertTypeEquals;
  * */
 class JsApi {
   private static mock = isAnkiDesktop
-  private static disableDangerousActions = false
+  private static safeModeJsApi = CssVars.asBoolean('--safeModeJsApi')
   private static api: AnkiDroidJsInterface
   private static async getApi(): Promise<AnkiDroidJsInterface> {
     if (this.api)
@@ -32,13 +75,13 @@ class JsApi {
     await (await JsApi.getApi()).ankiAddTagToCard()
   }
   public static async buryCard() {
-    if (JsApi.mock || JsApi.disableDangerousActions)
+    if (JsApi.mock || JsApi.safeModeJsApi)
       return
 
     await (await JsApi.getApi()).ankiBuryCard()
   }
   public static answerEase(easeButtonNumber: number) {
-    if (JsApi.mock || JsApi.disableDangerousActions)
+    if (JsApi.mock || JsApi.safeModeJsApi)
       return
 
     if (isMobile)
@@ -139,7 +182,7 @@ class JsApi {
    * https://docs.ankiweb.net/browsing.html#cards
    */
   public static async setCardDue(days: number) {
-    if (JsApi.mock || JsApi.disableDangerousActions)
+    if (JsApi.mock || JsApi.safeModeJsApi)
       return
 
     await (await JsApi.getApi()).ankiSetCardDue(days)

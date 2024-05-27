@@ -258,8 +258,13 @@ export namespace HelgeUtils {
           case "t":
           case "tt":
           case "true":
+          case "on":
+          case "ON":
             return true
           case "f":
+          case "ff":
+          case "off":
+          case "OFF":
           case "false":
             return false
           default:
