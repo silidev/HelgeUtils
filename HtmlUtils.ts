@@ -16,6 +16,9 @@ declare global {
 }
 // Merge help end
 
+// ***** Config ****
+const globalDefaultExceptionHandler = true
+
 const MAX_COOKIE_SIZE = 4096
 
 export namespace HtmlUtils {
@@ -40,6 +43,10 @@ export namespace HtmlUtils {
           )
           return true; // Prevents the default browser error handling
         }
+      }
+
+      if (globalDefaultExceptionHandler) {
+        installGlobalDefault()
       }
     }
 
