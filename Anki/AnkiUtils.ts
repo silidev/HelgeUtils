@@ -385,11 +385,11 @@ class Anki {
 
     if (retType==="string") {
       corrected = JSON.parse(returnValueFromApi)
-    } else if (retType==="object")
+    } else if (retType==="object") {
       corrected = returnValueFromApi["value"]
-    else
+    } else {
       throw new Error("nextTimeStringForButton: unexpected return type")
-
+    }
     if (!corrected.success)
       printDebug("JS API returned success===false")
 
