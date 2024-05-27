@@ -393,6 +393,12 @@ class Anki {
     if (!corrected.success)
       printDebug("JS API returned success===false")
 
+    if (autoSkipCards && corrected.value==="") {
+      autoSkipCards = false
+      printDebugPrj("nextTimeStringForButton(...) is empty. Probably the setting Appearance>Show button time is" +
+          " disabled. Please enable it.")
+    }
+
     return corrected.value
   }
   public static async nextTimeValueAndUnitForButton(i: number) {
