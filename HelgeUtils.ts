@@ -256,6 +256,7 @@ export namespace HelgeUtils {
       export const toBoolean = (resultAsString: string) => {
         switch (resultAsString.trim()) {
           case "t":
+          case "tt":
           case "true":
             return true
           case "f":
