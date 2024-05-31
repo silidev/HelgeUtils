@@ -192,6 +192,11 @@ class JsApi {
       return 12345
     return (await JsApi.CallWithFailNotification.asNumber("ankiGetCardId"))
   }
+  public static async noteId(): Promise<number> {
+    if (JsApi.mock)
+      return 12345
+    return (await JsApi.CallWithFailNotification.asNumber("ankiGetCardNid"))
+  }
   /**
    https://github.com/ankidroid/Anki-Android/wiki/AnkiDroid-Javascript-API#last-modified-time-of-card
    If a card was never modified, this does NOT give the time when it was added,
@@ -585,6 +590,9 @@ class Anki {
   }
   public static async cardId(): Promise<number> {
     return JsApi.cardId()
+  }
+  public static async noteId(): Promise<number> {
+    return JsApi.noteId()
   }
   public static async cardMod(): Promise<number> {
     return JsApi.cardMod()
