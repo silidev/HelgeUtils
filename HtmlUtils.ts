@@ -41,7 +41,8 @@ export namespace HtmlUtils {
                don't know why. The debugger didn't help. This shouldn't
                happen anyway. Don't invest more time. */
           )
-          return true; // Prevents the default browser error handling
+          throw "Was handled by installGlobalDefault"
+          // return true; // Prevents the default browser error handling
         }
       }
 
