@@ -83,21 +83,6 @@ export namespace HtmlUtils {
 
   import printError = HtmlUtils.ErrorHandling.printError
 
-  /** @deprecated Is this really needed? This loop seems inefficient. Better use
-   * {@link createDivElementFromHtml} */
-  export const createFragmentFromHtml = (html: string) => {
-    const fragment = document.createDocumentFragment()
-    {
-      const tempElement = document.createElement('div')
-      tempElement.innerHTML = html
-
-      while (tempElement.firstChild) {
-        fragment.appendChild(tempElement.firstChild)
-      }
-    }
-    return fragment
-  }
-
   export const createDivElementFromHtml = (html: string) => {
     const tempElement = document.createElement('div')
     tempElement.innerHTML = html
