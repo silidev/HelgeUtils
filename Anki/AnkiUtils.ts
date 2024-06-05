@@ -284,10 +284,10 @@ class JsApi {
 
       await (await JsApi.getApi())["ankiTtsSetLanguage"]('en-US')
     }
-    public static async german() {
+    public static async setDefaultLanguage() {
       if (JsApi.mock) return
 
-      await (await JsApi.getApi())["ankiTtsSetLanguage"]('de-de')
+      await (await JsApi.getApi())["ankiTtsSetLanguage"](ttsDefaultLanguage)
     }
     public static async flushQueue() {
       await JsApi.TTS.speak("", JsApi.TTS.QUEUE_FLUSH)
@@ -638,7 +638,7 @@ class Anki {
     }
 
     public static async german(): Promise<void> {
-      return JsApi.TTS.german()
+      return JsApi.TTS.setDefaultLanguage()
     }
 
     public static async flushQueue(): Promise<void> {
