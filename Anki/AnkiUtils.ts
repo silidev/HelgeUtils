@@ -21,16 +21,13 @@ import assertTypeEquals = HelgeUtils.Misc.assertTypeEquals
 namespace CssVars {
   import toBoolean = HelgeUtils.Types.SafeConversions.toBoolean
   import TypeException = HelgeUtils.Types.TypeException
-
   export const asString = (varName: string):string => {
     return getComputedStyle(document.documentElement).getPropertyValue(varName)
   }
-
   /** Read this as: A CSS variable defined as a string in quotes. */
   export const asStringInQuotes = (varName: string):string => {
     return eval(asString(varName))
   }
-
   export const asBoolean = (varName: string): boolean => {
     const resultAsString = asString(varName)
     try {
@@ -41,7 +38,6 @@ namespace CssVars {
       }"`)
     }
   }
-
   export const asNumber = (varName: string): number => {
     const resultAsString = asString(varName)
     const result = parseFloat(resultAsString)
