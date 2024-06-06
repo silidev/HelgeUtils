@@ -550,15 +550,15 @@ export namespace HtmlUtils {
     const alertBox = document.createElement("div");
 
     alertBox.style.cssText = `
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: lightblue;
-    padding: 10px;
-    border-radius: 5px;
-    z-index: 999999;
-  `
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: lightblue;
+      padding: 10px;
+      border-radius: 5px;
+      z-index: 999999;
+    `
     alertBox.textContent = message
     document.body.appendChild(alertBox);
 
