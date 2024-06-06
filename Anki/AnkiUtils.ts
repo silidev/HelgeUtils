@@ -446,7 +446,7 @@ class Anki {
       const unit = step1.substring(match[0].length)
       return {value, unit}
     } else {
-      printError(`Error in parseButtonTimeStrNumberAndUnit: input: "${step1}" match: "${match}"`)
+      // printError(`Error in parseButtonTimeStrNumberAndUnit: input: "${step1}" match: "${match}"`)
       const value = NaN
       const unit = "parseButtonTimeStrNumberAndUnit: No match"
       return {value, unit}
