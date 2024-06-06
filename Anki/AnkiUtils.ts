@@ -5,8 +5,8 @@
  * Copyright 2024 by Helge Kosuch
  */
 
-import printDebug = HtmlUtils.ErrorHandling.printDebug;
-import assertTypeEquals = HelgeUtils.Misc.assertTypeEquals;
+import printDebug = HtmlUtils.ErrorHandling.printDebug
+import assertTypeEquals = HelgeUtils.Misc.assertTypeEquals
 
 /** I store config values which are needed on front and back in the CSS, because
  * the CSS is accessible from front and back.
@@ -23,10 +23,12 @@ namespace CssVars {
   import TypeException = HelgeUtils.Types.TypeException
 
   export const asString = (varName: string):string => {
-    const propertyValue: string =
-        getComputedStyle(document.documentElement).getPropertyValue(varName)
-    ;
-    return propertyValue
+    return getComputedStyle(document.documentElement).getPropertyValue(varName)
+  }
+
+  /** Read this as: A CSS variable defined as a string in quotes. */
+  export const asStringInQuotes = (varName: string):string => {
+    return eval(asString(varName))
   }
 
   export const asBoolean = (varName: string): boolean => {
