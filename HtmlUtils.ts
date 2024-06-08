@@ -346,12 +346,21 @@ export namespace HtmlUtils {
        * Sets a local storage item with the given name and value.
        *
        * @throws Error if the local storage item value exceeds 5242880 characters.*/
-      export const set = (itemName: string, itemValue: string) => {
-        localStorage.setItem(itemName, itemValue)
-      }
-      export const get = (name: string) => {
-        return localStorage.getItem(name)
-      }
+      export const set = (itemName: string, itemValue: unknown): void => {
+        localStorage.setItem(itemName, JSON.stringify(itemValue));
+      };
+
+      export const get = <T>(name: string): T | null => {
+        const item = localStorage.getItem(name);
+        if (item) {
+          try {
+            return JSON.parse(item) as T;
+          } catch (e) {
+            console.error('Error parsing JSON from localStorage', e);
+          }
+        }
+        return null;
+      };
       export const getNumber = (name: string) => {
         return parseFloatWithNull(get(name))
       }
