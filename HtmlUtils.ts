@@ -231,7 +231,7 @@ export namespace HtmlUtils {
       textAreaWithId(id).addEventListener('input', () => {
         const text = textAreaWithId(id).value
         try {
-          storage.set(storageKey, text)
+          storage.setString(storageKey, text)
         } catch (e) {
           handleError(`${storageKey}: Text area content exceeds 4095 characters. Content will not be saved.`)
         }
@@ -324,40 +324,32 @@ export namespace HtmlUtils {
       isAvailable(): boolean
       clear(): void
       getAllKeys(): Object
-      set(key: string, value: string): void
-      get<T>(key: string): T | null
-    }
-
-    export class LocalStorageVerified implements BsProvider {
-      private lsProvider: BsProvider = new LocalStorage()
-
-      isAvailable(): boolean {
-        return true
-      }
-      clear(): void {
-        this.lsProvider.clear()
-      }
-      getAllKeys(): Object {
-        throw new Error("Method not implemented.")
-      }
-      set(itemName: string, itemValue: string)  {
-        this.lsProvider.set(itemName, itemValue)
-        // console.log(`itemValue: ${itemValue.length}`)
-        const reread = this.lsProvider.get(itemName);
-        // console.log(`reread: ${reread?.length}`)
-        if (reread !== itemValue) {
-          throw new Error(`Local storage item "${itemName}"'s was not stored correctly!`)
-        }
-      }
-      get<T>(key: string): T | null {
-        return this.lsProvider.get(key)
-      }
+      setString(key: string, value: string): void
+      getString(itemName: string): string | null
+      getAndJsonParse<T>(name: string): T | null
+      setJsonStringified(itemName: string, itemValue: unknown): void
     }
 
     import parseFloatWithNull = HelgeUtils.Conversions.parseFloatWithNull;
 
-    export class LocalStorage implements BsProvider {
+    class BsProviderExtras {
+      setJsonStringified(itemName: string, itemValue: unknown): void {
+        localStorage.setItem(itemName, JSON.stringify(itemValue))
+      }
+      getAndJsonParse<T>(name: string): T | null {
+        const item = localStorage.getItem(name)
+        if (item) {
+          try {
+            return JSON.parse(item) as T;
+          } catch (e) {
+            console.error('Error parsing JSON from localStorage', e)
+          }
+        }
+        return null
+      };
+    }
 
+    export class LocalStorage extends BsProviderExtras implements BsProvider {
       isAvailable(): boolean {
         return true
       }
@@ -367,30 +359,19 @@ export namespace HtmlUtils {
       getAllKeys(): Object {
         throw new Error("Method not implemented.")
       }
-      /**
-       * Sets a local storage item with the given name and value.
-       *
+      /** Sets a local storage item with the given name and value.
        * @throws Error if the local storage item value exceeds 5242880 characters.*/
-      set(itemName: string, itemValue: unknown): void {
-        localStorage.setItem(itemName, JSON.stringify(itemValue));
+      setString(itemName: string, itemValue: string): void {
+        localStorage.setItem(itemName, itemValue)
       }
-
-      get<T>(name: string): T | null {
-        const item = localStorage.getItem(name);
-        if (item) {
-          try {
-            return JSON.parse(item) as T;
-          } catch (e) {
-            console.error('Error parsing JSON from localStorage', e);
-          }
-        }
-        return null;
-      };
+      getString(name: string): string | null {
+        return localStorage.getItem(name)
+      }
       getNumber(name: string) {
-        return parseFloatWithNull(this.get(name))
+        return parseFloatWithNull(this.getString(name))
       }
       setNumber(name: string, value: number) {
-        this.set(name,value.toString())
+        this.setString(name,value.toString())
       }
     }
 
