@@ -16,6 +16,8 @@ declare global {
 }
 // Merge help end
 
+import parseFloatWithNull = HelgeUtils.Conversions.parseFloatWithNull;
+
 // ***** Config ****
 const globalDefaultExceptionHandler = true
 
@@ -331,9 +333,6 @@ export namespace HtmlUtils {
       getNumber(name: string): number | null
       setNumber(name: string, value: number): void
     }
-
-    import parseFloatWithNull = HelgeUtils.Conversions.parseFloatWithNull;
-
     export abstract class BsProviderExtras {
       abstract setString(itemName: string, itemValue: string): void
       abstract getString(name: string): string | null
@@ -358,52 +357,54 @@ export namespace HtmlUtils {
         this.setString(name,value.toString())
       }
     }
-
     export class LocalStorage extends BsProviderExtras implements BsProvider {
       isAvailable(): boolean {
         return true
+
       }
       clear(): void {
         localStorage.clear()
+
       }
       getAllKeys(): Object {
         throw new Error("Method not implemented.")
+
       }
       /** Sets a local storage item with the given name and value.
        * @throws Error if the local storage item value exceeds 5242880 characters.*/
       setString(itemName: string, itemValue: string): void {
         localStorage.setItem(itemName, itemValue)
+
       }
       getString(name: string): string | null {
         return localStorage.getItem(name)
+
       }
     }
-
-  export namespace Cookies {
-      /**
-       * Sets a cookie with the given name and value.
-       *
-       * @throws Error if the cookie value exceeds 4095 characters.*/
-    export const set = (cookieName: string, cookieValue: string) => {
-      const expirationTime = new Date(Date.now() + 2147483647000).toUTCString()
-      document.cookie = `${cookieName}=${encodeURIComponent(cookieValue)};expires=${expirationTime};path=/`
-        const message = `Cookie "${cookieName}"'s value exceeds maximum characters of ${MAX_COOKIE_SIZE}.`
-        if (document.cookie.length > MAX_COOKIE_SIZE) {
-          throw new Error(message)
-        }
-    }
-
-    export const get = (name: string) => {
-      let cookieArr = document.cookie.split(";")
-      for (let i = 0; i < cookieArr.length; i++) {
-        let cookiePair = cookieArr[i].split("=")
-        if (name === cookiePair[0].trim()) {
-          return decodeURIComponent(cookiePair[1])
-        }
+    export namespace Cookies {
+        /**
+         * Sets a cookie with the given name and value.
+         *
+         * @throws Error if the cookie value exceeds 4095 characters.*/
+      export const set = (cookieName: string, cookieValue: string) => {
+        const expirationTime = new Date(Date.now() + 2147483647000).toUTCString()
+        document.cookie = `${cookieName}=${encodeURIComponent(cookieValue)};expires=${expirationTime};path=/`
+          const message = `Cookie "${cookieName}"'s value exceeds maximum characters of ${MAX_COOKIE_SIZE}.`
+          if (document.cookie.length > MAX_COOKIE_SIZE) {
+            throw new Error(message)
+          }
       }
-      return null
+      export const get = (name: string) => {
+        let cookieArr = document.cookie.split(";")
+        for (let i = 0; i < cookieArr.length; i++) {
+          let cookiePair = cookieArr[i].split("=")
+          if (name === cookiePair[0].trim()) {
+            return decodeURIComponent(cookiePair[1])
+          }
+        }
+        return null
+      }
     }
-  }
   }
   /**
    * Known "problems": If the user clicks on the button multiple times in a row, the checkmark will
