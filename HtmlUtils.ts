@@ -323,37 +323,59 @@ export namespace HtmlUtils {
     export interface BsProvider {
       isAvailable(): boolean
       clear(): void
-      getAllKeys: () => Object
-      set: (key: string, value: string) => void
-      get: (key: string) => string | null
+      getAllKeys(): Object
+      set(key: string, value: string): void
+      get<T>(key: string): T | null
     }
 
-    export namespace LocalStorageVerified {
-      export const set = (itemName: string, itemValue: string) => {
-        LocalStorage.set(itemName, itemValue)
+    export class LocalStorageVerified implements BsProvider {
+      private lsProvider: BsProvider = new LocalStorage()
+
+      isAvailable(): boolean {
+        return true
+      }
+      clear(): void {
+        this.lsProvider.clear()
+      }
+      getAllKeys(): Object {
+        throw new Error("Method not implemented.")
+      }
+      set(itemName: string, itemValue: string)  {
+        this.lsProvider.set(itemName, itemValue)
         // console.log(`itemValue: ${itemValue.length}`)
-        const reread = LocalStorage.get(itemName);
+        const reread = this.lsProvider.get(itemName);
         // console.log(`reread: ${reread?.length}`)
         if (reread !== itemValue) {
           throw new Error(`Local storage item "${itemName}"'s was not stored correctly!`)
         }
       }
-      export const get = (name: string) => {
-        return LocalStorage.get(name)
+      get<T>(key: string): T | null {
+        return this.lsProvider.get(key)
       }
     }
 
-    export namespace LocalStorage {
-      import parseFloatWithNull = HelgeUtils.Conversions.parseFloatWithNull;
+    import parseFloatWithNull = HelgeUtils.Conversions.parseFloatWithNull;
+
+    export class LocalStorage implements BsProvider {
+
+      isAvailable(): boolean {
+        return true
+      }
+      clear(): void {
+        localStorage.clear()
+      }
+      getAllKeys(): Object {
+        throw new Error("Method not implemented.")
+      }
       /**
        * Sets a local storage item with the given name and value.
        *
        * @throws Error if the local storage item value exceeds 5242880 characters.*/
-      export const set = (itemName: string, itemValue: unknown): void => {
+      set(itemName: string, itemValue: unknown): void {
         localStorage.setItem(itemName, JSON.stringify(itemValue));
-      };
+      }
 
-      export const get = <T>(name: string): T | null => {
+      get<T>(name: string): T | null {
         const item = localStorage.getItem(name);
         if (item) {
           try {
@@ -364,11 +386,11 @@ export namespace HtmlUtils {
         }
         return null;
       };
-      export const getNumber = (name: string) => {
-        return parseFloatWithNull(get(name))
+      getNumber(name: string) {
+        return parseFloatWithNull(this.get(name))
       }
-      export function setNumber(name: string, value: number) {
-        set(name,value.toString())
+      setNumber(name: string, value: number) {
+        this.set(name,value.toString())
       }
     }
 
