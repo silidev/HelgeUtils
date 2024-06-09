@@ -328,11 +328,15 @@ export namespace HtmlUtils {
       getString(itemName: string): string | null
       getAndJsonParse<T>(name: string): T | null
       setJsonStringified(itemName: string, itemValue: unknown): void
+      getNumber(name: string): number | null
+      setNumber(name: string, value: number): void
     }
 
     import parseFloatWithNull = HelgeUtils.Conversions.parseFloatWithNull;
 
-    class BsProviderExtras {
+    export abstract class BsProviderExtras {
+      abstract setString(itemName: string, itemValue: string): void
+      abstract getString(name: string): string | null
       setJsonStringified(itemName: string, itemValue: unknown): void {
         localStorage.setItem(itemName, JSON.stringify(itemValue))
       }
@@ -347,6 +351,12 @@ export namespace HtmlUtils {
         }
         return null
       };
+      getNumber(name: string) {
+        return parseFloatWithNull(this.getString(name))
+      }
+      setNumber(name: string, value: number) {
+        this.setString(name,value.toString())
+      }
     }
 
     export class LocalStorage extends BsProviderExtras implements BsProvider {
@@ -366,12 +376,6 @@ export namespace HtmlUtils {
       }
       getString(name: string): string | null {
         return localStorage.getItem(name)
-      }
-      getNumber(name: string) {
-        return parseFloatWithNull(this.getString(name))
-      }
-      setNumber(name: string, value: number) {
-        this.setString(name,value.toString())
       }
     }
 
