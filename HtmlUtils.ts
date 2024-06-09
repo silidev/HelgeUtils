@@ -324,7 +324,8 @@ export namespace HtmlUtils {
 
     export interface BsProvider {
       isAvailable(): boolean
-      clear(): void
+      /** Delete all entries whose keys begin with prefix */
+      clear(prefix: string): void
       getAllKeys(): Object
       setString(key: string, value: string): void
       getString(itemName: string): string | null
@@ -362,12 +363,15 @@ export namespace HtmlUtils {
         return true
 
       }
-      clear(): void {
-        localStorage.clear()
-
+      clear(prefix: string): void {
+        Object.keys(localStorage).forEach(key => {
+          if (key.startsWith(prefix)) {
+            localStorage.removeItem(key)
+          }
+        })
       }
       getAllKeys(): Object {
-        throw new Error("Method not implemented.")
+        return Object.keys(localStorage)
 
       }
       /** Sets a local storage item with the given name and value.
