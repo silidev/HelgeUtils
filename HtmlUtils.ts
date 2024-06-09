@@ -338,10 +338,10 @@ export namespace HtmlUtils {
       abstract setString(itemName: string, itemValue: string): void
       abstract getString(name: string): string | null
       setJsonStringified(itemName: string, itemValue: unknown): void {
-        localStorage.setItem(itemName, JSON.stringify(itemValue))
+        this.setString(itemName, JSON.stringify(itemValue))
       }
       getAndJsonParse<T>(name: string): T | null {
-        const item = localStorage.getItem(name)
+        const item = this.getString(name)
         if (item) {
           try {
             return JSON.parse(item) as T;
