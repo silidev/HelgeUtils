@@ -321,6 +321,9 @@ export namespace HtmlUtils {
   export namespace BrowserStorage {
 
     export interface BsProvider {
+      isAvailable(): boolean
+      clear(): void
+      getAllKeys: () => Object
       set: (key: string, value: string) => void
       get: (key: string) => string | null
     }
