@@ -335,7 +335,7 @@ namespace TTS {
     private intervalId: number | undefined
     private timeoutId: number | undefined
     private stopSpeakingFlag = false
-    private readonly sentencesArray: string[] //TODO: Make this a class.
+    private readonly sentencesArray: string[]
     constructor(input: string[], startSentenceIndex: number) {
       const containsSpeech = (str: string): boolean => str.trim().length > 0;
       const removeEmptyStrings = (arr: string[]): string[] => arr.filter(containsSpeech)
