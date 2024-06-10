@@ -8,6 +8,76 @@
 import printDebug = HtmlUtils.ErrorHandling.printDebug
 import assertTypeEquals = HelgeUtils.Misc.assertTypeEquals
 
+/** This persists values, BUT they are deleted when the card changes. */
+class ForCardPersistence {
+  constructor(private readonly bsProvider: BsProvider) {
+    if (this.bsProvider.isAvailable()) {
+      this.clearOldItems().then()
+    } else {
+      console.log("Persistence is not available.")
+      printError("Persistence is not available.")
+    }
+  }
+  /** The prefix we use for all our items.*/
+  private readonly prefix = "ForCurrentCard."
+  /** Will be set to true if the persistent things belong to the current card */
+  private correctCardCheckDone = false
+  public async getAllKeys() {
+    await this.clearOldItems()
+    return this.bsProvider.getAllKeys()
+  }
+  public async getString(key: string) {
+    await this.clearOldItems()
+    return this.getRaw(key)
+  }
+  /** Usually use get instead! */
+  private getRaw(key: string): string | null {
+    return this.bsProvider.getString(this.prefix + key)
+
+  }
+  public async setString(key: string, value: string) {
+    await this.clearOldItems()
+    this.setRaw(key, value);
+  }
+  /** Usually use set instead! */
+  private setRaw = (key: string, value: string) => {
+    this.bsProvider.setString(this.prefix + key, value)
+
+  }
+  /** Clear all our items if the stored items do not belong to the current Anki card. */
+  public async clearOldItems() {
+    if (this.correctCardCheckDone)
+      return
+
+    if (parseIntWithNull(this.getRaw('cardId')) !== await Anki.cardId()) {
+      this.clear()
+      this.correctCardCheckDone = true
+      this.setRaw('cardId', (await Anki.cardId()).toString())
+    }
+  }
+  /**
+   * Deletes all items which are ours. */
+  public clear() {
+    this.bsProvider.clear(this.prefix)
+
+  }
+  public async setPressedButton(button: ClickableName) {
+    await this.setString("pressedButton",button)
+
+  }
+  public async getPressedButton() {
+    return await this.getString("pressedButton") as ClickableName
+
+  }
+  async getNumber(name: string) {
+    return parseFloatWithNull(await this.getString(name))
+
+  }
+  async setNumber(name: string, value: number) {
+    await this.setString(name, value.toString())
+
+  }
+}
 /** I store config values which are needed on front and back in the CSS, because
  * the CSS is accessible from front and back.
  *
@@ -49,7 +119,6 @@ namespace CssVars {
     return result
   }
 }
-
 /** This contains only wrapper methods for the real JS-API
  *
  * The main feature of this is that it throws an exception if call the JS API fails.
@@ -335,15 +404,14 @@ class JsApi {
   }
   // end of JsApi class
 }
-
+/** My card code talks to Anki through this class. */
 class Anki {
   private static readonly numToStr = HelgeUtils.Strings.numToStr
   /** The date when the collection was created.
    * Unconveniently, this is needed to calculate the due date from
    * the value the API returns. */
   private static dateOfCreationOfCollection = new Date(2023, 5, 12)
-  /**
-   * @param i A number between 1 and 4.
+  /** @param i A number between 1 and 4.
    */
   public static async answerButtonLabel(i: number) {
     const nextTimeString = await this.nextTimeStringForButton(i)
@@ -496,8 +564,7 @@ class Anki {
     const diffTime = Math.abs(new Date().getTime() - this.dateOfCreationOfCollection.getTime())
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24))
   }
-  /**
-   * @return the number of days since the card was due.
+  /** @return the number of days since the card was due.
    * */
   public static async daysSinceCardWasDue() {
 
@@ -517,8 +584,7 @@ class Anki {
     }
     return Math.round(await this.daysSinceCardModified())
   }
-  /**
-   * @return the time since the card was last shown to the user
+  /** @return the time since the card was last shown to the user
    * or "" if the card is due today or not due yet.
    *
    * I have lots of overdue cards and I find it very useful to display the number of
@@ -530,8 +596,7 @@ class Anki {
     }
     return Math.round(daysSince) + "d"
   }
-  /**
-   * @return the time since the card was last shown to the user
+  /** @return the time since the card was last shown to the user
    * */
   public static async daysSinceLastSeen() {
     if (testingMode)
@@ -548,42 +613,44 @@ class Anki {
 
     return daysSinceCardWasDue
   }
-
   /* Proxy methods for the JsApi: */
-  public static async addTagToCard(): Promise<void> {
+  public static async addTag(): Promise<void> {
     return JsApi.addTagToCard()
+
   }
   public static async buryCard(): Promise<void> {
     return JsApi.buryCard()
+
   }
   public static answerEase(easeButtonNumber: number): void {
     JsApi.answerEase(easeButtonNumber)
   }
   public static async nextTimeStringForButtonRaw(i: number): Promise<string> {
     return JsApi.nextTimeStringForButtonRaw(i)
+
   }
-  public static async cardStatus(): Promise<number> {
+  public static async statusOfCard(): Promise<number> {
     return JsApi.cardStatus()
   }
-  public static async cardDue(): Promise<number> {
+  public static async dueDate(): Promise<number> {
     return JsApi.cardDue()
   }
-  public static async cardDueRaw(): Promise<any> {
+  public static async dueDateRaw(): Promise<any> {
     return JsApi.cardDueRaw()
   }
-  public static async cardOriginalDue(): Promise<number> {
+  public static async originalDueDate(): Promise<number> {
     return JsApi.cardOriginalDue()
   }
   public static async intervalOfCard(): Promise<number> {
     return JsApi.intervalOfCard()
   }
-  public static async ease(): Promise<number> {
+  public static async easeOfCard(): Promise<number> {
     return JsApi.ease()
   }
   public static showAnswer(): void {
     JsApi.showAnswer()
   }
-  public static async setCardDue(days: number): Promise<void> {
+  public static async setDueDate(days: number): Promise<void> {
     return JsApi.setCardDue(days)
   }
   public static async cardId(): Promise<number> {
@@ -592,7 +659,7 @@ class Anki {
   public static async noteId(): Promise<number> {
     return JsApi.noteId()
   }
-  public static async cardMod(): Promise<number> {
+  public static async modificationDate(): Promise<number> {
     return JsApi.cardMod()
   }
   public static async showToast(msg: string): Promise<void> {
@@ -613,34 +680,35 @@ class Anki {
   public static TTS = class {
     public static async setLanguage(language: string): Promise<void> {
       return JsApi.TTS.setLanguage(language)
-    }
 
+    }
     public static async speak(text: string, queueMode = 0): Promise<void> {
       return JsApi.TTS.speak(text, queueMode)
-    }
 
+    }
     public static async setSpeed(speed: number): Promise<void> {
       return JsApi.TTS.setSpeed(speed)
-    }
 
+    }
     public static async stop(): Promise<void> {
       return JsApi.TTS.stop()
-    }
 
+    }
     public static async isSpeaking(): Promise<boolean> {
       return JsApi.TTS.isSpeaking()
-    }
 
+    }
     public static async english(): Promise<void> {
       return JsApi.TTS.english()
-    }
 
-    public static async german(): Promise<void> {
+    }
+    public static async setDefaultLanguage(): Promise<void> {
       return JsApi.TTS.setDefaultLanguage()
-    }
 
+    }
     public static async flushQueue(): Promise<void> {
       return JsApi.TTS.flushQueue()
+
     }
   }
 }
