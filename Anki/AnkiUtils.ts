@@ -136,12 +136,15 @@ namespace TTS {
     LoopSpeaker.runTests()
   }
   export type ImproveSpeakReplaceFunction = (input: string, english: boolean) => string
-  export const emptyImproveSpeakReplace: ImproveSpeakReplaceFunction =
+  export const defaultImproveSpeakReplace: ImproveSpeakReplaceFunction =
+      /* I have lots of replacements for German. If you want them, tell me. */
       (input: string, english: boolean) => {
-    suppressUnusedWarning(english)
-    return input
+        suppressUnusedWarning(english)
+        return input
+        .replaceAll("[...]", "")
+        .replaceAll(/\n ?\* /g, "- ")
+        .replaceAll(/\? -/g, "?")
   }
-
   const debug = false
   const log = (str: string) => {
     if (debug)
@@ -166,7 +169,7 @@ namespace TTS {
      * @param selectors DOM selectors of what to speak.*/
     public speakSelectors = async (selectors: string,
         improveSpeakReplace: TTS.ImproveSpeakReplaceFunction
-            = TTS.emptyImproveSpeakReplace) => {
+            = TTS.defaultImproveSpeakReplace) => {
       let combinedInnerHtml = ""
       document.querySelectorAll(selectors).forEach(
           e => {
