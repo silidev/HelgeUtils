@@ -10,6 +10,48 @@ import assertTypeEquals = HelgeUtils.Misc.assertTypeEquals
 import parseIntWithNull = HelgeUtils.Conversions.parseIntWithNull
 
 const localStorageWrapper: BsProvider = new HtmlUtils.BrowserStorage.LocalStorage()
+
+/** I store config values which are needed on front and back in the CSS, because
+ * the CSS is accessible from front and back.
+ *
+ * Example:
+ CSS:
+ :root {
+ --skipUndueCards: false;
+ }
+ TS: CssVars.asBoolean("--someVar") !== true
+ */
+namespace CssVars {
+  import toBoolean = HelgeUtils.Types.SafeConversions.toBoolean
+  import TypeException = HelgeUtils.Types.TypeException
+  export const asString = (varName: string):string => {
+    return getComputedStyle(document.documentElement).getPropertyValue(varName)
+  }
+  /** Read this as: A CSS variable defined as a string in quotes. */
+  export const asStringInQuotes = (varName: string):string => {
+    return eval(asString(varName))
+  }
+  export const asBoolean = (varName: string): boolean => {
+    const resultAsString = asString(varName)
+    try {
+      return toBoolean(resultAsString)
+    } catch (e) {
+      throw new TypeException(`CSS var ${varName
+      } does not contain a boolean: "${resultAsString
+      }"`)
+    }
+  }
+  export const asNumber = (varName: string): number => {
+    const resultAsString = asString(varName)
+    const result = parseFloat(resultAsString)
+    if (isNaN(result)) {
+      throw new Error(`CSS var ${varName
+      } does not contain a number: "${resultAsString
+      }"`)
+    }
+    return result
+  }
+}
 /** This persists values, BUT they are deleted when the card changes. */
 class ForCardPersistence {
   constructor(private readonly bsProvider: BsProvider) {
@@ -80,47 +122,275 @@ class ForCardPersistence {
 
   }
 }
-/** I store config values which are needed on front and back in the CSS, because
- * the CSS is accessible from front and back.
- *
- * Example:
- CSS:
- :root {
- --skipUndueCards: false;
- }
- TS: CssVars.asBoolean("--someVar") !== true
- */
-namespace CssVars {
-  import toBoolean = HelgeUtils.Types.SafeConversions.toBoolean
-  import TypeException = HelgeUtils.Types.TypeException
-  export const asString = (varName: string):string => {
-    return getComputedStyle(document.documentElement).getPropertyValue(varName)
+namespace TTS {
+  export const runTests = () => {
+    UntilStoppedSpeaker.runTests()
   }
-  /** Read this as: A CSS variable defined as a string in quotes. */
-  export const asStringInQuotes = (varName: string):string => {
-    return eval(asString(varName))
+  const debug = false
+  const log = (str: string) => {
+    if (debug)
+      printDebugPrj(str)
   }
-  export const asBoolean = (varName: string): boolean => {
-    const resultAsString = asString(varName)
-    try {
-      return toBoolean(resultAsString)
-    } catch (e) {
-      throw new TypeException(`CSS var ${varName
-      } does not contain a boolean: "${resultAsString
-      }"`)
+  export class UntilStoppedSpeaker {
+    private recursion: SpeakRecursion | undefined
+    public constructor(englishParam: boolean) {
+      this.ttsEndMarker = englishParam
+          ? ttsEndMarkerEnglish
+          : ttsEndMarkerGerman
+    }
+    public async skipForward() {
+      if (!this.recursion)
+        return
+
+      await JsApi.TTS.flushQueue()
+      await this.recursion.speakNext()
+    }
+    public async skipBackward() {
+      if (!this.recursion)
+        return
+
+      await JsApi.TTS.flushQueue()
+      await this.recursion.prevSentence()
+      await this.recursion.prevSentence()
+      await this.recursion.speakNext()
+    }
+    public async restartSentence() {
+      if (!this.recursion)
+        return
+
+      await JsApi.TTS.flushQueue()
+      await this.recursion.prevSentence()
+      await this.recursion.speakNext()
+    }
+    public async stopSpeaking() {
+      if (this.recursion)
+        await this.recursion.stop()
+    }
+    private static removeSplitCharsAtEnd(input: string)  {
+      return input.replace(/[.?!]+\s*$/, "")
+
+    }
+    private static testRemoveSplitCharsAtEnd() {
+      const input = "Hello. World! "
+      const expectedOutput = "Hello. World"
+      const output = UntilStoppedSpeaker.removeSplitCharsAtEnd(input)
+
+      assertEquals(output,expectedOutput, `Expected ${expectedOutput} but got ${output}`)
+    }
+    private readonly ttsEndMarker: string
+    /** This is used to re-join dates formatted like "12.11.2024" */
+    private static joinDateParts(arr: string[]) {
+      const result: string[] = []
+      let temp: string[] = []
+
+      arr.forEach((item) => {
+        if (item.match(/^\d+$/)) {
+          temp.push(item)
+        } else {
+          if (temp.length) {
+            result.push(temp.join('.'))
+            temp = []
+          }
+          result.push(item)
+        }
+      })
+
+      if (temp.length) {
+        result.push(temp.join('.'))
+      }
+
+      return result
+    }
+    private static testJoinDateParts = () => {
+      const input = ["7", "8", "17", "hello", "789", "101", "world"]
+      const expectedOutput = ["7.8.17", "hello", "789.101", "world"]
+      const output = UntilStoppedSpeaker.joinDateParts(input)
+
+      console.assert(JSON.stringify(output) === JSON.stringify(expectedOutput), `Expected ${JSON.stringify(expectedOutput)} but got ${JSON.stringify(output)}`)
+    }
+    public async speak(input: string) {
+      // Continue if possible:
+      if (this.recursion) {
+        this.setRepeatTimeout();
+        this.recursion.continue()
+        return
+      }
+
+      await JsApi.TTS.flushQueue()
+
+      //#Piep
+      const step1 = UntilStoppedSpeaker.removeSplitCharsAtEnd(input)
+      const step2 = step1 + ": " + this.ttsEndMarker
+      const array = step2.split(ttsPauseCharacters)
+
+      this.recursion = new SpeakRecursion(UntilStoppedSpeaker.joinDateParts(array),
+          await SentenceIndex.getFromLocalStorage())
+      this.setRepeatTimeout()
+
+      // Speaks the first element without pausing before:
+      await this.recursion.speakNext()
+
+      // Continues speaking the following elements with pauses before:
+      this.recursion.speakArray()
+    }
+    private setRepeatTimeout = () => {
+      // Stop after defined time (currently 20 minutes):
+      setTimeout(() => this.recursion?.stop(), ttsMinutesUntilStopRepeat * 60 * 1000)
+    }
+    static runTests() {
+      UntilStoppedSpeaker.testJoinDateParts()
+      UntilStoppedSpeaker.testRemoveSplitCharsAtEnd()
     }
   }
-  export const asNumber = (varName: string): number => {
-    const resultAsString = asString(varName)
-    const result = parseFloat(resultAsString)
-    if (isNaN(result)) {
-      throw new Error(`CSS var ${varName
-      } does not contain a number: "${resultAsString
-      }"`)
+  /** speakingPause: Pause between readings of the text in seconds */
+  export namespace SpeakingPauseAfterEachSentenceInSeconds {
+    export const normalModeValue: number =
+        CssVars.asNumber("--NormalMode_speaking-pause_after_each_sentence_in_seconds")
+        ?? TtsConfig.speaking_pause_after_each_sentence
+    export const sleepModeValue: number =
+        CssVars.asNumber("--SleepMode_speaking-pause_after_each_sentence_in_seconds")
+        ?? TtsConfig.sleepMode_pause_after_each_sentence
+    export const getFromStorage = () => {{
+      return localStorageWrapper.getNumber("SpeakingPauseAfterEachSentenceInSeconds.current")
+          ?? normalModeValue
+    }}
+    export const writeToStorage = () => {{
+      localStorageWrapper.setNumber("SpeakingPauseAfterEachSentenceInSeconds.current",current)
+    }}
+    export let current = getFromStorage()
+    export const set = (newValue: number) => {
+      current = newValue
+      writeToStorage()
     }
-    return result
+    export function setSleepMode() {
+      set(sleepModeValue)
+    }
+    export function setNormalMode() {
+      set(normalModeValue)
+    }
+  }
+  class SpeakRecursion {
+    private intervalId: number | undefined
+    private timeoutId: number | undefined
+    private stopSpeakingFlag = false
+    private readonly sentencesArray: string[] //TODO: Make this a class.
+    constructor(input: string[], startSentenceIndex: number) {
+      const containsSpeech = (str: string): boolean => str.trim().length > 0;
+      const removeEmptyStrings = (arr: string[]): string[] => arr.filter(containsSpeech)
+      this.sentencesArray = removeEmptyStrings(input)
+      this.sentenceIndex = new SentenceIndex(startSentenceIndex, this.sentencesArray.length)
+    }
+    async stop() {
+      clearInterval(this.intervalId)
+      this.intervalId = undefined
+
+      clearTimeout(this.timeoutId)
+      this.timeoutId = undefined
+
+      await JsApi.TTS.stop()
+      this.stopSpeakingFlag = true
+      await this.prevSentence()
+    }
+    continue() {
+      this.stopSpeakingFlag = false
+      this.speakArray()
+    }
+    speakArray() {
+      if (this.stopSpeakingFlag || this.intervalId)
+        return
+      this.intervalId = setInterval(() => this.everySecond(), 1000)
+    }
+    async everySecond() {
+      log("TTS1 everySecond")
+      if (this.stopSpeakingFlag) {
+        log("TTS1 stopSpeakingFlag is true, returning")
+        return
+      }
+
+      if (!await JsApi.TTS.isSpeaking()) {
+        clearInterval(this.intervalId)
+        this.intervalId = undefined
+        this.pauseAndSpeak()
+      } else {
+        log("TTS1 is still speaking")
+      }
+    }
+    pauseAndSpeak() {
+      if (testingMode)
+        console.log("TTS pause for "+SpeakingPauseAfterEachSentenceInSeconds.current)
+      this.timeoutId = setTimeout(
+          () => this.afterSpeakingPause(),
+          SpeakingPauseAfterEachSentenceInSeconds.current * 1000
+      )
+    }
+    async afterSpeakingPause() {
+      if (this.stopSpeakingFlag)
+        return
+
+      await this.speakNext()
+
+      // Recursively speak further sentences:
+      this.speakArray()
+    }
+    async speakNext() {
+      const sentenceToSpeak = await this.nextSentence()
+      if (testingMode)
+        console.log("TTS1 speakFirstElement: " + sentenceToSpeak)
+      return JsApi.TTS.speak(sentenceToSpeak, JsApi.TTS.QUEUE_ADD)
+    }
+    /** The index of the sentence to speak */
+    private sentenceIndex: SentenceIndex
+    public async nextSentence() {
+      const sentenceToSpeak = this.sentencesArray[this.sentenceIndex.get()]
+      await this.sentenceIndex.increment()
+      return sentenceToSpeak
+    }
+    public async prevSentence() {
+      await this.sentenceIndex.decrement()
+      return this.sentencesArray[this.sentenceIndex.get()]
+    }
+    // end recursion:
+  }
+  class SentenceIndex {
+    constructor(
+        private sentenceIndex: number,
+        private numberOfSentences: number) {
+    }
+    get(): number {
+      if (this.sentenceIndex>=this.numberOfSentences) {
+        // This case is possible b/c the user can edit the text.
+        return 0
+      }
+      return this.sentenceIndex
+    }
+    public static getFromLocalStorage = async () => {
+      return await localStorageForCardId.getNumber('sentenceIndex') ?? 0
+
+    }
+    private writeToLocalStorage = async () => {
+      return await localStorageForCardId.setNumber('sentenceIndex', this.sentenceIndex)
+
+    }
+    public increment = async () => {
+      await this.writeToLocalStorage() /* Writing it
+       before the increment is correct, b/c only the PREVIOUS sentence was now spoken
+       completely. */
+      this.sentenceIndex++
+      if (this.sentenceIndex >= this.numberOfSentences) {
+        this.sentenceIndex = 0
+      }
+    }
+    public decrement = async () => {
+      if (this.sentenceIndex == 0) {
+        this.sentenceIndex = this.numberOfSentences - 1
+      } else {
+        this.sentenceIndex--
+      }
+      await this.writeToLocalStorage()
+    }
   }
 }
+
 /** This contains only wrapper methods for the real JS-API
  *
  * The main feature of this is that it throws an exception if call the JS API fails.
