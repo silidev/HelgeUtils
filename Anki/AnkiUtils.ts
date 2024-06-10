@@ -1,14 +1,15 @@
-/* Well, to be precise this is utility code for AnkiDroid
- * Especially a wrapper around the AnkDroid API.
+/* Well, to be precise this is utility code for AnkiDroid.
+ * I made a pretty elaborated TTS functionality.
+ * Especially a wrapper around the AnkDroid API providing additional functionality.
  * https://github.com/ankidroid/Anki-Android/wiki/AnkiDroid-Javascript-API
  *
  * Copyright 2024 by Helge Kosuch
  */
-
 import printDebug = HtmlUtils.ErrorHandling.printDebug
 import assertTypeEquals = HelgeUtils.Misc.assertTypeEquals
 import parseIntWithNull = HelgeUtils.Conversions.parseIntWithNull
 
+const localStorageWrapper: BsProvider = new HtmlUtils.BrowserStorage.LocalStorage()
 /** This persists values, BUT they are deleted when the card changes. */
 class ForCardPersistence {
   constructor(private readonly bsProvider: BsProvider) {
