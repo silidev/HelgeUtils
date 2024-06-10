@@ -124,6 +124,7 @@ class ForCardPersistence {
 }
 /** See {@link LoopSpeaker}*/
 namespace TTS {
+  import removeBySelector = HtmlUtils.Misc.removeBySelector
   namespace Config {
     /** If you have a CSS config that would override these. */
     export const speaking_pause_after_each_sentence = 2
@@ -134,21 +135,68 @@ namespace TTS {
   export const runTests = () => {
     LoopSpeaker.runTests()
   }
+  export type ImproveSpeakReplaceFunction = (input: string, english: boolean) => string
+  export const emptyImproveSpeakReplace: ImproveSpeakReplaceFunction =
+      (input: string, english: boolean) => {
+    suppressUnusedWarning(english)
+    return input
+  }
+
   const debug = false
   const log = (str: string) => {
     if (debug)
       printDebugPrj(str)
   }
   /**
-   * Usage: new LoopSpeaker(true).speak("whatever") and see public methods.
-   * Old name: UntilStoppedSpeaker. */
+   * Usage:
+   * - new LoopSpeaker(true).speak("whatever")
+   * - new LoopSpeaker(true).speakSelectors(".cloze")
+   * - and see public methods.
+   * Old name: LoopSpeaker. */
   export class LoopSpeaker {
     private recursion: SpeakRecursion | undefined
-    public constructor(englishParam: boolean) {
-      this.ttsEndMarker = englishParam
+    public constructor(private english: boolean) {
+      this.ttsEndMarker = english
           ? Config.ttsEndMarkerEnglish
           : Config.ttsEndMarkerGerman
     }
+    /** TTS speaks part of the DOM.
+     *
+     * @param improveSpeakReplace
+     * @param selectors DOM selectors of what to speak.*/
+    public speakSelectors = async (selectors: string,
+        improveSpeakReplace: TTS.ImproveSpeakReplaceFunction
+            = TTS.emptyImproveSpeakReplace) => {
+      let combinedInnerHtml = ""
+      document.querySelectorAll(selectors).forEach(
+          e => {
+            combinedInnerHtml += `<p>${e.innerHTML}</p>`
+          })
+      await this.speak(
+          this.improveSpeak(combinedInnerHtml, improveSpeakReplace, this.english))
+    }
+    /***
+     * Should be named "modifyBeforeSpeak", but I am used to this. */
+    private improveSpeak = (str: string,
+        improveSpeakReplace: (input: string, english: boolean) => string,
+        english: boolean = true): string => {
+      const asDom = new DOMParser().parseFromString(
+          LoopSpeaker.convertNewLinesToSpeakingPauses(str), "text/html")
+      removeBySelector(asDom,'a')
+      removeBySelector(asDom,'[style*="display: none"]')
+      removeBySelector(asDom,'span.redacted')
+
+      return improveSpeakReplace(
+          asDom.body
+              .textContent // Don't overlook this! This converts html to plain text.
+          ?? "", english
+      )
+    }
+    /** HtmlElement.textContent removes all <br>s, at least sometimes, but I want speaking pauses
+     instead, so I replace them with periods. */
+    public static convertNewLinesToSpeakingPauses = (input: string) => {{
+      return input.replaceAll("<br>", ".")
+    }}
     public async nextSentence() {
       if (!this.recursion)
         return

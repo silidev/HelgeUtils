@@ -614,10 +614,8 @@ export namespace HtmlUtils {
       document.body.removeChild(link)
       URL.revokeObjectURL(url)
     }
-
     export const loadScript = (srcUri: string,
-        afterLoad: ((this: GlobalEventHandlers, ev: Event) => any) | null
-        ) =>
+        afterLoad: ((this: GlobalEventHandlers, ev: Event) => any) | null) =>
     {
       const script = document.createElement('script')
       script.src = srcUri
@@ -625,5 +623,10 @@ export namespace HtmlUtils {
       script.onload = afterLoad
       document.head.appendChild(script)
     }
+    export const removeBySelector = (doc: Document, selector: string) =>{
+      doc.querySelectorAll(selector).forEach(e => e.remove())
+
+    }
+
   }
 }
