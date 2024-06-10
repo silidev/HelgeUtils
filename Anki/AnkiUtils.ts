@@ -7,6 +7,7 @@
 
 import printDebug = HtmlUtils.ErrorHandling.printDebug
 import assertTypeEquals = HelgeUtils.Misc.assertTypeEquals
+import parseIntWithNull = HelgeUtils.Conversions.parseIntWithNull
 
 /** This persists values, BUT they are deleted when the card changes. */
 class ForCardPersistence {
