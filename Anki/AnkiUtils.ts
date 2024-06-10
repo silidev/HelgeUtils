@@ -152,13 +152,13 @@ namespace TTS {
   }
   /**
    * Usage:
-   * - new LoopSpeaker(true).speak("whatever")
-   * - new LoopSpeaker(true).speakSelectors(".cloze")
+   * - new LoopSpeaker().speakSelectors(".cloze")
+   * - new LoopSpeaker().speak("whatever")
    * - and see public methods.
    * Old name: LoopSpeaker. */
   export class LoopSpeaker {
     private recursion: SpeakRecursion | undefined
-    public constructor(private english: boolean) {
+    public constructor(private english: boolean = true) {
       this.ttsEndMarker = english
           ? Config.ttsEndMarkerEnglish
           : Config.ttsEndMarkerGerman
