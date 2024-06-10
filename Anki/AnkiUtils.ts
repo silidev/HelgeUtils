@@ -122,30 +122,41 @@ class ForCardPersistence {
 
   }
 }
+/** See {@link LoopSpeaker}*/
 namespace TTS {
+  namespace Config {
+    /** If you have a CSS config that would override these. */
+    export const speaking_pause_after_each_sentence = 2
+    export const sleepMode_pause_after_each_sentence = 6
+    export const ttsEndMarkerGerman = "Piep"
+    export const ttsEndMarkerEnglish = "Beep"
+  }
   export const runTests = () => {
-    UntilStoppedSpeaker.runTests()
+    LoopSpeaker.runTests()
   }
   const debug = false
   const log = (str: string) => {
     if (debug)
       printDebugPrj(str)
   }
-  export class UntilStoppedSpeaker {
+  /**
+   * Usage: new LoopSpeaker(true).speak("whatever") and see public methods.
+   * Old name: UntilStoppedSpeaker. */
+  export class LoopSpeaker {
     private recursion: SpeakRecursion | undefined
     public constructor(englishParam: boolean) {
       this.ttsEndMarker = englishParam
-          ? ttsEndMarkerEnglish
-          : ttsEndMarkerGerman
+          ? Config.ttsEndMarkerEnglish
+          : Config.ttsEndMarkerGerman
     }
-    public async skipForward() {
+    public async nextSentence() {
       if (!this.recursion)
         return
 
       await JsApi.TTS.flushQueue()
       await this.recursion.speakNext()
     }
-    public async skipBackward() {
+    public async prevSentence() {
       if (!this.recursion)
         return
 
@@ -173,7 +184,7 @@ namespace TTS {
     private static testRemoveSplitCharsAtEnd() {
       const input = "Hello. World! "
       const expectedOutput = "Hello. World"
-      const output = UntilStoppedSpeaker.removeSplitCharsAtEnd(input)
+      const output = LoopSpeaker.removeSplitCharsAtEnd(input)
 
       assertEquals(output,expectedOutput, `Expected ${expectedOutput} but got ${output}`)
     }
@@ -204,7 +215,7 @@ namespace TTS {
     private static testJoinDateParts = () => {
       const input = ["7", "8", "17", "hello", "789", "101", "world"]
       const expectedOutput = ["7.8.17", "hello", "789.101", "world"]
-      const output = UntilStoppedSpeaker.joinDateParts(input)
+      const output = LoopSpeaker.joinDateParts(input)
 
       console.assert(JSON.stringify(output) === JSON.stringify(expectedOutput), `Expected ${JSON.stringify(expectedOutput)} but got ${JSON.stringify(output)}`)
     }
@@ -219,11 +230,11 @@ namespace TTS {
       await JsApi.TTS.flushQueue()
 
       //#Piep
-      const step1 = UntilStoppedSpeaker.removeSplitCharsAtEnd(input)
+      const step1 = LoopSpeaker.removeSplitCharsAtEnd(input)
       const step2 = step1 + ": " + this.ttsEndMarker
       const array = step2.split(ttsPauseCharacters)
 
-      this.recursion = new SpeakRecursion(UntilStoppedSpeaker.joinDateParts(array),
+      this.recursion = new SpeakRecursion(LoopSpeaker.joinDateParts(array),
           await SentenceIndex.getFromLocalStorage())
       this.setRepeatTimeout()
 
@@ -238,18 +249,18 @@ namespace TTS {
       setTimeout(() => this.recursion?.stop(), ttsMinutesUntilStopRepeat * 60 * 1000)
     }
     static runTests() {
-      UntilStoppedSpeaker.testJoinDateParts()
-      UntilStoppedSpeaker.testRemoveSplitCharsAtEnd()
+      LoopSpeaker.testJoinDateParts()
+      LoopSpeaker.testRemoveSplitCharsAtEnd()
     }
   }
   /** speakingPause: Pause between readings of the text in seconds */
   export namespace SpeakingPauseAfterEachSentenceInSeconds {
     export const normalModeValue: number =
         CssVars.asNumber("--NormalMode_speaking-pause_after_each_sentence_in_seconds")
-        ?? TtsConfig.speaking_pause_after_each_sentence
+        ?? Config.speaking_pause_after_each_sentence
     export const sleepModeValue: number =
         CssVars.asNumber("--SleepMode_speaking-pause_after_each_sentence_in_seconds")
-        ?? TtsConfig.sleepMode_pause_after_each_sentence
+        ?? Config.sleepMode_pause_after_each_sentence
     export const getFromStorage = () => {{
       return localStorageWrapper.getNumber("SpeakingPauseAfterEachSentenceInSeconds.current")
           ?? normalModeValue
