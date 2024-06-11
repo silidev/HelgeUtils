@@ -321,7 +321,6 @@ export namespace HtmlUtils {
   }
 
   export namespace BrowserStorage {
-
     export interface BsProvider {
       isAvailable(): boolean
       /** Delete all entries whose keys begin with prefix */
@@ -407,6 +406,39 @@ export namespace HtmlUtils {
           }
         }
         return null
+      }
+    }
+    export namespace Misc {
+      /** A mode whose status is stored to a persistent storage, e. g. localStorage. */
+      export class StoredMode {
+        private _enabled: boolean
+        /** key used in storage */
+        private readonly _enabledKey: string
+        constructor(_storageKey: string, private _storage: BsProvider) {
+          this._enabledKey = _storageKey+'._enabled'
+          this._enabled = _storage.getAndJsonParse<boolean>(this._enabledKey) ?? false
+        }
+        public enabled = () => {
+          return this._enabled
+        }
+        private saveToStorage = () => {
+          this._storage.setJsonStringified(this._enabledKey, this._enabled)
+        }
+        public enable = () => {
+          this._enabled = true
+          this.saveToStorage()
+        }
+        public disable = () => {
+          this._enabled = false
+          this.saveToStorage()
+        }
+        public toggle = () => {
+          if (this._enabled) {
+            this.disable()
+            return
+          }
+          this.enable()
+        }
       }
     }
   }
@@ -568,9 +600,9 @@ export namespace HtmlUtils {
    * Search keywords: "toast message", "toast notification", "toast popup", "alert"
    *
    * @param message
-   * @param duration
+   * @param durationMs
    */
-  export const showToast = (message: string, duration = 500) => {
+  export const showToast = (message: string, durationMs = 1000) => {
     const alertBox = document.createElement("div");
 
     alertBox.style.cssText = `
@@ -578,7 +610,8 @@ export namespace HtmlUtils {
       top: 50%;
       left: 50%;
       transform: translateX(-50%);
-      background-color: lightblue;
+      background-color: darkblue;
+      color: white;
       padding: 10px;
       border-radius: 5px;
       z-index: 999999;
@@ -588,7 +621,7 @@ export namespace HtmlUtils {
 
     setTimeout(() => {
       alertBox.remove();
-    }, duration);
+    }, durationMs);
   }
 
   /**
