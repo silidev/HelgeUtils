@@ -425,7 +425,6 @@ export namespace HelgeUtils {
         "removeElements failed"
     )
   }
-
   /**
    * removeElements
    *
@@ -444,9 +443,7 @@ export namespace HelgeUtils {
     }
     return output
   }
-
   export namespace Strings {
-
     export namespace Regexes {
       // const removeFirstAndLastChar = (input: string) => input.substring(1, input.length - 1)
       // const assertFirstAndLastCharAreSpaces = (input: string): string => {
@@ -482,20 +479,16 @@ export namespace HelgeUtils {
        * console.log(result); // Outputs: "sample string"
        * ```
        */
-
       export const replaceFromListAndTrim = (input: string,
-          replacementList: [RegExp, string][]): string => {
+          replacementList: [RegExp | string, string][]): string => {
         let result = " " + input + " "
 
         replacementList.forEach(([regex, replacement]) => {
           result = result.replace(regex, replacement)
         })
-
         return result.trim()
       }
     }
-
-
     /** Returns the index of the first occurrence of the given regex in the string.
      *
      * @param input
