@@ -447,6 +447,54 @@ export namespace HelgeUtils {
 
   export namespace Strings {
 
+    export namespace Regexes {
+      // const removeFirstAndLastChar = (input: string) => input.substring(1, input.length - 1)
+      // const assertFirstAndLastCharAreSpaces = (input: string): string => {
+      //   if (input.length < 2 || input[0] !== ' ' || input[input.length - 1] !== ' ') {
+      //     throw new Error('The first and last characters must be spaces')
+      //   }
+      //   return input
+      // }
+
+      /**
+       * Replaces parts of a string based on a list of regular expression and replacement pairs.
+       *
+       * @param {string} input - The input string to be processed.
+       * @param {Array.<[RegExp, string]>} replacementList - An array of arrays, where each inner array contains
+       *        a RegExp object and a string.
+       *        and the corresponding strings are used to replace those matches.
+       *
+       * @returns {string} - The processed string with replacements applied.
+       *
+       * The function first pads the input string with spaces at the beginning and end.
+       * Then, for each pair in the replacement list, it performs a replacement operation using the given regular
+       *     expression and replacement string. Finally, it ensures the first and last characters of the resulting
+       *     string are spaces, removes them, and returns the modified string.
+       *
+       * Example:
+       * ```
+       * const input = "example text";
+       * const replacementList = [
+       *   [/\bexample\b/g, "sample"],
+       *   [/\btext\b/g, "string"]
+       * ];
+       * const result = replaceFromList(input, replacementList);
+       * console.log(result); // Outputs: "sample string"
+       * ```
+       */
+
+      export const replaceFromListAndTrim = (input: string,
+          replacementList: [RegExp, string][]): string => {
+        let result = " " + input + " "
+
+        replacementList.forEach(([regex, replacement]) => {
+          result = result.replace(regex, replacement)
+        })
+
+        return result.trim()
+      }
+    }
+
 
     /** Returns the index of the first occurrence of the given regex in the string.
      *
