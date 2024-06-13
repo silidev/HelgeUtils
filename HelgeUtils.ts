@@ -681,8 +681,10 @@ export namespace HelgeUtils {
       return input.replace(/(\r\n|\n|\r)/gm,"")
     }
 
-    export const capitalizeSentences = (text: string): string => {
-      const sentenceEndings = /([.!?]\s|\.$)/g
+    export const capitalizeSentences = (text: string
+        , sentenceEndRegex: RegExp = /([.!:?]\s)/g) // was, seems stupid: /([.!:?]\s|\.$)/g
+        : string => {
+      const sentenceEndings = sentenceEndRegex
       const parts = text.split(sentenceEndings)
           // Remove all falsy values:
           .filter( // The function Boolean converts everything to boolean:
