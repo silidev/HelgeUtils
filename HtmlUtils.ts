@@ -116,23 +116,24 @@ export namespace HtmlUtils {
   export const inputElementWithId = elementWithId as (id: string) => HTMLInputElement | null
 
   /** These never return null. Instead, they throw a runtime error.
-   * "Nte" in the name means "null throws exception" */
-  export namespace NullFiltered { //TODO: Rename to NullThrowsException and then merge and test dependent projects.
+   * "Nte" in the name means "null throws exception".
+   * Old name: NullFilter */
+  export namespace NullThrowsException {
     import nullFilter = HelgeUtils.Misc.nullFilter
-    /** @see NullFiltered */
+    /** @see NullThrowsException */
     export const querySelectorNte = (element: DocumentFragment, selector: string) => {
       return nullFilter<HTMLElement>(element.querySelector(selector))
     }
-    /** @see NullFiltered */
+    /** @see NullThrowsException */
     export const elementWithIdNte = (id: string) =>
         nullFilter<HTMLElement>(HtmlUtils.elementWithId(id))
-    /** @see NullFiltered */
+    /** @see NullThrowsException */
     export const buttonWithIdNte = (id: string) =>
         nullFilter<HTMLButtonElement>(HtmlUtils.buttonWithId(id))
-    /** @see NullFiltered */
+    /** @see NullThrowsException */
     export const inputElementWithIdNte = (id: string) =>
         nullFilter<HTMLInputElement>(HtmlUtils.inputElementWithId(id))
-    /** @see NullFiltered */
+    /** @see NullThrowsException */
     export const textAreaWithIdNte = (id: string) =>
         nullFilter<HTMLTextAreaElement>(HtmlUtils.textAreaWithId(id))
   }
@@ -141,7 +142,7 @@ export namespace HtmlUtils {
   export namespace TextAreas {
 
     // eslint-disable-next-line no-shadow
-    import textAreaWithId = HtmlUtils.NullFiltered.textAreaWithIdNte
+    import textAreaWithId = HtmlUtils.NullThrowsException.textAreaWithIdNte
     import trimExceptASingleNewlineAtTheEnd = HelgeUtils.Strings.trimExceptASingleNewlineAtTheEnd
     import Strings = HelgeUtils.Strings;
     import escapeRegExp = HelgeUtils.Strings.escapeRegExp;
@@ -547,7 +548,7 @@ export namespace HtmlUtils {
     /** https://www.webcomponents.org/element/@vanillawc/wc-menu-wrapper */
     export namespace WcMenu {
        
-      import elementWithId = NullFiltered.elementWithIdNte
+      import elementWithId = NullThrowsException.elementWithIdNte
 
       export const close = (menuHeadingId: string) => {
         elementWithId(menuHeadingId).dispatchEvent(new CustomEvent('rootMenuClose'))
