@@ -481,7 +481,7 @@ export namespace HelgeUtils {
        */
       export const replaceFromListAndTrim = (input: string,
           replacementList: [RegExp | string, string][]): string => {
-        let result = " " + input + " "
+        let result = input + " "
 
         replacementList.forEach(([regex, replacement]) => {
           result = result.replace(regex, replacement)

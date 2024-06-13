@@ -192,7 +192,8 @@ namespace TTS {
       return improveSpeakReplace(
           asDom.body
               .textContent // Don't overlook this! This converts html to plain text.
-          ?? "", english
+          ?? ""
+          , english
       )
     }
     /** HtmlElement.textContent removes all <br>s, at least sometimes, but I want speaking pauses
