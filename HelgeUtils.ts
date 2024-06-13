@@ -479,14 +479,14 @@ export namespace HelgeUtils {
        * console.log(result); // Outputs: "sample string"
        * ```
        */
-      export const replaceFromListAndTrim = (input: string,
+      export const replaceFromList = (input: string,
           replacementList: [RegExp | string, string][]): string => {
-        let result = input + " "
+        let result = input
 
         replacementList.forEach(([regex, replacement]) => {
           result = result.replace(regex, replacement)
         })
-        return result.trim()
+        return result
       }
     }
     /** Returns the index of the first occurrence of the given regex in the string.
