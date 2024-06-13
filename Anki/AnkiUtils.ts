@@ -141,10 +141,10 @@ namespace TTS {
       (input: string, english: boolean) => {
         suppressUnusedWarning(english)
         return input
-        .replaceAll("[...]", "")
-        .replaceAll(/\n ?\* /g, "- ")
-        .replaceAll(/\? -/g, "?")
-  }
+            .replaceAll("[...]", "")
+            .replaceAll(/\n ?\* /g, "- ")
+            .replaceAll(/\? -/g, "?")
+      }
   const debug = false
   const log = (str: string) => {
     if (debug)
