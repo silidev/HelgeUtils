@@ -115,26 +115,25 @@ export namespace HtmlUtils {
   export const textAreaWithId = elementWithId as (id: string) => HTMLTextAreaElement | null
   export const inputElementWithId = elementWithId as (id: string) => HTMLInputElement | null
 
-  /** These never return null. Instead, they throw a runtime error. */
-  export namespace NullFiltered {
+  /** These never return null. Instead, they throw a runtime error.
+   * "Nte" in the name means "null throws exception" */
+  export namespace NullFiltered { //TODO: Rename to NullThrowsException and then merge and test dependent projects.
     import nullFilter = HelgeUtils.Misc.nullFilter
     /** @see NullFiltered */
-    export const querySelector = (element: DocumentFragment, selector: string) => {
+    export const querySelectorNte = (element: DocumentFragment, selector: string) => {
       return nullFilter<HTMLElement>(element.querySelector(selector))
     }
     /** @see NullFiltered */
-    export const elementWithId = (id: string) =>
+    export const elementWithIdNte = (id: string) =>
         nullFilter<HTMLElement>(HtmlUtils.elementWithId(id))
     /** @see NullFiltered */
-    export const buttonWithId = (id: string) =>
+    export const buttonWithIdNte = (id: string) =>
         nullFilter<HTMLButtonElement>(HtmlUtils.buttonWithId(id))
     /** @see NullFiltered */
-     
-    export const inputElementWithId = (id: string) =>
+    export const inputElementWithIdNte = (id: string) =>
         nullFilter<HTMLInputElement>(HtmlUtils.inputElementWithId(id))
     /** @see NullFiltered */
-     
-    export const textAreaWithId = (id: string) =>
+    export const textAreaWithIdNte = (id: string) =>
         nullFilter<HTMLTextAreaElement>(HtmlUtils.textAreaWithId(id))
   }
 
@@ -142,7 +141,7 @@ export namespace HtmlUtils {
   export namespace TextAreas {
 
     // eslint-disable-next-line no-shadow
-    import textAreaWithId = HtmlUtils.NullFiltered.textAreaWithId
+    import textAreaWithId = HtmlUtils.NullFiltered.textAreaWithIdNte
     import trimExceptASingleNewlineAtTheEnd = HelgeUtils.Strings.trimExceptASingleNewlineAtTheEnd
     import Strings = HelgeUtils.Strings;
     import escapeRegExp = HelgeUtils.Strings.escapeRegExp;
@@ -548,7 +547,7 @@ export namespace HtmlUtils {
     /** https://www.webcomponents.org/element/@vanillawc/wc-menu-wrapper */
     export namespace WcMenu {
        
-      import elementWithId = NullFiltered.elementWithId
+      import elementWithId = NullFiltered.elementWithIdNte
 
       export const close = (menuHeadingId: string) => {
         elementWithId(menuHeadingId).dispatchEvent(new CustomEvent('rootMenuClose'))
