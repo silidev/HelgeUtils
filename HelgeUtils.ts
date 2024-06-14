@@ -7,7 +7,7 @@
  *
  * Copyright by Helge Tobias Kosuch 2024 */
 
-  // import {Deepgram} from "../node_modules/@deepgram/sdk/dist/module/index.js";
+// import {Deepgram} from "../node_modules/@deepgram/sdk/dist/module/index.js";
 
 
 export namespace HelgeUtils { /* Putting this in a namespace is needed for my AnkiDroid project, which
