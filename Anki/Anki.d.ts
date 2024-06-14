@@ -1,4 +1,4 @@
-export {};
+export {}
 
 declare global {
 
@@ -43,57 +43,57 @@ declare global {
 
     constructor(options: { version: string; developer: string })
 
-    ankiAddTagToCard(): Promise<void>;
+    ankiAddTagToCard(): Promise<void>
 
-    ankiGetCardDue(): Promise<JsApiNumber>;
+    ankiGetCardDue(): Promise<JsApiNumber>
 
-    ankiGetCardFactor(): Promise<JsApiNumber>;
+    ankiGetCardFactor(): Promise<JsApiNumber>
 
-    ankiGetCardId(): Promise<JsApiNumber>;
+    ankiGetCardId(): Promise<JsApiNumber>
 
-    ankiGetCardInterval(): Promise<JsApiNumber>;
+    ankiGetCardInterval(): Promise<JsApiNumber>
 
-    ankiGetCardMod(): Promise<JsApiNumber>;
+    ankiGetCardMod(): Promise<JsApiNumber>
 
-    ankiGetCardODue(): Promise<JsApiNumber>;
+    ankiGetCardODue(): Promise<JsApiNumber>
 
-    ankiGetCardType(): Promise<JsApiNumber>;
+    ankiGetCardType(): Promise<JsApiNumber>
 
-    ankiGetETA(): Promise<JsApiNumber>;
+    ankiGetETA(): Promise<JsApiNumber>
 
     /* These should be Promise<JsApiString>, but because of a bug they are
      Promise<String> filled with JSON of JsApiSting. */
-    ankiGetNextTime1(): Promise<string>;
+    ankiGetNextTime1(): Promise<string>
 
-    ankiGetNextTime2(): Promise<string>;
+    ankiGetNextTime2(): Promise<string>
 
-    ankiGetNextTime3(): Promise<string>;
+    ankiGetNextTime3(): Promise<string>
 
-    ankiGetNextTime4(): Promise<string>;
+    ankiGetNextTime4(): Promise<string>
 
-    ankiIsDisplayingAnswer(): Promise<JsApiBoolean>;
+    ankiIsDisplayingAnswer(): Promise<JsApiBoolean>
 
-    ankiSearchCard(query: string): Promise<JsApiString>;
+    ankiSearchCard(query: string): Promise<JsApiString>
 
-    ankiSetCardDue(days: number): Promise<void>;
+    ankiSetCardDue(days: number): Promise<void>
 
-    ankiTtsIsSpeaking(): Promise<JsApiBoolean>;
+    ankiTtsIsSpeaking(): Promise<JsApiBoolean>
 
-    ankiTtsSetLanguage(lang: string): Promise<void>;
+    ankiTtsSetLanguage(lang: string): Promise<void>
 
-    ankiTtsSetSpeechRate(speed: number): Promise<void>;
+    ankiTtsSetSpeechRate(speed: number): Promise<void>
 
-    ankiTtsSpeak(text: string, queueMode: number): Promise<void>;
+    ankiTtsSpeak(text: string, queueMode: number): Promise<void>
 
-    ankiTtsStop(): Promise<void>;
+    ankiTtsStop(): Promise<void>
 
-    ankiBuryCard(): Promise<void>;
+    ankiBuryCard(): Promise<void>
 
-    init(str: string | undefined): Promise<string>;
+    init(str: string | undefined): Promise<string>
 
-    mocked: boolean;
+    mocked: boolean
 
-    ankiShowToast(msg: string): Promise<void>;
+    ankiShowToast(msg: string): Promise<void>
   }
 
   // eslint-disable-next-line no-shadow

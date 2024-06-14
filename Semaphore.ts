@@ -6,49 +6,49 @@ import suppressUnusedWarning = HelgeUtils.suppressUnusedWarning
 * https://stackoverflow.com/questions/17528749/semaphore-like-queue-in-javascript
 */
 export class Queue {
-  private running: any;
-  private readonly autorun: boolean;
-  private queue: any[];
+  private running: any
+  private readonly autorun: boolean
+  private queue: any[]
 
   constructor(autorun = true, queue = []) {
-    this.running = false;
-    this.autorun = autorun;
-    this.queue = queue;
+    this.running = false
+    this.autorun = autorun
+    this.queue = queue
   }
 
   //ts-ignore
   add(cb: (arg0: any) => any) {
     this.queue.push((value: any) => {
       const finished = new Promise((resolve, reject) => {
-        const callbackResponse = cb(value);
+        const callbackResponse = cb(value)
 
         if (callbackResponse !== false) {
-          resolve(callbackResponse);
+          resolve(callbackResponse)
         } else {
-          reject(callbackResponse);
+          reject(callbackResponse)
         }
-      });
+      })
       finished.then(this.dequeue.bind(this), (() => {
-      }));
-    });
+      }))
+    })
 
     if (this.autorun && !this.running) {
       // @ts-expect-error
-      this.dequeue();
+      this.dequeue()
     }
-    return this;
+    return this
   }
 
   dequeue(value: any) {
-    this.running = this.queue.shift();
+    this.running = this.queue.shift()
     if (this.running) {
-      this.running(value);
+      this.running(value)
     }
-    return this.running;
+    return this.running
   }
 
   get next() {
-    return this.dequeue;
+    return this.dequeue
   }
 }
 
@@ -62,13 +62,13 @@ const test = () => {
     //start running something 2
   }).add(function () {
     //start running something 3
-  });
+  })
 
   setTimeout(function () {
     // start the queue
     // @ts-expect-error
-    q.next();
-  }, 2000);
+    q.next()
+  }, 2000)
 }
 suppressUnusedWarning(test)
 

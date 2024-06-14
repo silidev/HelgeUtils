@@ -1043,7 +1043,7 @@ export const du2ich = (input: string) => {
 
 
 
-  ];
+  ]
 
   // delete:         ["dachtest"     ,"dachte"               ],
 
@@ -1076,7 +1076,7 @@ export const du2ich = (input: string) => {
     ["dich","mich"                         ],
     ["dir","mir"                           ],
     ["deines","meines"                           ],
-  ];
+  ]
 
   let output = input
 
@@ -1093,7 +1093,7 @@ export const du2ich = (input: string) => {
       return new RegExp(`${
           maybeStartWordBoundary}${
           target
-      }\\b`, 'g');
+      }\\b`, 'g')
     }
 
     for (const [duWort, ichWort] of replacements1) {

@@ -16,7 +16,7 @@ declare global {
 }
 // Merge help end
 
-import parseFloatWithNull = HelgeUtils.Conversions.parseFloatWithNull;
+import parseFloatWithNull = HelgeUtils.Conversions.parseFloatWithNull
 
 // ***** Config ****
 const globalDefaultExceptionHandler = true
@@ -145,8 +145,8 @@ export namespace HtmlUtils { /* Putting this in a namespace is needed for my Ank
     // eslint-disable-next-line no-shadow
     import textAreaWithId = HtmlUtils.NullThrowsException.textAreaWithIdNte
     import trimExceptASingleNewlineAtTheEnd = HelgeUtils.Strings.trimExceptASingleNewlineAtTheEnd
-    import Strings = HelgeUtils.Strings;
-    import escapeRegExp = HelgeUtils.Strings.escapeRegExp;
+    import Strings = HelgeUtils.Strings
+    import escapeRegExp = HelgeUtils.Strings.escapeRegExp
     // npm import textarea-caret:
 
     export class TextAreaWrapper {
@@ -300,7 +300,7 @@ export namespace HtmlUtils { /* Putting this in a namespace is needed for my Ank
       }
       export const wholeWord = (textArea: HTMLTextAreaElement,
                                 target: string) => {
-        const regex = new RegExp(`\\b${escapeRegExp(target).toLowerCase()}\\b`);
+        const regex = new RegExp(`\\b${escapeRegExp(target).toLowerCase()}\\b`)
         const cursor =
             Strings.regexIndexOf(textArea.value.toLowerCase(),regex, textArea.selectionEnd)
         step2(cursor, textArea, target)
@@ -344,13 +344,13 @@ export namespace HtmlUtils { /* Putting this in a namespace is needed for my Ank
         const item = this.getString(name)
         if (item) {
           try {
-            return JSON.parse(item) as T;
+            return JSON.parse(item) as T
           } catch (e) {
             console.error('Error parsing JSON from localStorage', e)
           }
         }
         return null
-      };
+      }
       getNumber(name: string) {
         return parseFloatWithNull(this.getString(name))
       }
@@ -501,11 +501,11 @@ export namespace HtmlUtils { /* Putting this in a namespace is needed for my Ank
   export namespace Clipboard {
     /** @deprecated */
     export const read = () => {
-      throw new Error("Deprecated! Use navigator.clipboard.readText instead.");
+      throw new Error("Deprecated! Use navigator.clipboard.readText instead.")
     }
     /** @deprecated */
     export const write = () => {
-      throw new Error("Deprecated! Use navigator.clipboard.readText instead.");
+      throw new Error("Deprecated! Use navigator.clipboard.readText instead.")
     }
   }
 
@@ -516,16 +516,16 @@ export namespace HtmlUtils { /* Putting this in a namespace is needed for my Ank
      * error reporting. */
     export const read = (f: (text: string) => void) => {
       navigator.clipboard.readText().then(text => {
-        f(text);
+        f(text)
       }).catch(err => {
-        console.error('Failed to read clipboard contents: ', err);
+        console.error('Failed to read clipboard contents: ', err)
         throw err
       })
       //end of namespace Misc:
     }
 
     /** @deprecated Rather use read() */
-    export const readText = () => navigator.clipboard.readText();
+    export const readText = () => navigator.clipboard.readText()
 
   }
 
@@ -553,12 +553,12 @@ export namespace HtmlUtils { /* Putting this in a namespace is needed for my Ank
 
       export const close = (menuHeadingId: string) => {
         elementWithId(menuHeadingId).dispatchEvent(new CustomEvent('rootMenuClose'))
-      };
+      }
       export const addItem = (menuHeadingId: string) => {
         return (id: string, menuFunction: () => void) => {
           HtmlUtils.addClickListener(id, () => {
             menuFunction()
-            close(menuHeadingId);
+            close(menuHeadingId)
           })
         }
       }
@@ -604,25 +604,25 @@ export namespace HtmlUtils { /* Putting this in a namespace is needed for my Ank
    * @param durationMs
    */
   export const showToast = (message: string, durationMs = 1000) => {
-    const alertBox = document.createElement("div");
+    const alertBox = document.createElement("div")
 
     alertBox.style.cssText = `
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: darkblue;
-      color: white;
-      padding: 10px;
-      border-radius: 5px;
-      z-index: 999999;
+      position: fixed
+      top: 50%
+      left: 50%
+      transform: translateX(-50%)
+      background-color: darkblue
+      color: white
+      padding: 10px
+      border-radius: 5px
+      z-index: 999999
     `
     alertBox.textContent = message
-    document.body.appendChild(alertBox);
+    document.body.appendChild(alertBox)
 
     setTimeout(() => {
-      alertBox.remove();
-    }, durationMs);
+      alertBox.remove()
+    }, durationMs)
   }
 
   /**

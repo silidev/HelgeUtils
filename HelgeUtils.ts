@@ -17,7 +17,7 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
   /** You can turn this off for debugging */
   export namespace Config {
     export namespace Debug {
-      export let debug = false;
+      export let debug = false
 
       export namespace Misc {
         /** Misc because these are used in the Misc namespace below */
@@ -46,7 +46,7 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
         str += ", Stack trace:\n"
         str += e.stack
       }
-      return str;
+      return str
     }
     /**
      * Reporting of exceptions in callbacks is sometimes very bad.
@@ -91,7 +91,7 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
      *
      * Example use:
      const produceError = () => {throw "error"}
-     const noError = swallowAll(produceError);
+     const noError = swallowAll(produceError)
      noError(); // Does NOT throw an exception.
      *
      * @param func
@@ -106,15 +106,15 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
             }
           }
         }
-    ;
+    
 
     /** Alias for swallowAll
      * @deprecated */
-    export const catchAll = swallowAll;
+    export const catchAll = swallowAll
 
     /** Alias for swallowAll
      * @deprecated */
-    export const unthrow = swallowAll;
+    export const unthrow = swallowAll
 
 
     /** callAndAlertAboutException(...)
@@ -474,12 +474,12 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
        *
        * Example:
        * ```
-       * const input = "example text";
+       * const input = "example text"
        * const replacementList = [
        *   [/\bexample\b/g, "sample"],
        *   [/\btext\b/g, "string"]
-       * ];
-       * const result = replaceFromList(input, replacementList);
+       * ]
+       * const result = replaceFromList(input, replacementList)
        * console.log(result); // Outputs: "sample string"
        * ```
        */
@@ -500,9 +500,9 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
      * @param startpos
      */
     export const regexIndexOf = (input: string, regex: RegExp, startpos: number) => {
-      const indexOf = input.substring(startpos || 0).search(regex);
-      return (indexOf >= 0) ? (indexOf + (startpos || 0)) : indexOf;
-    };
+      const indexOf = input.substring(startpos || 0).search(regex)
+      return (indexOf >= 0) ? (indexOf + (startpos || 0)) : indexOf
+    }
 
     /**
      * @deprecated Use regexIndexOf instead.
@@ -511,22 +511,22 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
     export const indexOfWithRegex = regexIndexOf
 
     export const regexLastIndexOf = (input: string, regex: RegExp, startpos: number) => {
-      regex = (regex.global) ? regex : new RegExp(regex.source, "g" + (regex.ignoreCase ? "i" : "") + (regex.multiline ? "m" : ""));
+      regex = (regex.global) ? regex : new RegExp(regex.source, "g" + (regex.ignoreCase ? "i" : "") + (regex.multiline ? "m" : ""))
       if (typeof (startpos) == "undefined") {
-        startpos = input.length;
+        startpos = input.length
       } else if (startpos < 0) {
-        startpos = 0;
+        startpos = 0
       }
-      const stringToWorkWith = input.substring(0, startpos + 1);
-      let lastIndexOf = -1;
-      let nextStop = 0;
-      let result: RegExpExecArray | null;
+      const stringToWorkWith = input.substring(0, startpos + 1)
+      let lastIndexOf = -1
+      let nextStop = 0
+      let result: RegExpExecArray | null
       while ((result = regex.exec(stringToWorkWith)) != null) {
-        lastIndexOf = result.index;
-        regex.lastIndex = ++nextStop;
+        lastIndexOf = result.index
+        regex.lastIndex = ++nextStop
       }
-      return lastIndexOf;
-    };
+      return lastIndexOf
+    }
 
     /**
      * @deprecated Use regexLastIndexOf instead.
@@ -764,16 +764,16 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
         console.log(message)
         throw new Error(message)
       }
-      const audioBlob = await response.blob();
-      const audioContext = new AudioContext();
+      const audioBlob = await response.blob()
+      const audioContext = new AudioContext()
 
-      const audioSource = await audioContext.decodeAudioData(await audioBlob.arrayBuffer());
+      const audioSource = await audioContext.decodeAudioData(await audioBlob.arrayBuffer())
 
-      const playSound = audioContext.createBufferSource();
-      playSound.buffer = audioSource;
-      playSound.connect(audioContext.destination);
+      const playSound = audioContext.createBufferSource()
+      playSound.buffer = audioSource
+      playSound.connect(audioContext.destination)
 
-      playSound.start();
+      playSound.start()
     }
   }
 
@@ -914,7 +914,7 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
 
     /** This is NOT only for unit tests! */
     export const assertTypeEquals = (value: any, expectedType: string) => {
-      const actual = typeof value;
+      const actual = typeof value
       if (actual !== expectedType) {
         throw new Error(
             `Got type ${actual
@@ -1046,11 +1046,11 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
     }
 
     private static twoDigitDay(date: Date) {
-      return this.pad(this.day(date));
+      return this.pad(this.day(date))
     }
 
     private static twoDigitMonth(date: Date) {
-      return this.pad(this.month(date));
+      return this.pad(this.month(date))
     }
 
     public static date2ddmmyyPointed(date: Date, twoDigitYear: boolean) {
@@ -1107,5 +1107,5 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
     // end of DatesAndTimes:
   }
 
-  export const DatesAndTimes = DatesAndTimesInternal;
+  export const DatesAndTimes = DatesAndTimesInternal
 }

@@ -17,7 +17,7 @@ const localStorageWrapper: BsProvider = new HtmlUtils.BrowserStorage.LocalStorag
  * Example:
  CSS:
  :root {
- --skipUndueCards: false;
+ --skipUndueCards: false
  }
  TS: CssVars.asBoolean("--someVar") !== true
  */
@@ -81,7 +81,7 @@ class ForCardPersistence {
   }
   public async setString(key: string, value: string) {
     await this.clearOldItems()
-    this.setRaw(key, value);
+    this.setRaw(key, value)
   }
   /** Usually use set instead! */
   private setRaw = (key: string, value: string) => {
@@ -274,7 +274,7 @@ namespace TTS {
     public async speak(input: string) {
       // Continue if possible:
       if (this.recursion) {
-        this.setRepeatTimeout();
+        this.setRepeatTimeout()
         this.recursion.continue()
         return
       }
@@ -338,7 +338,7 @@ namespace TTS {
     private stopSpeakingFlag = false
     private readonly sentencesArray: string[]
     constructor(input: string[], startSentenceIndex: number) {
-      const containsSpeech = (str: string): boolean => str.trim().length > 0;
+      const containsSpeech = (str: string): boolean => str.trim().length > 0
       const removeEmptyStrings = (arr: string[]): string[] => arr.filter(containsSpeech)
       this.sentencesArray = removeEmptyStrings(input)
       this.sentenceIndex = new SentenceIndex(startSentenceIndex, this.sentencesArray.length)
@@ -700,7 +700,7 @@ class JsApi {
     private static valueAsAnyIfSuccess =
         async (methodName: string): Promise<any> =>
         {
-          const retVal = await (await JsApi.getApi())[methodName]();
+          const retVal = await (await JsApi.getApi())[methodName]()
 
           if (retVal?.success!==true)
             printError("JS API did NOT return success===true")
@@ -712,7 +712,7 @@ class JsApi {
         async (methodName: string): Promise<string> =>
         {
           const retVal: string = await this.valueAsAnyIfSuccess(methodName)
-          assertTypeEquals(retVal,"string");
+          assertTypeEquals(retVal,"string")
           return retVal
         }
 
@@ -720,7 +720,7 @@ class JsApi {
         async (methodName: string): Promise<number> =>
         {
           const retVal: number = await this.valueAsAnyIfSuccess(methodName)
-          assertTypeEquals(retVal,"number");
+          assertTypeEquals(retVal,"number")
           return retVal
         }
 
@@ -728,7 +728,7 @@ class JsApi {
         async (methodName: string): Promise<boolean> =>
         {
           const retVal: boolean = await this.valueAsAnyIfSuccess(methodName)
-          assertTypeEquals(retVal,"boolean");
+          assertTypeEquals(retVal,"boolean")
           return retVal
         }
     public static asVoid =
@@ -756,7 +756,7 @@ class Anki {
     const unit = nextTimeValueAndUnit.unit
 
     { /* Round the value if it is close to an integer */
-      const roundedRatio = value/Math.round(value);
+      const roundedRatio = value/Math.round(value)
       if (Math.abs(roundedRatio-1)<0.15)
         value = Math.round(value)
     }
@@ -778,8 +778,8 @@ class Anki {
       const buttonRatioIsEmpty = buttonRatio === ""
       if (buttonRatioIsEmpty)
         return days
-      return `x<p class="nextTimeOnButtons">(${days})</p>`;
-    };
+      return `x<p class="nextTimeOnButtons">(${days})</p>`
+    }
     return buttonRatio + daysStr(ifNumberAppendD(next))
   }
   public static async nextTimeStringForButton(i: number):Promise<string> {
