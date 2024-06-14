@@ -663,7 +663,7 @@ export namespace HelgeUtils {
      * const result = formatString(input, replacements)
      * // result is now "Hello John, you are 25 years old." */
     export const formatString = (input: string, replacements: object): string => input.replace(/\${(.*?)}/g, (_, key) => {
-      // @ts-expect-error
+      // @ts-ignore
       return replacements[key]
     })
 
