@@ -9,7 +9,7 @@
 
   // import {Deepgram} from "../node_modules/@deepgram/sdk/dist/module/index.js"
 
-export namespace HelgeUtils { /* Putting this in a namespace is needed for my AnkiDroid project, which
+namespace HelgeUtils { /* Putting this in a namespace is needed for my AnkiDroid project, which
  doesn't allow modules. */
   /** Config */
   /** You can turn this off for debugging */

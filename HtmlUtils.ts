@@ -6,6 +6,7 @@
  * */
 
 // Merge help: The following lines must be commented out in the Project Anca:
+/*
 import {HelgeUtils} from "./HelgeUtils.js"
 
 declare global {
@@ -14,6 +15,7 @@ declare global {
       top: number, left: number }
   }
 }
+*/
 // Merge help end
 
 import parseFloatWithNull = HelgeUtils.Conversions.parseFloatWithNull
@@ -23,7 +25,7 @@ const globalDefaultExceptionHandler = true
 
 const MAX_COOKIE_SIZE = 4096
 
-export namespace HtmlUtils { /* Putting this in a namespace is needed for my AnkiDroid project, which
+namespace HtmlUtils { /* Putting this in a namespace is needed for my AnkiDroid project, which
  doesn't allow modules. */
 
   import memoize = HelgeUtils.memoize
