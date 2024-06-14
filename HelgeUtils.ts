@@ -710,11 +710,13 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
       const text =
           "this is a sentence.. here is another one! yet another sentence? And the answer is:"
           + minimumBetweenSentenceEndMarkers
-          +"{{c1::and a special case. And more."
+          +"{" /* Do NOT hard merge these string or Anki will tell you "Template contains errors". */
+          +"{c1::and a special case. And more."
       const expectedOutput =
           "This is a sentence.. Here is another one! Yet another sentence? And the answer is:"
           +minimumBetweenSentenceEndMarkers
-          +"{{c1::And a special case. And more."
+          +"{" /* Do NOT hard merge these string or Anki will tell you "Template contains errors". */
+          +"{c1::And a special case. And more."
       const result = capitalizeSentences(text)
 
       assertEquals(result, expectedOutput, `testCapitalizeSentences failed`)

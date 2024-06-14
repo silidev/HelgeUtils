@@ -308,10 +308,10 @@ namespace TTS {
   /** speakingPause: Pause between readings of the text in seconds */
   export namespace SpeakingPauseAfterEachSentenceInSeconds {
     export const normalModeValue: number =
-        CssVars.asNumber("--NormalMode_speaking-pause_after_each_sentence_in_seconds")
+        CssVars.asNumber("--ttsNormalMode_pause_after_sentences_in_seconds")
         ?? Config.speaking_pause_after_each_sentence
     export const sleepModeValue: number =
-        CssVars.asNumber("--SleepMode_speaking-pause_after_each_sentence_in_seconds")
+        CssVars.asNumber("--ttsSleepMode_pause_after_sentences_in_seconds")
         ?? Config.sleepMode_pause_after_each_sentence
     export const getFromStorage = () => {{
       return localStorageWrapper.getNumber("SpeakingPauseAfterEachSentenceInSeconds.current")
