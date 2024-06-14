@@ -682,7 +682,8 @@ export namespace HelgeUtils {
     }
 
     export const capitalizeSentences = (text: string
-        , sentenceEndRegex: RegExp = /([.!:?]\s)/g) // was, seems stupid: /([.!:?]\s|\.$)/g
+        , sentenceEndRegex: RegExp = /([.!:?]\s)|(\{\{c\d\d?::)/g) /*
+        Was, seems stupid, delete finally: /([.!:?]\s|\.$)/g */
         : string => {
       const sentenceEndings = sentenceEndRegex
       const parts = text.split(sentenceEndings)
@@ -702,10 +703,12 @@ export namespace HelgeUtils {
     }
     export const testCapitalizeSentences = () => {
       const text = "this is a sentence. here is another one! yet another sentence? and one more."
+          +" A {{c1::and a special case. And more."
       const expectedOutput = "This is a sentence. Here is another one! Yet another sentence? And one more."
+          +" A {{c1::And a special case. And more."
       const result = capitalizeSentences(text)
 
-      console.assert(result === expectedOutput, `Test failed: ${result} != ${expectedOutput}`)
+      assertEquals(result, expectedOutput, `testCapitalizeSentences failed`)
     }
   }
 
