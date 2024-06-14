@@ -23,7 +23,8 @@ const globalDefaultExceptionHandler = true
 
 const MAX_COOKIE_SIZE = 4096
 
-export namespace HtmlUtils {
+export namespace HtmlUtils { /* Putting this in a namespace is needed for my AnkiDroid project, which
+ doesn't allow modules. */
 
   import memoize = HelgeUtils.memoize
 
