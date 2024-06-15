@@ -452,6 +452,10 @@ namespace TTS {
       }
       await this.writeToLocalStorage()
     }
+    public setToZero = async () => {
+      this.sentenceIndex = 0
+      await this.writeToLocalStorage()
+    }
   }
 }
 
