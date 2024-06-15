@@ -7,7 +7,7 @@
  *
  * Copyright by Helge Tobias Kosuch 2024 */
 
-// import {Deepgram} from "../node_modules/@deepgram/sdk/dist/module/index.js"
+  // import {Deepgram} from "../node_modules/@deepgram/sdk/dist/module/index.js"
 
 export namespace HelgeUtils { /* Putting this in a namespace is needed for my AnkiDroid project, which
  doesn't allow modules. */
@@ -222,8 +222,9 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
   export namespace Anki {
     export namespace ClozeMarkers {
       /* Do NOT hard merge these string or Anki will tell you "Template contains errors". */
-      export const OPEN = "{"+"{c1::"
-      export const CLOSE = "}"+"},,"
+      export const openC1 = "{"+"{c1::"
+      export const closeAndShowAnswer = "}"+"},,"
+      export const closeAndShowFront = "}"+"}"
     }
   }
   export namespace Conversions {
@@ -440,6 +441,7 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
     return output
   }
   export namespace Strings {
+    import ClozeMarkers = HelgeUtils.Anki.ClozeMarkers
     export namespace Regexes {
       // const removeFirstAndLastChar = (input: string) => input.substring(1, input.length - 1)
       // const assertFirstAndLastCharAreSpaces = (input: string): string => {
@@ -704,11 +706,11 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
       const text =
           "this is a sentence.. here is another one! yet another sentence? And the answer is:"
           + minimumBetweenSentenceEndMarkers
-          + ClozeMarkers.OPEN +"and a special case. And more."
+          + ClozeMarkers.openC1 +"and a special case. And more."
       const expectedOutput =
           "This is a sentence.. Here is another one! Yet another sentence? And the answer is:"
           +minimumBetweenSentenceEndMarkers
-          + ClozeMarkers.OPEN +"And a special case. And more."
+          + ClozeMarkers.openC1 +"And a special case. And more."
       const result = capitalizeSentences(text)
 
       assertEquals(result, expectedOutput, `testCapitalizeSentences failed`)
