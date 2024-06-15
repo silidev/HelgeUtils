@@ -207,6 +207,7 @@ namespace TTS {
 
       await JsApi.TTS.flushQueue()
       await this.recursion.speakNext()
+      await this.recursion.speakNext()
     }
     public async prevSentence() {
       if (!this.recursion)
@@ -379,8 +380,8 @@ namespace TTS {
       }
     }
     pauseAndSpeak() {
-      if (testingMode)
-        console.log("TTS pause for "+SpeakingPauseAfterEachSentenceInSeconds.current)
+      // if (testingMode)
+      //   console.log("TTS pause for "+SpeakingPauseAfterEachSentenceInSeconds.current)
       this.timeoutId = setTimeout(
           () => this.afterSpeakingPause(),
           SpeakingPauseAfterEachSentenceInSeconds.current * 1000
