@@ -9,10 +9,8 @@
 
 // import {Deepgram} from "../node_modules/@deepgram/sdk/dist/module/index.js"
 
-
 export namespace HelgeUtils { /* Putting this in a namespace is needed for my AnkiDroid project, which
  doesn't allow modules. */
-
   /** Config */
   /** You can turn this off for debugging */
   export namespace Config {
@@ -25,7 +23,6 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
       }
     }
   }
-
   export namespace Exceptions {
     /**
      * This is just a template to inline. */
@@ -184,7 +181,6 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
       }
     }
   }
-
   export namespace Eval {
 
     /**
@@ -221,7 +217,6 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
             }
           `)()(args)
   }
-
   export namespace Conversions {
     export const parseIntWithNull = (input: string | null) => {
       if (input==null) {
@@ -237,7 +232,6 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
       return parseFloat(input)
     }
   }
-
   export namespace Types {
     export class TypeException extends Error {
       constructor(message: string) {
@@ -275,15 +269,12 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
       }
     }
   }
-
-
   /** Returns true if the parameter is not undefined. */
   export const isDefined = (x: any) => {
     let u: any
     // noinspection JSUnusedAssignment
     return x !== u
   }
-
   /**
    * This is only useful in JS. Not needed in TS.
    *
@@ -309,7 +300,6 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
     }
     return new Proxy(input, handler)
   }
-
   export namespace MarkDown {
     /** Returns the text of only the == ==-highlighted text. */
     export const extractHighlights = (input: string): string[] => {
@@ -324,7 +314,6 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
       return matches
     }
   }
-
   /**
    * A function that does nothing. I use it to avoid "unused variable" warnings.
    *
@@ -380,11 +369,9 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
       }
     }
   }
-
   export const consoleLogTmp = (...args: any[]) => {
     args.forEach(arg => console.log(arg))
   }
-
   export const consoleLogTheDifference = (actual: string, expected: string) => {
     console.log("*************** actual  :\n" + actual)
     // @ts-expect-error
@@ -410,10 +397,8 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
       }
     }
   }
-
   import assert = Tests.assert
   import assertEquals = Tests.assertEquals
-
   export const testRemoveElements = () => {
     const tagsToRemove = ['tag1', 'tag2', 'tag3']
     // Deep copy of tagsToRemove
@@ -722,16 +707,13 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
       assertEquals(result, expectedOutput, `testCapitalizeSentences failed`)
     }
   }
-
   /* Returns a random element of the given array */
   export const randomElementOf = <T>(arr: T[]) => arr[Math.floor(Math.random() * arr.length)]
-
   export const runTests = function (){
     testRemoveElements()
     DatesAndTimes.runTests()
     Strings.runTests()
   }
-
   export namespace TTS {
     /**
      * Always fails with error code 400 :(
@@ -776,7 +758,6 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
       playSound.start()
     }
   }
-
   /* NOT reliable in Anki and AnkiDroid. */
   export namespace ReplaceByRules {
     export class ReplaceRules {
@@ -893,7 +874,6 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
       return replaceByRules(subject, allRules, false, false).resultingText
     }
   }
-
   export const memoize = <T, R>(func: (...args: T[]) => R): (...args: T[]) => R => {
     const cache = new Map<string, R>()
 
@@ -908,7 +888,6 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
       }
     }
   }
-
   export namespace Misc {
 
 
@@ -945,7 +924,6 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
 
     //end of namespace Misc:
   }
-
   export namespace Net {
     export namespace OpenAi {
       export namespace Test {
@@ -957,7 +935,6 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
     }
     //end of namespace Net:
   }
-
   export namespace Debugging {
 
     export namespace DevConsoles {
@@ -973,7 +950,6 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
       }
     }
   }
-
   class DatesAndTimesInternal {
 
     static Weekdays = {
@@ -1106,6 +1082,5 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
     }
     // end of DatesAndTimes:
   }
-
   export const DatesAndTimes = DatesAndTimesInternal
 }
