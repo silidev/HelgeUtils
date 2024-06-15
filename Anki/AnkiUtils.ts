@@ -388,8 +388,8 @@ namespace TTS {
       }
     }
     pauseAndSpeak() {
-      // if (testingMode)
-      //   console.log("TTS pause for "+SpeakingPauseAfterEachSentenceInSeconds.current)
+      if (testingMode)
+        console.log("TTS pause for "+SpeakingPauseAfterEachSentenceInSeconds.current)
       this.timeoutId = setTimeout(
           () => this.afterSpeakingPause(),
           SpeakingPauseAfterEachSentenceInSeconds.current * 1000
