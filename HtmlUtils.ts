@@ -112,6 +112,14 @@ export namespace HtmlUtils { /* Putting this in a namespace is needed for my Ank
     return document.getElementById(id) as HTMLElement
   })
 
+  export const elementWithIdNte = (id: string): HTMLElement => {
+    const el = elementWithId(id)
+    if (!el) {
+      throw new Error(`Element with id ${id} not found`)
+    }
+    return el as HTMLElement
+  }
+
   export const buttonWithId = elementWithId as (id: string) => HTMLButtonElement | null
   export const textAreaWithId = elementWithId as (id: string) => HTMLTextAreaElement | null
   export const inputElementWithId = elementWithId as (id: string) => HTMLInputElement | null
@@ -130,7 +138,7 @@ export namespace HtmlUtils { /* Putting this in a namespace is needed for my Ank
         nullFilter<HTMLElement>(HtmlUtils.elementWithId(id))
     /** @see NullThrowsException */
     export const buttonWithIdNte = (id: string) =>
-        nullFilter<HTMLButtonElement>(HtmlUtils.buttonWithId(id))
+        HtmlUtils.elementWithIdNte(id) as HTMLButtonElement //TODO: Also implement the others with this.
     /** @see NullThrowsException */
     export const inputElementWithIdNte = (id: string) =>
         nullFilter<HTMLInputElement>(HtmlUtils.inputElementWithId(id))
