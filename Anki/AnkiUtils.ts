@@ -218,6 +218,14 @@ namespace TTS {
       await this.recursion.prevSentence()
       await this.recursion.speakNext()
     }
+    public async firstSentence() {
+      if (!this.recursion)
+        return
+
+      await JsApi.TTS.flushQueue()
+      await this.recursion.firstSentence()
+      await this.recursion.speakNext()
+    }
     public async restartSentence() {
       if (!this.recursion)
         return
@@ -411,6 +419,10 @@ namespace TTS {
     }
     public async prevSentence() {
       await this.sentenceIndex.decrement()
+      return this.sentencesArray[this.sentenceIndex.get()]
+    }
+    public async firstSentence() {
+      await this.sentenceIndex.setToZero()
       return this.sentencesArray[this.sentenceIndex.get()]
     }
     // end recursion:
