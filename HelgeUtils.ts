@@ -219,14 +219,8 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
   }
   /** Yes, this must be here to b/c this file can't depend on AnkiUtils.
    * Some of this code contains special cases for Anki. */
-  export namespace Anki {
-    export namespace ClozeMarkers {
-      /* Do NOT hard merge these string or Anki will tell you "Template contains errors". */
-      export const openC1 = "{"+"{c1::"
-      export const closeAndShowAnswer = "}"+"},,"
-      export const closeAndShowFront = "}"+"}"
-    }
-  }
+  export const Anki = window.koh455.Anki
+
   export namespace Conversions {
     export const parseIntWithNull = (input: string | null) => {
       if (input==null) {
@@ -441,7 +435,6 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
     return output
   }
   export namespace Strings {
-    import ClozeMarkers = HelgeUtils.Anki.ClozeMarkers
     export namespace Regexes {
       // const removeFirstAndLastChar = (input: string) => input.substring(1, input.length - 1)
       // const assertFirstAndLastCharAreSpaces = (input: string): string => {
@@ -706,11 +699,11 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
       const text =
           "this is a sentence.. here is another one! yet another sentence? And the answer is:"
           + minimumBetweenSentenceEndMarkers
-          + ClozeMarkers.openC1 +"and a special case. And more."
+          + HelgeUtils.Anki.ClozeMarkers.openC1 +"and a special case. And more."
       const expectedOutput =
           "This is a sentence.. Here is another one! Yet another sentence? And the answer is:"
           +minimumBetweenSentenceEndMarkers
-          + ClozeMarkers.openC1 +"And a special case. And more."
+          + HelgeUtils.Anki.ClozeMarkers.openC1 +"And a special case. And more."
       const result = capitalizeSentences(text)
 
       assertEquals(result, expectedOutput, `testCapitalizeSentences failed`)

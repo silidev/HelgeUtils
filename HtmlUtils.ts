@@ -556,7 +556,7 @@ export namespace HtmlUtils { /* Putting this in a namespace is needed for my Ank
   export namespace Menus {
     /** https://www.webcomponents.org/element/@vanillawc/wc-menu-wrapper */
     export namespace WcMenu {
-       
+
       import elementWithId = NullThrowsException.elementWithIdNte
 
       export const close = (menuHeadingId: string) => {
