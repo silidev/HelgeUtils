@@ -331,6 +331,7 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
       console.log(args)
     }
   }
+  export const crossRefOnly = suppressUnusedWarning
   export namespace Tests {
 
     /** This function is a copy template. */
