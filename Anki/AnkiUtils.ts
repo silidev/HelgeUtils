@@ -224,7 +224,7 @@ namespace TTS {
 
       await JsApi.TTS.flushQueue()
       await this.recursion.firstSentence()
-      await this.recursion.speakNext()
+      // await this.recursion.speakNext()
     }
     public async restartSentence() {
       if (!this.recursion)
@@ -281,11 +281,16 @@ namespace TTS {
       console.assert(JSON.stringify(output) === JSON.stringify(expectedOutput), `Expected ${JSON.stringify(expectedOutput)} but got ${JSON.stringify(output)}`)
     }
     public async speak(input: string) {
-      // Continue if possible:
+
       if (this.recursion) {
-        this.setRepeatTimeout()
-        this.recursion.continue()
-        return
+        await this.recursion.stop()
+        // prev version:
+        // // Continue if possible:
+        // if (this.recursion) {
+        //   this.setRepeatTimeout()
+        //   this.recursion.continue()
+        //   return
+        // }
       }
 
       await JsApi.TTS.flushQueue()
@@ -361,12 +366,12 @@ namespace TTS {
 
       await JsApi.TTS.stop()
       this.stopSpeakingFlag = true
-      await this.prevSentence()
+      // await this.prevSentence()
     }
-    continue() {
-      this.stopSpeakingFlag = false
-      this.speakArray()
-    }
+    // continue() {
+    //   this.stopSpeakingFlag = false
+    //   this.speakArray()
+    // }
     speakArray() {
       if (this.stopSpeakingFlag || this.intervalId)
         return
@@ -389,7 +394,8 @@ namespace TTS {
     }
     pauseAndSpeak() {
       if (testingMode)
-        console.log("TTS pause for "+SpeakingPauseAfterEachSentenceInSeconds.current)
+        console.log("--------------------------------- TTS pause for "
+            +SpeakingPauseAfterEachSentenceInSeconds.current)
       this.timeoutId = setTimeout(
           () => this.afterSpeakingPause(),
           SpeakingPauseAfterEachSentenceInSeconds.current * 1000
