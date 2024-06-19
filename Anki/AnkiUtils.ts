@@ -822,8 +822,8 @@ class Anki {
     if (!corrected.success)
       printDebug("JS API returned success===false")
 
-    if (autoSkipCards && corrected.value==="") {
-      autoSkipCards = false
+    if (autoSkipMode.enabled() && corrected.value==="") {
+      autoSkipMode.disable()
       printDebugPrj("nextTimeStringForButton(...) is empty. Probably the setting Appearance>Show button time is" +
           " disabled. Please enable it.")
     }

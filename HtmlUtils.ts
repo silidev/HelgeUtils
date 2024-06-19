@@ -423,9 +423,9 @@ export namespace HtmlUtils { /* Putting this in a namespace is needed for my Ank
         private _enabled: boolean
         /** key used in storage */
         private readonly _enabledKey: string
-        constructor(_storageKey: string, private _storage: BsProvider) {
+        constructor(_storageKey: string, private _storage: BsProvider, initialValue=false) {
           this._enabledKey = _storageKey+'._enabled'
-          this._enabled = _storage.getAndJsonParse<boolean>(this._enabledKey) ?? false
+          this._enabled = _storage.getAndJsonParse<boolean>(this._enabledKey) ?? initialValue
         }
         public enabled = () => {
           return this._enabled
