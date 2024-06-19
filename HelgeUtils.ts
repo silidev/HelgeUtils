@@ -6,6 +6,7 @@
  * specific project.
  *
  * Copyright by Helge Tobias Kosuch 2024 */
+import {ankiSpecialsSwitch} from '../Config.js'
 
   // import {Deepgram} from "../node_modules/@deepgram/sdk/dist/module/index.js"
 
@@ -219,7 +220,8 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
   }
   /** Yes, this must be here to b/c this file can't depend on AnkiUtils.
    * Some of this code contains special cases for Anki. */
-  export const Anki = window.koh455.Anki
+  // @ts-ignore
+  export const Anki = window.koh455?.Anki
 
   export namespace Conversions {
     export const parseIntWithNull = (input: string | null) => {
@@ -699,12 +701,12 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
        capitalization will fail. That is fine. Not worth the time to fix it. */
       const text =
           "this is a sentence.. here is another one! yet another sentence? And the answer is:"
-          + minimumBetweenSentenceEndMarkers
-          + HelgeUtils.Anki.ClozeMarkers.openC1 +"and a special case. And more."
+          +minimumBetweenSentenceEndMarkers
+          +(ankiSpecialsSwitch?HelgeUtils.Anki.ClozeMarkers.openC1 +"and a special case. And more.":"")
       const expectedOutput =
           "This is a sentence.. Here is another one! Yet another sentence? And the answer is:"
           +minimumBetweenSentenceEndMarkers
-          + HelgeUtils.Anki.ClozeMarkers.openC1 +"And a special case. And more."
+          +(ankiSpecialsSwitch?HelgeUtils.Anki.ClozeMarkers.openC1 +"And a special case. And more.":"")
       const result = capitalizeSentences(text)
 
       assertEquals(result, expectedOutput, `testCapitalizeSentences failed`)
