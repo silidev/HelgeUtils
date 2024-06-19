@@ -430,6 +430,9 @@ export namespace HtmlUtils { /* Putting this in a namespace is needed for my Ank
         public enabled = () => {
           return this._enabled
         }
+        public disabled = () => {
+          return !this._enabled
+        }
         private saveToStorage = () => {
           this._storage.setJsonStringified(this._enabledKey, this._enabled)
         }
@@ -597,6 +600,14 @@ export namespace HtmlUtils { /* Putting this in a namespace is needed for my Ank
       } else {
         element.style.display = "none"
       }
+    }
+    /** If element is null, nothing happens, no error. */
+    export const toggleDisplayNoneIfPossible = (element: HTMLElement | null,
+        visibleDisplayStyle: string) => {
+      if (!element) {
+        return
+      }
+      toggleDisplayNone(element, visibleDisplayStyle)
     }
   }
 
