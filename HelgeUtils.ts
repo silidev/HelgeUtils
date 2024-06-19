@@ -6,7 +6,6 @@
  * specific project.
  *
  * Copyright by Helge Tobias Kosuch 2024 */
-import {ankiSpecialsSwitch} from '../Config.js'
 
   // import {Deepgram} from "../node_modules/@deepgram/sdk/dist/module/index.js"
 
@@ -24,6 +23,8 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
       }
     }
   }
+  // @ts-ignore
+  const ankiSpecialsSwitch = window.koh455?.ankiSpecialsSwitch
   export namespace Exceptions {
     /**
      * This is just a template to inline. */
