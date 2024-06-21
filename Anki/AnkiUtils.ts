@@ -158,7 +158,7 @@ namespace TTS {
    * Old name: LoopSpeaker. */
   export class LoopSpeaker {
     private recursion: SpeakRecursion | undefined
-    public constructor(private english: boolean = true) {
+    public constructor(private english: boolean = true, private repeatSentenceMode: boolean) {
       this.ttsEndMarker = english
           ? Config.ttsEndMarkerEnglish
           : Config.ttsEndMarkerGerman
@@ -301,7 +301,7 @@ namespace TTS {
       const array = step2.split(ttsPauseCharacters)
 
       this.recursion = new SpeakRecursion(LoopSpeaker.joinDateParts(array),
-          await SentenceIndex.getFromLocalStorage())
+          await SentenceIndex.getFromLocalStorage(), this.repeatSentenceMode)
       this.setRepeatTimeout()
 
       // Speaks the first element without pausing before:
@@ -351,7 +351,7 @@ namespace TTS {
     private timeoutId: number | undefined
     private stopSpeakingFlag = false
     private readonly sentencesArray: string[]
-    constructor(input: string[], startSentenceIndex: number) {
+    constructor(input: string[], startSentenceIndex: number, private repeatSentenceMode: boolean) {
       const containsSpeech = (str: string): boolean => str.trim().length > 0
       const removeEmptyStrings = (arr: string[]): string[] => arr.filter(containsSpeech)
       this.sentencesArray = removeEmptyStrings(input)
@@ -411,7 +411,10 @@ namespace TTS {
       this.speakArray()
     }
     async speakNext() {
-      const sentenceToSpeak = await this.nextSentence()
+      const sentenceToSpeak = this.currentSentence()
+      if ( ! this.repeatSentenceMode) {
+        await this.sentenceIndex.increment()
+      }
       if (testingMode)
         console.log("TTS1 speakFirstElement: " + sentenceToSpeak)
       return JsApi.TTS.speak(sentenceToSpeak, JsApi.TTS.QUEUE_ADD)
@@ -419,17 +422,22 @@ namespace TTS {
     /** The index of the sentence to speak */
     private sentenceIndex: SentenceIndex
     public async nextSentence() {
-      const sentenceToSpeak = this.sentencesArray[this.sentenceIndex.get()]
+      const sentenceToSpeak = this.currentSentence()
       await this.sentenceIndex.increment()
       return sentenceToSpeak
     }
+
+    private currentSentence = () => {
+      return this.sentencesArray[this.sentenceIndex.get()]
+    }
+
     public async prevSentence() {
       await this.sentenceIndex.decrement()
-      return this.sentencesArray[this.sentenceIndex.get()]
+      return this.currentSentence()
     }
     public async firstSentence() {
       await this.sentenceIndex.setToZero()
-      return this.sentencesArray[this.sentenceIndex.get()]
+      return this.currentSentence()
     }
     // end recursion:
   }
