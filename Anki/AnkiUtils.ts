@@ -559,13 +559,14 @@ class JsApi {
     return (await (await JsApi.getApi()).ankiGetCardDue())
   }
   /**
-   * original due: In filtered decks, it's the original due date that the card had before moving to filtered. (integer
-   * day, relative to the collection's creation time)
-   *                     -- If the card lapsed in scheduler1, then it's the value before the lapse. (This is used when
-   * switching to scheduler
+   * original due: In filtered decks, it's the original due date that the card had before
+   * moving to filtered. (integer day, relative to the collection's creation time)
+   *                     -- If the card lapsed in scheduler1, then it's the value before
+   * the lapse. (This is used when switching to scheduler
    * 2. At this time, cards in learning becomes due again, with their previous due date)
    *                     -- In any other case it's 0.
-   * Source: https://github.com/ankidroid/Anki-Android/wiki/AnkiDroid-Javascript-API#original-due
+   * Source:
+   * https://github.com/ankidroid/Anki-Android/wiki/AnkiDroid-Javascript-API#original-due
    */
   public static async cardOriginalDue() {
     if (JsApi.mock) return 0
@@ -579,7 +580,8 @@ class JsApi {
   /**
    * @return Return ease factor of the card in permille (parts per thousand)
    *
-   * Gotchas: Yes, really permille, not percent, in contrast to the UI where it is percent.
+   * Gotchas: Yes, really permille, not percent, in contrast to the UI where it is
+   *     percent.
    *
    * https://github.com/ankidroid/Anki-Android/wiki/AnkiDroid-Javascript-API/9fb80befe5c3551665a0a07886138025bcd9b4f1#card-ease-factor
    */
@@ -598,12 +600,14 @@ class JsApi {
    *
    * https://github.com/ankidroid/Anki-Android/wiki/AnkiDroid-Javascript-API#reschedule-card-with-x-days
    *
-   * "Turn cards into review cards, and make them due on a certain date. This can be useful for moving cards forward
-   * or back a few days when your study schedule is interrupted. Entering a range like 60-90 will make the selected
-   * cards due between 60 and 90 days from now. New cards will have their interval set to the same delay, but
-   * reviews will be rescheduled without changing their current interval, unless '!' is included at the end of the
-   * range. (Note that answer time is not recorded when manually scheduling cards, since the action can be performed
-   * even outside of review, and Anki isn’t aware of which card may or may not be shown at the time.)" Source:
+   * "Turn cards into review cards, and make them due on a certain date. This can be
+   * useful for moving cards forward or back a few days when your study schedule is
+   * interrupted. Entering a range like 60-90 will make the selected cards due between 60
+   * and 90 days from now. New cards will have their interval set to the same delay, but
+   * reviews will be rescheduled without changing their current interval, unless '!' is
+   * included at the end of the range. (Note that answer time is not recorded when
+   * manually scheduling cards, since the action can be performed even outside of review,
+   * and Anki isn’t aware of which card may or may not be shown at the time.)" Source:
    * https://docs.ankiweb.net/browsing.html#cards
    */
   public static async setCardDue(days: number) {
