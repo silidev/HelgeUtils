@@ -206,8 +206,8 @@ namespace TTS {
         return
 
       await JsApi.TTS.flushQueue()
-      await this.recursion.speakNext()
-      await this.recursion.speakNext()
+      await this.recursion.nextSentence()
+      await this.recursion.nextSentence()
     }
     public async prevSentence() {
       if (!this.recursion)
@@ -215,8 +215,6 @@ namespace TTS {
 
       await JsApi.TTS.flushQueue()
       await this.recursion.prevSentence()
-      await this.recursion.prevSentence()
-      await this.recursion.speakNext()
     }
     public async firstSentence() {
       if (!this.recursion)
