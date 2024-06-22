@@ -418,8 +418,10 @@ export namespace HtmlUtils { /* Putting this in a namespace is needed for my Ank
       }
     }
     export namespace Misc {
+      import Switch = HelgeUtils.Types.Switch
+
       /** A mode whose status is stored to a persistent storage, e. g. localStorage. */
-      export class StoredMode {
+      export class StoredMode implements Switch {
         private _enabled: boolean
         /** key used in storage */
         private readonly _enabledKey: string

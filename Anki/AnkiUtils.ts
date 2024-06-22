@@ -125,6 +125,7 @@ class ForCardPersistence {
 /** See {@link LoopSpeaker}*/
 namespace TTS {
   import removeBySelector = HtmlUtils.Misc.removeBySelector
+  import Switch = HelgeUtils.Types.Switch
   namespace Config {
     /** If you have a CSS config that would override these. */
     export const speaking_pause_after_each_sentence = 2
@@ -158,7 +159,7 @@ namespace TTS {
    * Old name: LoopSpeaker. */
   export class LoopSpeaker {
     private recursion: SpeakRecursion | undefined
-    public constructor(private english: boolean = true, private repeatSentenceMode: boolean) {
+    public constructor(private english: boolean = true, private repeatSentenceMode: Switch) {
       this.ttsEndMarker = english
           ? Config.ttsEndMarkerEnglish
           : Config.ttsEndMarkerGerman
@@ -349,7 +350,7 @@ namespace TTS {
     private timeoutId: number | undefined
     private stopSpeakingFlag = false
     private readonly sentencesArray: string[]
-    constructor(input: string[], startSentenceIndex: number, private repeatSentenceMode: boolean) {
+    constructor(input: string[], startSentenceIndex: number, private repeatSentenceMode: Switch) {
       const containsSpeech = (str: string): boolean => str.trim().length > 0
       const removeEmptyStrings = (arr: string[]): string[] => arr.filter(containsSpeech)
       this.sentencesArray = removeEmptyStrings(input)
@@ -410,7 +411,7 @@ namespace TTS {
     }
     async speakNext() {
       const sentenceToSpeak = this.currentSentence()
-      if ( ! this.repeatSentenceMode) {
+      if ( ! this.repeatSentenceMode.enabled()) {
         await this.sentenceIndex.increment()
       }
       if (testingMode)

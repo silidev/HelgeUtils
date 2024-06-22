@@ -183,6 +183,11 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
       }
     }
   }
+  export namespace Types {
+    export interface Switch {
+      enabled(): boolean;
+    }
+  }
   export namespace Eval {
 
     /**
