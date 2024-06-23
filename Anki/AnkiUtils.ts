@@ -415,7 +415,9 @@ namespace TTS {
         await this.sentenceIndex.increment()
       }
       return JsApi.TTS.speak(sentenceToSpeak
-          + (this.repeatSentenceMode.enabled()? " Repeat" : "")
+          + (this.repeatSentenceMode.enabled()? " "+
+              CssVars.asStringInQuotes("--ttsTextBetweenSentenceRepetitions")
+              +" " : "")
           , JsApi.TTS.QUEUE_ADD)
     }
     /** The index of the sentence to speak */
