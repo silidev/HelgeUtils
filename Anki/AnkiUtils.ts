@@ -414,9 +414,9 @@ namespace TTS {
       if ( ! this.repeatSentenceMode.enabled()) {
         await this.sentenceIndex.increment()
       }
-      if (testingMode)
-        console.log("TTS1 speakFirstElement: " + sentenceToSpeak)
-      return JsApi.TTS.speak(sentenceToSpeak, JsApi.TTS.QUEUE_ADD)
+      return JsApi.TTS.speak(sentenceToSpeak
+          + (this.repeatSentenceMode.enabled()? " Repeat" : "")
+          , JsApi.TTS.QUEUE_ADD)
     }
     /** The index of the sentence to speak */
     private sentenceIndex: SentenceIndex
@@ -690,6 +690,9 @@ class JsApi {
      * https://github.com/ankidroid/Anki-Android/wiki/AnkiDroid-Javascript-API#speak
      */
     public static async speak(text: string, queueMode = 0) {
+      if (testingMode)
+        console.log("TTS1 speakFirstElement: " + text)
+
       if (JsApi.mock) return
 
       await (await JsApi.getApi())["ankiTtsSpeak"](text,queueMode)
