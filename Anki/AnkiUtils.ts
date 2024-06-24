@@ -142,7 +142,7 @@ namespace TTS {
       (input: string, english: boolean) => {
         suppressUnusedWarning(english)
         return input
-            .replaceAll("[...]", "")
+            .replaceAll("[...]", " Please turn over ")
             .replaceAll(/\n ?\* /g, "- ")
             .replaceAll(/\? -/g, "?")
       }
