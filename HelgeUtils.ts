@@ -956,7 +956,7 @@ export namespace HelgeUtils { /* Putting this in a namespace is needed for my An
          * Often you should inline this function and load it before other scripts.
          * */
         export const load = () => {
-          // Import from here instead: HelgeLoadFirst.Debug.DevConsole.Eruda.load()
+          // Import from here instead: LoadFirst.Debug.DevConsole.Eruda.load()
         }
       }
     }
