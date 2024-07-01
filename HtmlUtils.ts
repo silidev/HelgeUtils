@@ -71,6 +71,10 @@ export namespace HtmlUtils { /* Putting this in a namespace is needed for my Ank
     /**
      * This outputs gently. Might not be seen by the user.  */
     export const printDebug = (str: string, parentElement = document.body) => {
+      if (!str) {
+        printDebug("printDebug called with falsy str.")
+        return
+      }
       showToast(str.substring(0, 80))
 
       console.log(str)
