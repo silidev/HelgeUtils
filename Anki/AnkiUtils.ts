@@ -126,6 +126,7 @@ class ForCardPersistence {
 namespace TTS {
   import removeBySelector = HtmlUtils.Misc.removeBySelector
   import Switch = HelgeUtils.Types.Switch
+  import speakNowEnglish = TtsAnca.speakNowEnglish
   namespace Config {
     /** If you have a CSS config that would override these. */
     export const speaking_pause_after_each_sentence = 2
@@ -311,7 +312,11 @@ namespace TTS {
     }
     private setRepeatTimeout = () => {
       // Stop after defined time (currently 20 minutes):
-      setTimeout(() => this.recursion?.stop(), ttsMinutesUntilStopRepeat * 60 * 1000)
+      setTimeout(async () => {
+        this.recursion?.stopAfterSentence()
+        await JsApi.TTS.english()
+        await JsApi.TTS.speak("Timeout")
+      }, ttsMinutesUntilStopRepeat * 60 * 1000)
     }
     static runTests() {
       LoopSpeaker.testJoinDateParts()
@@ -357,20 +362,20 @@ namespace TTS {
       this.sentenceIndex = new SentenceIndex(startSentenceIndex, this.sentencesArray.length)
     }
     async stop() {
+      this.stopAfterSentence()
+      await JsApi.TTS.stop()
+    }
+
+    stopAfterSentence = () => {
       clearInterval(this.intervalId)
       this.intervalId = undefined
 
       clearTimeout(this.timeoutId)
       this.timeoutId = undefined
 
-      await JsApi.TTS.stop()
       this.stopSpeakingFlag = true
-      // await this.prevSentence()
     }
-    // continue() {
-    //   this.stopSpeakingFlag = false
-    //   this.speakArray()
-    // }
+
     speakArray() {
       if (this.stopSpeakingFlag || this.intervalId)
         return
