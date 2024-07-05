@@ -138,19 +138,20 @@ namespace HtmlUtils { /* Putting this in a namespace is needed for my AnkiDroid 
     /** @see NullThrowsException */
     export const querySelectorNte = (element: DocumentFragment, selector: string) => {
       return nullFilter<HTMLElement>(element.querySelector(selector))
+
     }
     /** @see NullThrowsException */
     export const elementWithIdNte = (id: string) =>
         nullFilter<HTMLElement>(HtmlUtils.elementWithId(id))
     /** @see NullThrowsException */
     export const buttonWithIdNte = (id: string) =>
-        HtmlUtils.elementWithIdNte(id) as HTMLButtonElement //TODO: Also implement the others with this.
+        HtmlUtils.elementWithIdNte(id) as HTMLButtonElement
     /** @see NullThrowsException */
     export const inputElementWithIdNte = (id: string) =>
-        nullFilter<HTMLInputElement>(HtmlUtils.inputElementWithId(id))
+        HtmlUtils.elementWithIdNte(id) as HTMLInputElement
     /** @see NullThrowsException */
     export const textAreaWithIdNte = (id: string) =>
-        nullFilter<HTMLTextAreaElement>(HtmlUtils.textAreaWithId(id))
+        HtmlUtils.elementWithIdNte(id) as HTMLTextAreaElement
   }
 
   // Merge help: The following lines must be commented out in the Project Anca:
