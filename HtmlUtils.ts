@@ -347,6 +347,8 @@ namespace HtmlUtils { /* Putting this in a namespace is needed for my AnkiDroid 
       setJsonStringified(itemName: string, itemValue: unknown): void
       getNumber(name: string): number | null
       setNumber(name: string, value: number): void
+      setDate(name: string, value: Date): void
+      getDate(name: string): Date | null
     }
     export abstract class BsProviderExtras {
       abstract setString(itemName: string, itemValue: string): void
@@ -370,6 +372,18 @@ namespace HtmlUtils { /* Putting this in a namespace is needed for my AnkiDroid 
       }
       setNumber(name: string, value: number) {
         this.setString(name,value.toString())
+      }
+      /** Untested */
+      getDate(name: string): Date | null {
+        const asString = this.getString(name)
+        if (asString===null) {
+          return null
+        }
+        return new Date(asString)
+      }
+      /** Untested */
+      setDate(name: string, value: Date) {
+        this.setString(name,value.toISOString())
       }
     }
     export class LocalStorage extends BsProviderExtras implements BsProvider {
