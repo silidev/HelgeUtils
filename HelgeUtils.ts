@@ -187,6 +187,44 @@ namespace HelgeUtils { /* Putting this in a namespace is needed for my AnkiDroid
     export interface Switch {
       enabled(): boolean;
     }
+    export class TypeException extends Error {
+      constructor(message: string) {
+        super(message)
+        this.name = "MyCustomException"
+      }
+    }
+
+    export namespace SafeConversions {
+      export const toNumber = (input: string): number => {
+        const result = parseFloat(input)
+        if (isNaN(result)) {
+          throw new Error(`Not a number: "${input}"`)
+        }
+        return result
+      }
+
+      export const toBoolean = (resultAsString: string) => {
+        switch (resultAsString.trim()) {
+          case "t":
+          case "tt":
+          case "true":
+          case "on":
+          case "ON":
+          case "y":
+            return true
+          case "f":
+          case "ff":
+          case "off":
+          case "OFF":
+          case "false":
+          case "n":
+            return false
+          default:
+            return false
+            // throw new TypeException(`Not a boolean: "${resultAsString}"`)
+        }
+      }
+    }
   }
   export namespace Eval {
 
@@ -242,46 +280,6 @@ namespace HelgeUtils { /* Putting this in a namespace is needed for my AnkiDroid
         return null
       }
       return parseFloat(input)
-    }
-  }
-  export namespace Types {
-    export class TypeException extends Error {
-      constructor(message: string) {
-        super(message)
-        this.name = "MyCustomException"
-      }
-    }
-
-    export namespace SafeConversions {
-      export const toNumber = (input: string): number => {
-        const result = parseFloat(input)
-        if (isNaN(result)) {
-          throw new Error(`Not a number: "${input}"`)
-        }
-        return result
-      }
-
-      export const toBoolean = (resultAsString: string) => {
-        switch (resultAsString.trim()) {
-          case "t":
-          case "tt":
-          case "true":
-          case "on":
-          case "ON":
-          case "y":
-            return true
-          case "f":
-          case "ff":
-          case "off":
-          case "OFF":
-          case "false":
-          case "n":
-            return false
-          default:
-            return false
-            // throw new TypeException(`Not a boolean: "${resultAsString}"`)
-        }
-      }
     }
   }
   /** Returns true if the parameter is not undefined. */
