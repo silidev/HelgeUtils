@@ -510,6 +510,11 @@ class JsApi {
 
     return this.api
   }
+  /** This is called after operations which cause the load of the next card or the back
+   * in order to speed things up by avoiding unnecessary compute. */
+  private static stopTheWorld = () => {
+    window.stop()
+  }
   public static async addTagToCard() {
     if (JsApi.mock) return
 
@@ -518,16 +523,17 @@ class JsApi {
   public static async buryCard() {
     if (JsApi.mock || JsApi.safeModeJsApi)
       return
-
     await (await JsApi.getApi()).ankiBuryCard()
+    this.stopTheWorld()
   }
   public static answerEase(easeButtonNumber: number) {
     if (JsApi.mock || JsApi.safeModeJsApi)
       return
 
-    if (isMobile)
+    if (isMobile) {
       (window as any)["buttonAnswerEase" + easeButtonNumber]()
-    else
+      this.stopTheWorld()
+    } else
     if (debug)
       console.log("Called buttonAnswerEase"+easeButtonNumber)
   }
@@ -608,6 +614,7 @@ class JsApi {
   }
   public static showAnswer() {
     window["showAnswer"]()
+    this.stopTheWorld()
   }
   /**
    * Reschedule card with x days
@@ -631,6 +638,7 @@ class JsApi {
       return
 
     await (await JsApi.getApi()).ankiSetCardDue(days)
+    this.stopTheWorld()
   }
   public static async cardId(): Promise<number> {
     if (JsApi.mock)
