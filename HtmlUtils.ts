@@ -334,6 +334,22 @@ namespace HtmlUtils { /* Putting this in a namespace is needed for my AnkiDroid 
       if (!stream) return
       stream.getTracks().forEach(track => track.stop())
     }
+
+    export const beep = (frequency = 2000, duration = 300, volume = .5) => {
+      const audioContext = new (window.AudioContext)();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      oscillator.type = 'sine';
+      oscillator.frequency.value = frequency;
+      gainNode.gain.value = volume;
+
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + duration / 1000);
+    }
   }
 
   export namespace BrowserStorage {
