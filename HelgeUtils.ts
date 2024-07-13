@@ -886,6 +886,11 @@ namespace HelgeUtils { /* Putting this in a namespace is needed for my AnkiDroid
       return replaceByRules(subject, allRules, false, false).resultingText
     }
   }
+  /**
+   * @see https://de.wikipedia.org/wiki/Memoisation
+   * Usage:
+   * const originalFunction = (...) => {...}
+   * export const memoizedFunction = memoize(originalFunction) */
   export const memoize = <T, R>(func: (...args: T[]) => R): (...args: T[]) => R => {
     const cache = new Map<string, R>()
 

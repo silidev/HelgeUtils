@@ -24,14 +24,15 @@ const localStorageWrapper: BsProvider = new HtmlUtils.BrowserStorage.LocalStorag
 namespace CssVars {
   import toBoolean = HelgeUtils.Types.SafeConversions.toBoolean
   import TypeException = HelgeUtils.Types.TypeException
-  export const asString = (varName: string):string => {
+  import memoize = HelgeUtils.memoize
+  const asStringRaw = (varName: string):string => {
     return getComputedStyle(document.documentElement).getPropertyValue(varName)
   }
   /** Read this as: A CSS variable defined as a string in quotes. */
-  export const asStringInQuotes = (varName: string):string => {
+  const asStringInQuotesRaw = (varName: string):string => {
     return eval(asString(varName))
   }
-  export const asBoolean = (varName: string): boolean => {
+  const asBooleanRaw = (varName: string): boolean => {
     const resultAsString = asString(varName)
     try {
       return toBoolean(resultAsString)
@@ -41,7 +42,7 @@ namespace CssVars {
       }"`)
     }
   }
-  export const asNumber = (varName: string): number | null => {
+  const asNumberRaw = (varName: string): number | null => {
     const resultAsString = asString(varName)
     if (!resultAsString) {
       return null
@@ -54,6 +55,11 @@ namespace CssVars {
     }
     return result
   }
+  export const asString = memoize(asStringRaw)
+  export const asStringInQuotes = memoize(asStringInQuotesRaw)
+  export const asBoolean = memoize(asBooleanRaw)
+  export const asNumber = memoize(asNumberRaw)
+
 }
 /** This persists values, BUT they are deleted when the card changes. */
 class ForCardPersistence {
