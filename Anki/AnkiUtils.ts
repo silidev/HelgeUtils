@@ -519,7 +519,12 @@ class JsApi {
   /** This is called after operations which cause the load of the next card or the back
    * in order to speed things up by avoiding unnecessary compute. */
   private static stopTheWorld = () => {
-    window.stop()
+    try {
+      window.stop()
+    } catch (e) {
+      // intentionally empty block
+    }
+    throw "ignoredException"
   }
   public static async addTagToCard() {
     if (JsApi.mock) return
