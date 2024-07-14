@@ -713,9 +713,9 @@ class JsApi {
      * https://github.com/ankidroid/Anki-Android/wiki/AnkiDroid-Javascript-API#speak
      */
     public static async speak(text: string, queueMode = 0) {
-      if (testingMode)
+      if (testingMode) {
         console.log("TTS1 speakFirstElement: " + text)
-
+      }
       if (JsApi.mock) return
 
       await (await JsApi.getApi())["ankiTtsSpeak"](text,queueMode)
@@ -753,6 +753,7 @@ class JsApi {
     }
     public static async flushQueue() {
       await JsApi.TTS.speak("", JsApi.TTS.QUEUE_FLUSH)
+      // console.trace()
     }
     // end of TTS class
   }
