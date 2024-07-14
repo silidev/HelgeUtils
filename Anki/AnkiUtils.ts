@@ -535,7 +535,11 @@ class JsApi {
     if (JsApi.mock || JsApi.safeModeJsApi)
       return
     await (await JsApi.getApi()).ankiBuryCard()
-    this.stopTheWorld()
+    try {
+      this.stopTheWorld()
+    } catch (e) {
+      // yes, ignore any exceptions from this
+    }
   }
   public static answerEase(easeButtonNumber: number) {
     if (JsApi.mock || JsApi.safeModeJsApi)
@@ -543,7 +547,11 @@ class JsApi {
 
     if (isMobile) {
       (window as any)["buttonAnswerEase" + easeButtonNumber]()
-      this.stopTheWorld()
+      try {
+        this.stopTheWorld()
+      } catch (e) {
+        // yes, ignore any exceptions from this
+      }
     } else
     if (debug)
       console.log("Called buttonAnswerEase"+easeButtonNumber)
@@ -625,7 +633,11 @@ class JsApi {
   }
   public static showAnswer() {
     window["showAnswer"]()
-    this.stopTheWorld()
+    try {
+      this.stopTheWorld()
+    } catch (e) {
+      // yes, ignore any exceptions from this
+    }
   }
   /**
    * Reschedule card with x days
@@ -649,7 +661,11 @@ class JsApi {
       return
 
     await (await JsApi.getApi()).ankiSetCardDue(days)
-    this.stopTheWorld()
+    try {
+      this.stopTheWorld()
+    } catch (e) {
+      // yes, ignore any exceptions from this
+    }
   }
   public static async cardId(): Promise<number> {
     if (JsApi.mock)
