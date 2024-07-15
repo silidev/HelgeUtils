@@ -166,6 +166,7 @@ namespace TTS {
    * - new LoopSpeaker().speak("whatever")
    * - and see public methods.
    * Old name: LoopSpeaker. */
+  const internalEnglishMarker = '²rS³9´'
   export class LoopSpeaker {
     private recursion: SpeakRecursion | undefined
     public constructor(private english: boolean = true, private repeatSentenceMode: Switch) {
@@ -296,10 +297,10 @@ namespace TTS {
 
       await JsApi.TTS.flushQueue()
 
-      //#Piep
-      const step1 = LoopSpeaker.removeSplitCharsAtEnd(input)
-      const step2 = step1 + ": " + this.ttsEndMarker
-      const array = step2.split(ttsPauseCharacters)
+      const step1 = input.replaceAll(".e ",internalEnglishMarker)
+      const step2 = LoopSpeaker.removeSplitCharsAtEnd(step1)
+      const step3 = step2 + ": " + this.ttsEndMarker //#Piep
+      const array = step3.split(ttsPauseCharacters)
 
       this.recursion = new SpeakRecursion(LoopSpeaker.joinDateParts(array),
           await SentenceIndex.getFromLocalStorage(), this.repeatSentenceMode)
@@ -366,7 +367,6 @@ namespace TTS {
       this.stopAfterSentence()
       await JsApi.TTS.stop()
     }
-
     stopAfterSentence = () => {
       clearInterval(this.intervalId)
       this.intervalId = undefined
@@ -376,7 +376,6 @@ namespace TTS {
 
       this.stopSpeakingFlag = true
     }
-
     speakArray() {
       if (this.stopSpeakingFlag || this.intervalId)
         return
@@ -416,15 +415,28 @@ namespace TTS {
       this.speakArray()
     }
     async speakNextElement() {
-      const sentenceToSpeak = this.currentSentence()
+      const speakMultiLanguage = (input: string) => {
+        const parts = input.split(internalEnglishMarker)
+        let flag = false
+        for (let i = 0; i < parts.length; i++) {
+          if (flag) {
+            JsApi.TTS.english()
+          } else {
+            JsApi.TTS.setDefaultLanguage()
+          }
+          flag = !flag
+          JsApi.TTS.speak(parts[i].trim(), JsApi.TTS.QUEUE_ADD).then()
+        }
+      }
+      const sentenceStep1 = this.currentSentence()
       if ( ! this.repeatSentenceMode.enabled()) {
         await this.sentenceIndex.increment()
       }
-      return JsApi.TTS.speak(sentenceToSpeak
+      const sentenceStep2 = sentenceStep1
           + (this.repeatSentenceMode.enabled()? " "+
               CssVars.asStringInQuotes("--ttsTextBetweenSentenceRepetitions")
               +" " : "")
-          , JsApi.TTS.QUEUE_ADD)
+      speakMultiLanguage(sentenceStep2)
     }
     /** The index of the sentence to speak */
     private sentenceIndex: SentenceIndex
