@@ -166,7 +166,6 @@ namespace TTS {
    * - new LoopSpeaker().speak("whatever")
    * - and see public methods.
    * Old name: LoopSpeaker. */
-  const internalEnglishMarker = '²rS³9´'
   export class LoopSpeaker {
     private recursion: SpeakRecursion | undefined
     public constructor(private english: boolean = true, private repeatSentenceMode: Switch) {
@@ -186,7 +185,7 @@ namespace TTS {
           e => {
             combinedInnerHtml += `<p>${e.innerHTML}</p>`
           })
-      await this.speak(
+      await this.speakNow(
           this.improveSpeak(combinedInnerHtml, improveSpeakReplace, this.english))
     }
     /***
@@ -289,7 +288,7 @@ namespace TTS {
 
       console.assert(JSON.stringify(output) === JSON.stringify(expectedOutput), `Expected ${JSON.stringify(expectedOutput)} but got ${JSON.stringify(output)}`)
     }
-    public async speak(input: string) {
+    public async speakNow(input: string) {
 
       if (this.recursion) {
         await this.recursion.stop()
