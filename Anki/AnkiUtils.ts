@@ -240,7 +240,7 @@ namespace TTS {
 
       await JsApi.TTS.flushQueue()
       await this.recursion.prevSentence()
-      await this.recursion.speakNext()
+      await this.recursion.speakNextElement()
     }
     public async stopSpeaking() {
       if (this.recursion)
@@ -292,13 +292,6 @@ namespace TTS {
 
       if (this.recursion) {
         await this.recursion.stop()
-        // prev version:
-        // // Continue if possible:
-        // if (this.recursion) {
-        //   this.setRepeatTimeout()
-        //   this.recursion.continue()
-        //   return
-        // }
       }
 
       await JsApi.TTS.flushQueue()
@@ -313,7 +306,7 @@ namespace TTS {
       this.setRepeatTimeout()
 
       // Speaks the first element without pausing before:
-      await this.recursion.speakNext()
+      await this.recursion.speakNextElement()
 
       // Continues speaking the following elements with pauses before:
       this.recursion.speakArray()
@@ -396,7 +389,7 @@ namespace TTS {
         return
       }
 
-      if (!await JsApi.TTS.isSpeaking()) {
+      if ( ! await JsApi.TTS.isSpeaking()) {
         clearInterval(this.intervalId)
         this.intervalId = undefined
         this.pauseAndSpeak()
@@ -417,12 +410,12 @@ namespace TTS {
       if (this.stopSpeakingFlag)
         return
 
-      await this.speakNext()
+      await this.speakNextElement()
 
       // Recursively speak further sentences:
       this.speakArray()
     }
-    async speakNext() {
+    async speakNextElement() {
       const sentenceToSpeak = this.currentSentence()
       if ( ! this.repeatSentenceMode.enabled()) {
         await this.sentenceIndex.increment()
