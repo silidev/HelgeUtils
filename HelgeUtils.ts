@@ -75,7 +75,7 @@ namespace HelgeUtils { /* Putting this in a namespace is needed for my AnkiDroid
      </template>
      </pre>*/
     export const unhandledExceptionAlert = (e: any) => {
-      let str = "Unhandled EXCEPTION! :" + e
+      let str = "HelgeUtils.Exceptions.unhandledExceptionAlert:" + e
       str += stackTrace(e)
       /* Do NOT call console.trace() here because the stack trace
          of this place here is not helpful, but instead very
