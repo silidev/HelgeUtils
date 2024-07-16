@@ -135,6 +135,7 @@ class ForCardPersistence {
 namespace TTS {
   import removeBySelector = HtmlUtils.Misc.removeBySelector
   import Switch = HelgeUtils.Types.Switch
+  import NOT = HelgeUtils.NOT
   namespace Config {
     /** If you have a CSS config that would override these. */
     export const speaking_pause_after_each_sentence = 2
@@ -302,7 +303,7 @@ namespace TTS {
       const array = step3.split(ttsPauseCharacters)
 
       this.recursion = new SpeakRecursion(LoopSpeaker.joinDateParts(array),
-          await SentenceIndex.getFromLocalStorage(), this.repeatSentenceMode)
+          await SentenceIndex.getFromLocalStorage(), this.repeatSentenceMode, this.english)
       this.setRepeatTimeout()
 
       // Speaks the first element without pausing before:
@@ -356,7 +357,8 @@ namespace TTS {
     private timeoutId: number | undefined
     private stopSpeakingFlag = false
     private readonly sentencesArray: string[]
-    constructor(input: string[], startSentenceIndex: number, private repeatSentenceMode: Switch) {
+    constructor(input: string[], startSentenceIndex: number,
+        private repeatSentenceMode: Switch, private english: boolean) {
       const containsSpeech = (str: string): boolean => str.trim().length > 0
       const removeEmptyStrings = (arr: string[]): string[] => arr.filter(containsSpeech)
       this.sentencesArray = removeEmptyStrings(input)
@@ -420,7 +422,7 @@ namespace TTS {
         for (let i = 0; i < parts.length; i++) {
           if (flag) {
             JsApi.TTS.english()
-          } else {
+          } else if ( NOT(this.english)) {
             JsApi.TTS.setDefaultLanguage()
           }
           flag = !flag

@@ -23,6 +23,7 @@ namespace HelgeUtils { /* Putting this in a namespace is needed for my AnkiDroid
       }
     }
   }
+  export const NOT = (input: boolean) => !input
   // @ts-ignore
   const ankiSpecialsSwitch = window.koh455?.ankiSpecialsSwitch
   export namespace Exceptions {
