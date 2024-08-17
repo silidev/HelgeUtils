@@ -239,7 +239,8 @@ namespace HtmlUtils { /* Putting this in a namespace is needed for my AnkiDroid 
     }
 
     /**
-     * Makes a text area element auto-save its content to a cookie after each modified character (input event).
+     * Makes a text area element auto-save its content to a cookie after each modified
+     * character (input event).
      * @param storageKey - The name of the cookie to store the text area content.
      * @param id - The ID of the text area element.
      * @param handleError - A function to call when an error occurs.
@@ -366,6 +367,7 @@ namespace HtmlUtils { /* Putting this in a namespace is needed for my AnkiDroid 
       setNumber(name: string, value: number): void
       setDate(name: string, value: Date): void
       getDate(name: string): Date | null
+      removeItem(name: string): void
     }
     export abstract class BsProviderExtras {
       abstract setString(itemName: string, itemValue: string): void
@@ -427,6 +429,10 @@ namespace HtmlUtils { /* Putting this in a namespace is needed for my AnkiDroid 
       }
       getString(name: string): string | null {
         return localStorage.getItem(name)
+
+      }
+      removeItem(name: string) {
+        localStorage.removeItem(name)
 
       }
     }
@@ -494,8 +500,9 @@ namespace HtmlUtils { /* Putting this in a namespace is needed for my AnkiDroid 
     }
   }
   /**
-   * Known "problems": If the user clicks on the button multiple times in a row, the checkmark will
-   * be appended multiple times. ... no time for that. Where possible just use HtmlUtils.addClickListener(...).
+   * Known "problems": If the user clicks on the button multiple times in a row, the
+   * checkmark will be appended multiple times. ... no time for that. Where possible just
+   * use HtmlUtils.addClickListener(...).
    */
   export const signalClickToUser = (element: HTMLElement) => {
     const before = element.innerHTML

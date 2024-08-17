@@ -638,6 +638,9 @@ class JsApi {
     return (await JsApi.CallWithFailNotification.asNumber("ankiGetCardFactor"))
   }
   public static showAnswer() {
+    if (JsApi.mock) {
+      console.log("showAnswer")
+    }
     window["showAnswer"]()
     try {
       this.stopTheWorld()
@@ -1137,7 +1140,10 @@ class Anki {
      * Anything given to this method is probably appended to the speak queue
      * and there the "Now" in the name is misleading. But for now I am used
      * to this. */
-    public static speakEnglish = async (text: string) => {
+    public static speakEnglish = async (text: string | null) => {
+      if (! text) {
+        return
+      }
       await JsApi.TTS.english()
       await JsApi.TTS.speak(text)
     }
