@@ -858,7 +858,7 @@ class Anki {
     }
 
     if (label_only_min_and_hour_default_buttons) {
-      if (unit==="h" || unit==="m")
+      if (unit==="h" || unit==="m" || unit==="min")
         return value+" "+unit
 
       return ""
