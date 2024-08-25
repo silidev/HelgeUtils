@@ -844,6 +844,11 @@ class Anki {
 
     const nextTimeValueAndUnit = this.parseButtonTimeStrNumberAndUnit(nextTimeString)
     let value = nextTimeValueAndUnit.value
+
+    if (isNaN(value)) {
+      // This is an error case fallback.
+      return nextTimeString
+    }
     const unit = nextTimeValueAndUnit.unit
 
     { /* Round the value if it is close to an integer */
@@ -937,7 +942,7 @@ class Anki {
 
     if (match) {
       const value = parseFloat(match[0])
-      const unit = step1.substring(match[0].length)
+      const unit = step1.substring(match[0].length).trim()
       return {value, unit}
     } else {
       // printError(`Error in parseButtonTimeStrNumberAndUnit: input: "${step1}" match: "${match}"`)
