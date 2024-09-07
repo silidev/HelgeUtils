@@ -174,15 +174,11 @@ namespace TTS {
           ? Config.ttsEndMarkerEnglish
           : Config.ttsEndMarkerGerman
     }
-    /** TTS speaks part of the DOM.
-     *
-     * @param improveSpeakReplace
-     * @param selectors DOM selectors of what to speak.*/
-    public speakSelectors = async (combinedInnerHtml: string,
+    public speak = async (textToSpeak: string,
         improveSpeakReplace: TTS.ImproveSpeakReplaceFunction
             = TTS.defaultImproveSpeakReplace) => {
       await this.speakNow(
-          this.improveSpeak(combinedInnerHtml, improveSpeakReplace, this.english))
+          this.improveSpeak(textToSpeak, improveSpeakReplace, this.english))
     }
     /***
      * Should be named "modifyBeforeSpeak", but I am used to this. */
