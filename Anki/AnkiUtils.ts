@@ -1141,15 +1141,18 @@ class Anki {
       return JsApi.TTS.flushQueue()
 
     }
-    /**
-     * Anything given to this method is probably appended to the speak queue
-     * and there the "Now" in the name is misleading. But for now I am used
-     * to this. */
     public static speakEnglish = async (text: string | null) => {
       if (! text) {
         return
       }
       await JsApi.TTS.english()
+      await JsApi.TTS.speak(text)
+    }
+    public static speakDefaultLanguage = async (text: string | null) => {
+      if (! text) {
+        return
+      }
+      await JsApi.TTS.setDefaultLanguage()
       await JsApi.TTS.speak(text)
     }
   }
