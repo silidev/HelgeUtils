@@ -151,7 +151,9 @@ namespace TTS {
   /** This is called right before the real speaking starts b/c some headphones do not
    * output the very first sound. */
   export const ehSoundToStartAudio = async () => {
-    await ehSound()
+    await Anki.TTS.setSpeed(.5)
+    await Anki.TTS.setDefaultLanguage()
+    await Anki.TTS.speak('ä')
   }
   export const runTests = () => {
     LoopSpeaker.runTests()
