@@ -177,7 +177,7 @@ namespace TTS {
     public speak = async (textToSpeak: string,
         improveSpeakReplace: TTS.ImproveSpeakReplaceFunction
             = TTS.defaultImproveSpeakReplace) => {
-      await this.speakNow(
+      await this.speakLooped(
           this.improveSpeak(textToSpeak, improveSpeakReplace, this.english))
     }
     /***
@@ -280,7 +280,7 @@ namespace TTS {
 
       console.assert(JSON.stringify(output) === JSON.stringify(expectedOutput), `Expected ${JSON.stringify(expectedOutput)} but got ${JSON.stringify(output)}`)
     }
-    public async speakNow(input: string) {
+    public async speakLooped(input: string) {
 
       if (this.recursion) {
         await this.recursion.stop()
