@@ -178,14 +178,9 @@ namespace TTS {
      *
      * @param improveSpeakReplace
      * @param selectors DOM selectors of what to speak.*/
-    public speakSelectors = async (selectors: string,
+    public speakSelectors = async (combinedInnerHtml: string,
         improveSpeakReplace: TTS.ImproveSpeakReplaceFunction
             = TTS.defaultImproveSpeakReplace) => {
-      let combinedInnerHtml = ""
-      document.querySelectorAll(selectors).forEach(
-          e => {
-            combinedInnerHtml += `<p>${e.innerHTML}</p>`
-          })
       await this.speakNow(
           this.improveSpeak(combinedInnerHtml, improveSpeakReplace, this.english))
     }
