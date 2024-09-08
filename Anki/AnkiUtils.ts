@@ -150,7 +150,7 @@ namespace TTS {
   }
   /** This is called right before the real speaking starts b/c some headphones do not
    * output the very first sound. */
-  export const ehSoundToStartAudio = async () => {
+  export const soundToStartAudio = async () => {
     await Anki.TTS.setSpeed(.5)
     await Anki.TTS.setDefaultLanguage()
     await Anki.TTS.speak('ä')
@@ -310,7 +310,7 @@ namespace TTS {
       this.setRepeatTimeout()
 
       // Speaks the first element without pausing before:
-      await TTS.ehSoundToStartAudio()
+      await TTS.soundToStartAudio()
       await this.recursion.speakNextElement()
 
       // Continues speaking the following elements with pauses before:
@@ -414,7 +414,7 @@ namespace TTS {
       if (this.stopSpeakingFlag)
         return
 
-      await TTS.ehSoundToStartAudio()
+      await TTS.soundToStartAudio()
       await this.speakNextElement()
 
       // Recursively speak further sentences:
