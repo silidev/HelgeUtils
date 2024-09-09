@@ -131,6 +131,11 @@ class ForCardPersistence {
 
   }
 }
+/** This is called right before the real speaking starts b/c some headphones do not
+ * output the very first sound. */
+const soundToStartAudio = () => {
+  HtmlUtils.Media.beep(50, 500, .1)
+}
 /** See {@link LoopSpeaker}*/
 namespace TTS {
   import removeBySelector = HtmlUtils.Misc.removeBySelector
@@ -147,11 +152,6 @@ namespace TTS {
     await Anki.TTS.setSpeed(2)
     await Anki.TTS.setDefaultLanguage()
     await Anki.TTS.speak('ä')
-  }
-  /** This is called right before the real speaking starts b/c some headphones do not
-   * output the very first sound. */
-  export const soundToStartAudio = async () => {
-    HtmlUtils.Media.beep(50,500,.1)
   }
   export const runTests = () => {
     LoopSpeaker.runTests()
@@ -308,7 +308,7 @@ namespace TTS {
       this.setRepeatTimeout()
 
       // Speaks the first element without pausing before:
-      await TTS.soundToStartAudio()
+      soundToStartAudio()
       await this.recursion.speakNextElement()
 
       // Continues speaking the following elements with pauses before:
@@ -319,7 +319,7 @@ namespace TTS {
       setTimeout(async () => {
         this.recursion?.stopAfterSentence()
         await JsApi.TTS.english()
-        await JsApi.TTS.speak("Timeout")
+        // await JsApi.TTS.speak("Timeout")
       }, ttsMinutesUntilStopRepeat * 60 * 1000)
     }
     static runTests() {
@@ -412,7 +412,7 @@ namespace TTS {
       if (this.stopSpeakingFlag)
         return
 
-      await TTS.soundToStartAudio()
+      await soundToStartAudio()
       await this.speakNextElement()
 
       // Recursively speak further sentences:
