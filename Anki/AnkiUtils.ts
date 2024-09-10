@@ -412,24 +412,24 @@ namespace TTS {
       if (this.stopSpeakingFlag)
         return
 
-      await soundToStartAudio()
+      soundToStartAudio()
       await this.speakNextElement()
 
       // Recursively speak further sentences:
       this.speakArray()
     }
     async speakNextElement() {
-      const speakMultiLanguage = (input: string) => {
+      const speakMultiLanguage = async (input: string) => {
         const parts = input.split(internalEnglishMarker)
         let flag = false
         for (let i = 0; i < parts.length; i++) {
           if (flag) {
-            JsApi.TTS.english()
-          } else if ( NOT(this.english)) {
-            JsApi.TTS.setDefaultLanguage()
+            await JsApi.TTS.english()
+          } else if (NOT(this.english)) {
+            await JsApi.TTS.setDefaultLanguage()
           }
           flag = !flag
-          JsApi.TTS.speak(parts[i].trim(), JsApi.TTS.QUEUE_ADD).then()
+          await JsApi.TTS.speak(parts[i].trim(), JsApi.TTS.QUEUE_ADD)
         }
       }
       const sentenceStep1 = this.currentSentence()
@@ -440,7 +440,7 @@ namespace TTS {
           + (this.repeatSentenceMode.enabled()? " "+
               CssVars.asStringInQuotes("--ttsTextBetweenSentenceRepetitions")
               +" " : "")
-      speakMultiLanguage(sentenceStep2)
+      await speakMultiLanguage(sentenceStep2)
     }
     /** The index of the sentence to speak */
     private sentenceIndex: SentenceIndex
