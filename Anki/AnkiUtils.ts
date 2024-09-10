@@ -11,6 +11,23 @@ import parseIntWithNull = HelgeUtils.Conversions.parseIntWithNull
 
 const localStorageWrapper: BsProvider = new HtmlUtils.BrowserStorage.LocalStorage()
 
+/** Used to stop TTS if too much time has passed. */
+class LastTTSDate {
+  public getDiffSeconds() {
+    const lastTTSDate = localStorageWrapper.getDate("lastTTSDate")
+    if (!lastTTSDate)
+      return 99999999
+    return ((new Date()).getTime() - lastTTSDate.getTime())/1000
+  }
+  public save() {
+    localStorageWrapper.setDate("lastTTSDate",new Date())
+  }
+  public toLong() {
+    return this.getDiffSeconds() > 60
+  }
+}
+const lastTTSDate = new LastTTSDate()
+
 /** I store config values which are needed on front and back in the CSS, because
  * the CSS is accessible from front and back.
  *
@@ -397,6 +414,7 @@ namespace TTS {
         this.pauseAndSpeak()
       } else {
         log("TTS1 is still speaking")
+        lastTTSDate.save()
       }
     }
     pauseAndSpeak() {
@@ -411,7 +429,8 @@ namespace TTS {
     async afterSpeakingPause() {
       if (this.stopSpeakingFlag)
         return
-
+      if (lastTTSDate.toLong())
+        return
       soundToStartAudio()
       await this.speakNextElement()
 
