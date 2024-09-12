@@ -368,6 +368,8 @@ namespace HtmlUtils { /* Putting this in a namespace is needed for my AnkiDroid 
       setDate(name: string, value: Date): void
       getDate(name: string): Date | null
       removeItem(name: string): void
+      getBoolean(name: string): boolean
+      setBoolean(name: string, value: boolean): void
     }
     export abstract class BsProviderExtras {
       abstract setString(itemName: string, itemValue: string): void
@@ -386,6 +388,8 @@ namespace HtmlUtils { /* Putting this in a namespace is needed for my AnkiDroid 
         }
         return null
       }
+      getBoolean(name: string) {return this.getString(name)==="true"}
+      setBoolean(name: string, value: boolean) {this.setString(name, value?"true":"false")}
       getNumber(name: string) {
         return parseFloatWithNull(this.getString(name))
       }
