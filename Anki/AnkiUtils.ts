@@ -23,7 +23,7 @@ class LastTTS {
     localStorageWrapper.setDate("lastTTSDate",new Date())
   }
   public toLongAgo() {
-    return this.getDiffSeconds() > 60
+    return this.getDiffSeconds() > 120
   }
 }
 const lastTTS = new LastTTS()
@@ -258,6 +258,7 @@ namespace TTS {
         return
 
       await JsApi.TTS.flushQueue()
+      soundToStartAudio()
       await this.recursion.prevSentence()
       await this.recursion.speakNextElement()
     }
