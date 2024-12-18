@@ -162,8 +162,8 @@ namespace TTS {
     /** If you have a CSS config that would override these. */
     export const speaking_pause_after_each_sentence = 2
     export const sleepMode_pause_after_each_sentence = 6
-    export const ttsEndMarkerGerman = "Piep"
-    export const ttsEndMarkerEnglish = "Beep"
+    export const ttsEndMarkerGerman = "Ende"
+    export const ttsEndMarkerEnglish = "End"
   }
   export const ehSound = async () => {
     await Anki.TTS.setSpeed(2)
