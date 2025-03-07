@@ -161,7 +161,7 @@ namespace TTS {
   namespace Config {
     /** If you have a CSS config that would override these. */
     export const speaking_pause_after_each_sentence = 2
-    export const sleepMode_pause_after_each_sentence = 6
+    export const sleepMode_pause_after_each_sentence = 3
     export const ttsEndMarkerGerman = "Ende"
     export const ttsEndMarkerEnglish = "The End"
   }
