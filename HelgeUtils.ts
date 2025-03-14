@@ -490,9 +490,9 @@ namespace HelgeUtils { /* Putting this in a namespace is needed for my AnkiDroid
         /* For debugging reasons Execute only on the condition that the current day is 2025-03-14 */
 
         replacementList.forEach(([regex, replacement]) => {
-          if (new Date().toISOString().slice(0, 10) === "2025-03-14") {
-            console.log("regex: " + regex)
-          }
+          // if (new Date().toISOString().slice(0, 10) === "2025-03-13") {
+          //   console.log("regex: " + regex)
+          // }
           result = result.replaceAll(regex, replacement)
         })
         return result
