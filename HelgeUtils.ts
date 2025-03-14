@@ -487,8 +487,13 @@ namespace HelgeUtils { /* Putting this in a namespace is needed for my AnkiDroid
           replacementList: [RegExp | string, string][]): string => {
         let result = input
 
+        /* For debugging reasons Execute only on the condition that the current day is 2025-03-14 */
+
         replacementList.forEach(([regex, replacement]) => {
-          result = result.replace(regex, replacement)
+          if (new Date().toISOString().slice(0, 10) === "2025-03-14") {
+            console.log("regex: " + regex)
+          }
+          result = result.replaceAll(regex, replacement)
         })
         return result
       }
