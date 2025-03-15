@@ -360,6 +360,10 @@ namespace HelgeUtils { /* Putting this in a namespace is needed for my AnkiDroid
       throw new Error(output.join(","))
     }
 
+    export const assertFalse = (condition: boolean, ...output: any[]) => {
+      assert(!condition, ...output)
+    }
+
     /**
      * V2 27.04.2024
      */
