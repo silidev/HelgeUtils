@@ -797,12 +797,12 @@ class JsApi {
     public static async english() {
       if (JsApi.mock) return
 
-      await (await JsApi.getApi())["ankiTtsSetLanguage"]('en-US')
+      (await JsApi.getApi())["ankiTtsSetLanguage"]('en-US').then()
     }
     public static async setDefaultLanguage() {
       if (JsApi.mock) return
 
-      await (await JsApi.getApi())["ankiTtsSetLanguage"](ttsDefaultLanguage)
+      (await JsApi.getApi())["ankiTtsSetLanguage"](ttsDefaultLanguage).then()
     }
     public static async flushQueue() {
       await JsApi.TTS.speak("", JsApi.TTS.QUEUE_FLUSH)
