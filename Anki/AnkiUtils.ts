@@ -372,22 +372,7 @@ namespace TTS {
       set(normalModeValue)
     }
   }
-  /* When viewing the next note TTS will start after this many seconds */
-  export namespace NextNoteTtsDelay {
-    export const defaultValue = 12
-    export const getFromStorage = () => {{
-      return localStorageWrapper.getNumber("NextNoteTtsDelay.current")
-          ?? defaultValue
-    }}
-    export const writeToStorage = () => {{
-      localStorageWrapper.setNumber("NextNoteTtsDelay.current",current)
-    }}
-    export let current = getFromStorage()
-    export const set = (newValue: number) => {
-      current = newValue
-      writeToStorage()
-    }
-  }
+
   class SpeakRecursion {
     private intervalId: number | undefined
     private timeoutId: number | undefined
