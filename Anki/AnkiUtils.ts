@@ -319,9 +319,15 @@ namespace TTS {
       const step1 = input.replaceAll(".e ",internalEnglishMarker) // NOT .en
       const step2 = LoopSpeaker.removeSplitCharsAtEnd(step1)
       const step3 = step2 + ": " + this.ttsEndMarker //#Piep
-      const array = step3.split(ttsPauseCharacters)
+      const sentencesArray = step3.split(ttsPauseCharacters)
 
-      this.recursion = new SpeakRecursion(LoopSpeaker.joinDateParts(array),
+      /* Add a pause after the last sentence. */
+      const endOfNotePauseSeconds : number = ttsUi.endOfNotePauseSeconds.get()
+      for (let i = 0; i <  endOfNotePauseSeconds / TTS.SpeakingPauseAfterEachSentenceInSeconds.current; i++) {
+        sentencesArray.push(" ") // Untested, "..." is tested.
+      }
+
+      this.recursion = new SpeakRecursion(LoopSpeaker.joinDateParts(sentencesArray),
           await SentenceIndex.getFromLocalStorage(), this.repeatSentenceMode, this.english)
       this.setRepeatTimeout()
 
