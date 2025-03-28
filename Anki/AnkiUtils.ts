@@ -322,11 +322,11 @@ namespace TTS {
       const sentencesArray = step3.split(ttsPauseCharacters)
 
       /* Add a pause after the last sentence. */
-      const endOfNotePauseSeconds : number = ttsUi.endOfNotePauseSeconds.get()
-      for (let i = 0; i <  endOfNotePauseSeconds / TTS.SpeakingPauseAfterEachSentenceInSeconds.current; i++) {
+      const end = ttsUi.endOfNotePauseSeconds.get()
+          / TTS.SpeakingPauseAfterEachSentenceInSeconds.current
+      for (let i = 0; i <  end; i++) {
         sentencesArray.push(" ") // Untested, "..." is tested.
       }
-
       this.recursion = new SpeakRecursion(LoopSpeaker.joinDateParts(sentencesArray),
           await SentenceIndex.getFromLocalStorage(), this.repeatSentenceMode, this.english)
       this.setRepeatTimeout()
