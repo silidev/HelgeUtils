@@ -380,8 +380,8 @@ namespace TTS {
     private readonly sentencesArray: string[]
     constructor(input: string[], startSentenceIndex: number,
         private repeatSentenceMode: Switch, private english: boolean) {
-      const containsSpeech = (str: string): boolean => str.trim().length > 0
-      const removeEmptyStrings = (arr: string[]): string[] => arr.filter(containsSpeech)
+      const notBlank = (str: string): boolean => str.trim().length > 0
+      const removeEmptyStrings = (arr: string[]): string[] => arr.filter(notBlank)
       this.sentencesArray = removeEmptyStrings(input)
       this.sentenceIndex = new SentenceIndex(startSentenceIndex, this.sentencesArray.length)
     }
