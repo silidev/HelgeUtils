@@ -325,7 +325,7 @@ namespace TTS {
       const end = ttsUi.endOfNotePauseSeconds.get()
           / TTS.SpeakingPauseAfterEachSentenceInSeconds.current
       for (let i = 0; i <  end; i++) {
-        sentencesArray.push(" ") // Untested, "..." is tested.
+        sentencesArray.push("...") // "..." is tested. Just a space does not work.
       }
       this.recursion = new SpeakRecursion(LoopSpeaker.joinDateParts(sentencesArray),
           await SentenceIndex.getFromLocalStorage(), this.repeatSentenceMode, this.english)
