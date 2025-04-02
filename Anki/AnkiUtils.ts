@@ -322,7 +322,9 @@ namespace TTS {
       const sentencesArray = step3.split(ttsPauseCharacters)
 
       /* Add a pause after the last sentence. */
-      for (let i = 0; i <  ttsUi.endOfNotePauseMultiplicator.get(); i++) {
+      for (let i = 1 /* Intentionally starts at 1 b/c there is a single pause anyway. We only want to
+                      add the extra sentence pauses. */
+          ; i <  ttsUi.endOfNotePauseMultiplicator.get(); i++) {
         sentencesArray.push("...") // "..." is tested. Just a space does not work.
       }
       this.recursion = new SpeakRecursion(LoopSpeaker.joinDateParts(sentencesArray),
