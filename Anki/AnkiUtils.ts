@@ -8,6 +8,7 @@
 import printDebug = HtmlUtils.ErrorHandling.printDebug
 import assertTypeEquals = HelgeUtils.Misc.assertTypeEquals
 import parseIntWithNull = HelgeUtils.Conversions.parseIntWithNull
+import stackTrace = HelgeUtils.Exceptions.stackTrace
 
 const localStorageWrapper: BsProvider = new HtmlUtils.BrowserStorage.LocalStorage()
 
@@ -671,7 +672,13 @@ class JsApi {
     if (JsApi.mock) {
       console.log("showAnswer")
     }
-    window["showAnswer"]()
+    const DEBUG = false
+    if (DEBUG) {
+      printDebugPrj("Would show answer, but turned off."+stackTrace(new Error())
+      +"Dummy text to scroll up. Dummy text to scroll up. Dummy text to scroll up. Dummy text to scroll up. Dummy text to scroll up. Dummy text to scroll up. Dummy text to scroll up. Dummy text to scroll up. Dummy text to scroll up. Dummy text to scroll up. Dummy text to scroll up. Dummy text to scroll up. Dummy text to scroll up. Dummy text to scroll up. Dummy text to scroll up. Dummy text to scroll up. Dummy text to scroll up. Dummy text to scroll up.")
+      return
+    } else
+      window["showAnswer"]()
     try {
       this.stopTheWorld()
     } catch (e) {
