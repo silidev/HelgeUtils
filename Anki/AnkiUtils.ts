@@ -320,7 +320,7 @@ namespace TTS {
       const step1 = input.replaceAll(".e ",internalEnglishMarker) // NOT .en
       const step2 = LoopSpeaker.removeSplitCharsAtEnd(step1)
       const step3 = step2 + ": " + this.ttsEndMarker //#Piep
-      const sentencesArray = step3.split(ttsPauseCharacters)
+      const sentencesArray = step3.split(ttsSentenceSplitChars)
 
       /* Add a pause after the last sentence. */
       for (let i = 1 /* Intentionally starts at 1 b/c there is a single pause anyway. We only want to
