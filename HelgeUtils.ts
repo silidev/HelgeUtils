@@ -594,7 +594,7 @@ namespace HelgeUtils { /* Putting this in a namespace is needed for my AnkiDroid
       // Adds \s (whitespace), _, and - to the set of characters *not* to remove.
       // Note: Hyphen '-' must be placed at the end of the class or escaped `\-`
       // to avoid being interpreted as a range operator.
-      return str.replace(/[^\p{L}\p{N}\s_-]/gu, '');
+      return str.replace(/[^\p{L}\p{N}\p{P}\s]/gu, '')
     };
 
     export const testRemoveEmojis = () => {
