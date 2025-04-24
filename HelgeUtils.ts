@@ -580,13 +580,29 @@ namespace HelgeUtils { /* Putting this in a namespace is needed for my AnkiDroid
       testCapitalizeSentences()
     }
 
-    export const removeEmojis = (str: string): string => str.replace(/[^a-zA-Z0-9 _\-üöäÜÖÄß]/g, "")
+    export const removeAllButGermanAlphaNum = (str: string): string => str.replace(/[^a-zA-Z0-9 _\-üöäÜÖÄß]/g, "")
+
+    /**
+     * Removes all characters that are NOT Unicode letters, numbers,
+     * whitespace, or punctuation.
+     * Still aggressive towards emojis.
+     *
+     * @param str The input string.
+     * @returns The string with specified characters preserved.
+     */
+    export const removeEmojis = (str: string): string => {
+      // Adds \s (whitespace), _, and - to the set of characters *not* to remove.
+      // Note: Hyphen '-' must be placed at the end of the class or escaped `\-`
+      // to avoid being interpreted as a range operator.
+      return str.replace(/[^\p{L}\p{N}\s_-]/gu, '');
+    };
+
     export const testRemoveEmojis = () => {
       const runTest = (input: string, expected: string) => {
         assertEquals(Strings.removeEmojis(input), expected
             , "testRemoveEmojis failed")
       }
-      runTest("a👨‍👩‍👧‍👦b","ab")
+      runTest("a👨‍👩‍👧‍👦🦎b","ab")
       runTest("Td🏗️","Td")
     }
 

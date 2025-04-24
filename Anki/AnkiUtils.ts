@@ -9,6 +9,7 @@ import printDebug = HtmlUtils.ErrorHandling.printDebug
 import assertTypeEquals = HelgeUtils.Misc.assertTypeEquals
 import parseIntWithNull = HelgeUtils.Conversions.parseIntWithNull
 import stackTrace = HelgeUtils.Exceptions.stackTrace
+import removeEmojis = HelgeUtils.Strings.removeEmojis
 
 const localStorageWrapper: BsProvider = new HtmlUtils.BrowserStorage.LocalStorage()
 
@@ -780,12 +781,13 @@ class JsApi {
      * https://github.com/ankidroid/Anki-Android/wiki/AnkiDroid-Javascript-API#speak
      */
     public static async speak(text: string, queueMode = 0) {
+      const emojisRemovedText = removeEmojis(text)
       if (testingMode) {
-        console.log("TTS1 speakFirstElement: " + text)
+        console.log("TTS1 speakFirstElement: " + emojisRemovedText)
       }
       if (JsApi.mock) return
 
-      await (await JsApi.getApi())["ankiTtsSpeak"](text,queueMode)
+      await (await JsApi.getApi())["ankiTtsSpeak"](emojisRemovedText,queueMode)
     }
 
     /**
