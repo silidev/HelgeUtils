@@ -336,21 +336,38 @@ namespace HtmlUtils { /* Putting this in a namespace is needed for my AnkiDroid 
       stream.getTracks().forEach(track => track.stop())
     }
 
-    /* This sometimes just doesn't play anything, I dont know why. */
-    export const beep = (frequency: number, duration = 300, volume = .5) => {
+    /** There will always be only one beep playing at any time. */
+    export namespace Beep {
+
       const audioContext = new (window.AudioContext)();
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
+      let oscillator: OscillatorNode | null
+      let gainNode: GainNode | null
 
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
+      /** This sometimes just doesn't play anything, I dont know why. */
+      export const start = (frequency: number, duration = 300, volume = .5) => {
+        try {
+          oscillator?.stop(); /* Stop any old still playing beeps. */
+        } catch (error) {
+          if (error instanceof DOMException && error.name === 'InvalidStateError') {
+            // Ignore the error if the oscillator is already stopped
+          } else {
+            throw error
+          }
+        }
+        oscillator = audioContext.createOscillator();
+        gainNode = audioContext.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        oscillator.type = 'sine';
+        oscillator.frequency.value = frequency;
+        gainNode.gain.value = volume;
 
-      oscillator.type = 'sine';
-      oscillator.frequency.value = frequency;
-      gainNode.gain.value = volume;
-
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + duration / 1000);
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + duration / 1000);
+      }
+      export const stop = () => {
+        oscillator?.stop();
+      }
     }
   }
 

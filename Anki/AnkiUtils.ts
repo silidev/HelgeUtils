@@ -153,7 +153,7 @@ class ForCardPersistence {
 /** This is called right before the real speaking starts b/c some headphones do not
  * output the very first sound. */
 const soundToStartAudio = () => {
-  HtmlUtils.Media.beep(50, 500, .1)
+  HtmlUtils.Media.Beep.start(50, 500, .1)
 }
 /** See {@link LoopSpeaker}*/
 namespace TTS {
