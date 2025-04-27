@@ -462,11 +462,11 @@ namespace TTS {
         }
       }
       const sentenceStep1 = this.currentSentence()
-      if ( ! this.repeatSentenceMode.enabled()) {
+      if ( ! this.repeatSentenceMode.enabled() || isFront) {
         await this.sentenceIndex.increment()
       }
       const sentenceStep2 = sentenceStep1
-          + (this.repeatSentenceMode.enabled()? " "+
+          + (this.repeatSentenceMode.enabled() && isBack? " "+
               CssVars.asStringInQuotes("--ttsTextBetweenSentenceRepetitions")
               +" " : "")
       await speakMultiLanguage(sentenceStep2)
