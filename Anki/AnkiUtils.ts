@@ -230,7 +230,7 @@ namespace TTS {
     /** HtmlElement.textContent removes all <br>s, at least sometimes, but I want speaking pauses
      instead, so I replace them with periods. */
     public static convertNewLinesToSpeakingPauses = (input: string) => {{
-      return input.replaceAll("<br>", ". ")
+      return input.replaceAll("<br>", "\n")
     }}
     public async nextSentence() {
       if (!this.recursion)
