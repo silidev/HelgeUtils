@@ -431,10 +431,10 @@ namespace TTS {
       if (testingMode)
         console.log("--------------------------------- TTS pause for "
             +SpeakingPauseAfterEachSentenceInSeconds.current)
+      const pauseMillis = SpeakingPauseAfterEachSentenceInSeconds.current * 1000
+      ttsDelaySound.beep(pauseMillis)
       this.timeoutId = setTimeout(
-          () => this.afterSpeakingPause(),
-          SpeakingPauseAfterEachSentenceInSeconds.current * 1000
-      )
+          () => this.afterSpeakingPause(),pauseMillis)
     }
     async afterSpeakingPause() {
       if (this.stopSpeakingFlag)
