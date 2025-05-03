@@ -377,7 +377,7 @@ namespace HtmlUtils { /* Putting this in a namespace is needed for my AnkiDroid 
       /** Delete all entries whose keys begin with prefix */
       clear(prefix: string): void
       getAllKeys(): Object
-      setString(key: string, value: string): void
+      setString(key: string, value: string | null): void
       getString(itemName: string): string | null
       getAndJsonParse<T>(name: string): T | null
       setJsonStringified(itemName: string, itemValue: unknown): void
@@ -690,7 +690,8 @@ namespace HtmlUtils { /* Putting this in a namespace is needed for my AnkiDroid 
    * @param message
    * @param durationMs
    */
-  export const showToast = (message: string, durationMs = 1000) => {
+  export const showToast = (message: string|null, durationMs = 1000) => {
+    if (!message) return
     const alertBox = document.createElement("div")
     alertBox.classList.add("showToastMsg")
 
