@@ -323,11 +323,13 @@ namespace TTS {
       const step3 = step2 + ": " + this.ttsEndMarker //#Piep
       const sentencesArray = step3.split(ttsSentenceSplitChars)
 
-      /* Add a pause after the last sentence. */
-      for (let i = 1 /* Intentionally starts at 1 b/c there is a single pause anyway. We only want to
-                      add the extra sentence pauses. */
-          ; i <  ttsUi.endOfNotePauseMultiplicator.get(); i++) {
-        sentencesArray.push("...") // "..." is tested. Just a space does not work.
+      /* Add a pause after the last sentence on the front side. */
+      if (isFront) {
+        for (let i = 1 /* Intentionally starts at 1 b/c there is a single pause anyway. We only want to
+                        add the extra sentence pauses. */
+            ; i <  ttsUi.endOfFrontPauseMultiplicator.get(); i++) {
+          sentencesArray.push("...") // "..." is tested. Just a space does not work.
+        }
       }
       this.recursion = new SpeakRecursion(LoopSpeaker.joinDateParts(sentencesArray),
           await SentenceIndex.getFromLocalStorage(), this.repeatSentenceMode, this.english)
