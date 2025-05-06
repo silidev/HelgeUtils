@@ -423,7 +423,7 @@ namespace TTS {
       if ( ! await JsApi.TTS.isSpeaking()) {
         clearInterval(this.intervalId)
         this.intervalId = undefined
-        if (this.sentenceIndex.isLastSentence()) {
+        if (this.sentenceIndex.isLastOrSecondLastSentence()) {
           HtmlUtils.Media.Beep.start(1000, interactionBeepDuration, .1)
         }
         this.pauseAndSpeak()
@@ -483,7 +483,6 @@ namespace TTS {
       await this.sentenceIndex.increment()
       return sentenceToSpeak
     }
-
     private currentSentence = () => {
       return this.sentencesArray[this.sentenceIndex.get()]
     }
@@ -529,6 +528,9 @@ namespace TTS {
     }
     public isLastSentence() {
       return this.sentenceIndex == this.numberOfSentences - 1
+    }
+    public isLastOrSecondLastSentence() {
+      return this.sentenceIndex >= this.numberOfSentences - 2
     }
     public decrement = async () => {
       if (this.sentenceIndex == 0) {
