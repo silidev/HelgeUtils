@@ -423,6 +423,9 @@ namespace TTS {
       if ( ! await JsApi.TTS.isSpeaking()) {
         clearInterval(this.intervalId)
         this.intervalId = undefined
+        if (this.sentenceIndex.isLastSentence()) {
+          HtmlUtils.Media.Beep.start(1000, interactionBeepDuration, .1)
+        }
         this.pauseAndSpeak()
       } else {
         log("TTS1 is still speaking")
