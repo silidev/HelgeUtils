@@ -337,16 +337,16 @@ namespace HtmlUtils { /* Putting this in a namespace is needed for my AnkiDroid 
     }
 
     /** There will always be only one beep playing at any time. */
-    export namespace Beep {
+    class Beep {
 
-      const audioContext = new (window.AudioContext)();
-      let oscillator: OscillatorNode | null
-      let gainNode: GainNode | null
+      private audioContext: AudioContext = new (window.AudioContext)()
+      private oscillator: OscillatorNode | null = null
+      private gainNode: GainNode | null = null
 
       /** This sometimes just doesn't play anything, I dont know why. */
-      export const start = (frequency: number, duration = 300, volume = .5) => {
+      public start(frequency: number, duration = 300, volume = .5) {
         try {
-          oscillator?.stop(); /* Stop any old still playing beeps. */
+          this.oscillator?.stop(); /* Stop any old still playing beeps. */
         } catch (error) {
           if (error instanceof DOMException && error.name === 'InvalidStateError') {
             // Ignore the error if the oscillator is already stopped
@@ -354,21 +354,22 @@ namespace HtmlUtils { /* Putting this in a namespace is needed for my AnkiDroid 
             throw error
           }
         }
-        oscillator = audioContext.createOscillator();
-        gainNode = audioContext.createGain();
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        oscillator.type = 'sine';
-        oscillator.frequency.value = frequency;
-        gainNode.gain.value = volume;
+        this.oscillator = this.audioContext.createOscillator();
+        this.gainNode = this.audioContext.createGain();
+        this.oscillator.connect(this.gainNode);
+        this.gainNode.connect(this.audioContext.destination);
+        this.oscillator.type = 'sine';
+        this.oscillator.frequency.value = frequency;
+        this.gainNode.gain.value = volume;
 
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + duration / 1000);
+        this.oscillator.start(this.audioContext.currentTime);
+        this.oscillator.stop(this.audioContext.currentTime + duration / 1000);
       }
-      export const stop = () => {
-        oscillator?.stop();
+      public stop() {
+        this.oscillator?.stop();
       }
     }
+    export const beep = new Beep()
   }
 
   export namespace BrowserStorage {
