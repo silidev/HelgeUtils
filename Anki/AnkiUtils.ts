@@ -320,7 +320,7 @@ namespace TTS {
 
       const step1 = input.replaceAll(".e ",internalEnglishMarker) // NOT .en
       const step2 = LoopSpeaker.removeSplitCharsAtEnd(step1)
-      const step3 = step2 + ": " + this.ttsEndMarker //#Piep
+      const step3 = step2 + ": " + this.ttsEndMarker
       const sentencesArray = step3.split(ttsSentenceSplitChars)
 
       /* Add a pause after the last sentence on the front side. */
@@ -468,9 +468,9 @@ namespace TTS {
         await this.sentenceIndex.increment()
       }
       const sentenceStep2 = sentenceStep1
-          + (this.repeatSentenceMode.enabled() && isBack? " "+
-              CssVars.asStringInQuotes("--ttsTextBetweenSentenceRepetitions")
-              +" " : "")
+          + (this.repeatSentenceMode.enabled() && isBack && !this.sentenceIndex.isLastSentence()
+              ? " "+ CssVars.asStringInQuotes("--ttsTextBetweenSentenceRepetitions") +" "
+              : "")
       await speakMultiLanguage(sentenceStep2)
     }
     /** The index of the sentence to speak */
@@ -523,6 +523,9 @@ namespace TTS {
       if (this.sentenceIndex >= this.numberOfSentences) {
         this.sentenceIndex = 0
       }
+    }
+    public isLastSentence() {
+      return this.sentenceIndex == this.numberOfSentences - 1
     }
     public decrement = async () => {
       if (this.sentenceIndex == 0) {
