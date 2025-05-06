@@ -336,9 +336,8 @@ namespace HtmlUtils { /* Putting this in a namespace is needed for my AnkiDroid 
       stream.getTracks().forEach(track => track.stop())
     }
 
-    /** There will always be only one beep playing at any time. */
-    class Beep {
-
+    /** Each instance will always be only one beep playing at any time. */
+    export class Beep {
       private audioContext: AudioContext = new (window.AudioContext)()
       private oscillator: OscillatorNode | null = null
       private gainNode: GainNode | null = null
@@ -369,6 +368,7 @@ namespace HtmlUtils { /* Putting this in a namespace is needed for my AnkiDroid 
         this.oscillator?.stop();
       }
     }
+    /* This is the default instance for beep which should override each other. */
     export const beep = new Beep()
   }
 
