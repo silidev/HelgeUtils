@@ -455,14 +455,14 @@ namespace TTS {
     async speakNextElement() {
       const speakMultiLanguage = async (input: string) => {
         const parts = input.split(internalEnglishMarker)
-        let flag = false
+        let currentlyEnglish = this.english
         for (let i = 0; i < parts.length; i++) {
-          if (flag) {
+          if (currentlyEnglish) {
             await JsApi.TTS.english()
-          } else if (NOT(this.english)) {
+          } else {
             await JsApi.TTS.setDefaultLanguage()
           }
-          flag = !flag
+          currentlyEnglish = !currentlyEnglish
           await JsApi.TTS.speak(parts[i].trim(), JsApi.TTS.QUEUE_ADD)
         }
       }
@@ -829,13 +829,17 @@ class JsApi {
       return JsApi.CallWithFailNotification.asBoolean("ankiTtsIsSpeaking")
     }
     public static async english() {
-      if (JsApi.mock) return
-
+      if (JsApi.mock) {
+        console.log("TTS1 set language to English");
+        return
+      }
       (await JsApi.getApi())["ankiTtsSetLanguage"]('en-US').then()
     }
     public static async setDefaultLanguage() {
-      if (JsApi.mock) return
-
+      if (JsApi.mock) {
+        console.log("TTS1 set default language");
+        return
+      }
       (await JsApi.getApi())["ankiTtsSetLanguage"](ttsDefaultLanguage).then()
     }
     public static async flushQueue() {
