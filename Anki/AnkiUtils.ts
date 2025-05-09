@@ -470,11 +470,14 @@ namespace TTS {
       if ( ! this.repeatSentenceMode.enabled() || isFront) {
         await this.sentenceIndex.increment()
       }
-      const sentenceStep2 = sentenceStep1
-          + (this.repeatSentenceMode.enabled() && isBack && !this.sentenceIndex.isLastSentence()
-              ? " "+ CssVars.asStringInQuotes("--ttsTextBetweenSentenceRepetitions") +" "
-              : "")
-      await speakMultiLanguage(sentenceStep2)
+      await speakMultiLanguage(sentenceStep1)
+      if (this.repeatSentenceMode.enabled() && isBack && !this.sentenceIndex.isLastSentence()) {
+        await JsApi.TTS.english()
+        await JsApi.TTS.speak(
+            " "+ CssVars.asStringInQuotes("--ttsTextBetweenSentenceRepetitions") +" "
+            , JsApi.TTS.QUEUE_ADD)
+        await JsApi.TTS.setDefaultLanguage()
+      }
     }
     /** The index of the sentence to speak */
     private sentenceIndex: SentenceIndex
