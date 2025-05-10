@@ -318,7 +318,7 @@ namespace TTS {
 
       await JsApi.TTS.flushQueue()
 
-      const step1 = input.replaceAll(".e ",internalEnglishMarker) // NOT .en
+      const step1 = input.replaceAll(".e ","\n"+internalEnglishMarker) // NOT .en
       const step2 = LoopSpeaker.removeSplitCharsAtEnd(step1)
       const step3 = step2 + (isBack ? ": " + this.ttsEndMarker : "")
       const sentencesArray = step3.split(ttsSentenceSplitChars)
