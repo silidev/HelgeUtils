@@ -159,7 +159,6 @@ const soundToStartAudio = () => {
 namespace TTS {
   import removeBySelector = HtmlUtils.Misc.removeBySelector
   import Switch = HelgeUtils.Types.Switch
-  import NOT = HelgeUtils.NOT
   namespace Config {
     /** If you have a CSS config that would override these. */
     export const speaking_pause_after_each_sentence = 2
@@ -312,6 +311,46 @@ namespace TTS {
     }
     public async speakLooped(input: string) {
 
+      /**
+       * Modifies the given array in-place by joining its last two string elements.
+       * The original last two elements are replaced by a single string which is their concatenation,
+       * effectively reducing the array length by one.
+       * If the array has fewer than two elements, it is returned unchanged.
+       * If the input array is null or undefined, an empty array is returned.
+       *
+       * @param arr The array of strings to modify. Can be null or undefined.
+       * @param separator An optional string to insert between the two joined strings. Defaults to an empty string (direct concatenation).
+       * @returns The modified array. If the input `arr` was null/undefined, a new empty array is returned.
+       *          If `arr` had fewer than 2 elements, the original `arr` is returned unchanged.
+       *          Otherwise, the original `arr` (now modified) is returned.
+       */
+      const joinLastTwoElementsInPlace = (
+          arr: string[] | null | undefined,
+          separator: string = ""
+      ): string[] => {
+        // Handle null or undefined input array
+        if (!arr) {
+          return []; // Return a new empty array as we can't modify null/undefined
+        }
+
+        // Handle arrays with fewer than two elements (no modification possible)
+        if (arr.length < 2) {
+          return arr; // Return the original array as is
+        }
+
+        // At this point, arr has at least two elements.
+        // arr.pop() will remove the last element and return it.
+        // The non-null assertion operator (!) is safe here because arr.length >= 2.
+        const lastElement = arr.pop()!;
+
+        // arr[arr.length - 1] is now the element that was originally the second-to-last.
+        // We modify this element in place.
+        const secondLastElement = arr[arr.length - 1];
+        arr[arr.length - 1] = secondLastElement + separator + lastElement;
+
+        // Return the same array reference, which has now been modified.
+        return arr;
+      }
       if (this.recursion) {
         await this.recursion.stop()
       }
@@ -321,17 +360,26 @@ namespace TTS {
       const step1 = input.replaceAll(".e ","\n"+internalEnglishMarker) // NOT .en
       const step2 = LoopSpeaker.removeSplitCharsAtEnd(step1)
       const step3 = step2 + (isBack ? ": " + this.ttsEndMarker : "")
-      const sentencesArray = step3.split(ttsSentenceSplitChars)
+      const sentencesArrayStep1 = step3.split(ttsSentenceSplitChars)
+      const alwaysText = localStorageWrapper.getString("alwaysText");
+      let sentencesArrayStep2: string[]
+      if (alwaysText && !Strings.isBlank(alwaysText)) {
+        /* Join the alwaysText into the last real sentence only separated by a comma to
+        * avoid having a long pause between them. */
+        sentencesArrayStep2 = joinLastTwoElementsInPlace(sentencesArrayStep1, ", ")
+      } else {
+        sentencesArrayStep2 = sentencesArrayStep1
+      }
 
       /* Add a pause after the last sentence on the front side. */
       if (isFront) {
         for (let i = 1 /* Intentionally starts at 1 b/c there is a single pause anyway. We only want to
                         add the extra sentence pauses. */
             ; i <  ttsUi.endOfFrontPauseMultiplicator.get(); i++) {
-          sentencesArray.push("...") // "..." is tested. Just a space does not work.
+          sentencesArrayStep2.push("...") // "..." is tested. Just a space does not work.
         }
       }
-      this.recursion = new SpeakRecursion(LoopSpeaker.joinDateParts(sentencesArray),
+      this.recursion = new SpeakRecursion(LoopSpeaker.joinDateParts(sentencesArrayStep2),
           await SentenceIndex.getFromLocalStorage(), this.repeatSentenceMode, this.english)
       this.setRepeatTimeout()
 
