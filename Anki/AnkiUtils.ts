@@ -163,8 +163,8 @@ namespace TTS {
     /** If you have a CSS config that would override these. */
     export const speaking_pause_after_each_sentence = 2
     export const sleepMode_pause_after_each_sentence = 3
-    export const ttsEndMarkerGerman = "Ende der Notiz"
-    export const ttsEndMarkerEnglish = "The End of the note"
+    export const ttsEndMarkerGerman = "" // was "Ende der Notiz"
+    export const ttsEndMarkerEnglish = "" // was "The End of the note"
   }
   export const ehSound = async () => {
     await Anki.TTS.setSpeed(2)
@@ -198,6 +198,7 @@ namespace TTS {
   export class LoopSpeaker {
     private recursion: SpeakRecursion | undefined
     public constructor(private english: boolean = true, private repeatSentenceMode: Switch) {
+      /** Is now empty. Please use the alwaysText instead of you want this feature */
       this.ttsEndMarker = english
           ? Config.ttsEndMarkerEnglish
           : Config.ttsEndMarkerGerman
