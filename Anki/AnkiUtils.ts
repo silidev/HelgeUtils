@@ -363,7 +363,7 @@ namespace TTS {
       const sentencesArrayStep1 = step3.split(ttsSentenceSplitChars)
       const alwaysText = localStorageWrapper.getString("alwaysText");
       let sentencesArrayStep2: string[]
-      if (alwaysText && !Strings.isBlank(alwaysText)) {
+      if (!Strings.isBlank(alwaysText)) {
         /* Join the alwaysText into the last real sentence only separated by a comma to
         * avoid having a long pause between them. */
         sentencesArrayStep2 = joinLastTwoElementsInPlace(sentencesArrayStep1, ", ")

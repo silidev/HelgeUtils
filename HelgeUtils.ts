@@ -693,7 +693,7 @@ namespace HelgeUtils { /* Putting this in a namespace is needed for my AnkiDroid
       return replacements[key]
     })
 
-    export const isBlank = (input: string) => {
+    export const isBlank = (input: string | null) => {
       if (!input) {
         return true
       }
