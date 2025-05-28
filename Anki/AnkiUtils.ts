@@ -1113,7 +1113,14 @@ class Anki {
 
     { const due = await JsApi.cardDue()
       if (0 <= due && due < 10 * 365)
-        return daysSinceCreationOfCollection - due
+        {
+          const diff = daysSinceCreationOfCollection - due - 1
+          if (diff < 0) {
+            // If the card is due today, return 0.
+            return 0
+          }
+          return diff
+        }
     }
     // Strange number of days.  Thus, we assume that it is a new card,
     // for which the API function above returns a random integer.
