@@ -693,7 +693,7 @@ class JsApi {
    *
    * source: https://github.com/ankidroid/Anki-Android/wiki/AnkiDroid-Javascript-API#due
    */
-  public static async cardDue(): Promise<number> {
+  public static async cardDueInDaysRelativeToDeckCreation(): Promise<number> {
     if (JsApi.mock)
       return 0
 
@@ -1111,7 +1111,7 @@ class Anki {
 
     const daysSinceCreationOfCollection = this.daysSinceCreationOfCollection()
 
-    { const due = await JsApi.cardDue()
+    { const due = await JsApi.cardDueInDaysRelativeToDeckCreation()
       if (0 <= due && due < 10 * 365)
         return daysSinceCreationOfCollection - due
     }
@@ -1174,7 +1174,7 @@ class Anki {
     return JsApi.cardStatus()
   }
   public static async dueDate(): Promise<number> {
-    return JsApi.cardDue()
+    return JsApi.cardDueInDaysRelativeToDeckCreation()
   }
   public static async dueDateRaw(): Promise<any> {
     return JsApi.cardDueRaw()
