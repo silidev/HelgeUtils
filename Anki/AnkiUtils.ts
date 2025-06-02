@@ -1150,18 +1150,19 @@ class Anki {
    * */
   public static async daysSinceLastSeen() {
     if (testingMode)
-      return 15
+      return await this.daysSinceCardWasDue() + await JsApi.intervalOfCard()
+
 
     const daysSinceCardWasDue = await this.daysSinceCardWasDue()
 
-    if (daysSinceCardWasDue === 0) {
-      return 0
-    }
-
-    if (await JsApi.cardStatus()===2)
+    // if (daysSinceCardWasDue === 0) {
+    //   return 0
+    // }
+    //
+    // if (await JsApi.cardStatus()===2)
       return daysSinceCardWasDue + await JsApi.intervalOfCard()
 
-    return daysSinceCardWasDue
+    // return daysSinceCardWasDue
   }
   /* Proxy methods for the JsApi: */
   public static async addTag(): Promise<void> {
