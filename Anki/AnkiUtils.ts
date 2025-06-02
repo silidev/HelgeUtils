@@ -967,12 +967,14 @@ class Anki {
         value = Math.round(value)
     }
 
-    if (label_only_min_and_hour_default_buttons) {
-      if (unit==="h" || unit==="min")
-        return value+" "+unit
+    const isHourOrMinute = (unit === "h" || unit === "min")
 
+    if (label_only_min_and_hour_default_buttons && !isHourOrMinute) {
       return ""
     }
+    if (isHourOrMinute)
+      return value+" "+unit
+
     const next = this.tryToConvertButtonTimeStrToDays(nextTimeString)
     const ifNumberAppendD = (input: number | string ) => {
       if (typeof input === "number")
