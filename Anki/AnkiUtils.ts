@@ -962,8 +962,8 @@ class Anki {
     const unit = nextTimeValueAndUnit.unit
 
     { /* Round the value if it is close to an integer */
-      const roundedRatio = value/Math.round(value)
-      if (Math.abs(roundedRatio-1)<0.15)
+      const roundedFactor = value/Math.round(value)
+      if (Math.abs(roundedFactor-1)<0.15)
         value = Math.round(value)
     }
 
@@ -981,14 +981,14 @@ class Anki {
         return input + " d"
       return input
     }
-    const buttonRatio = await this.buttonRatio(next)
+    const buttonFactor = await this.buttonFactor(next)
     const daysStr = (days: string) => {
-      const buttonRatioIsEmpty = buttonRatio === ""
-      if (buttonRatioIsEmpty)
+      const buttonFactorIsEmpty = buttonFactor === ""
+      if (buttonFactorIsEmpty)
         return days
       return `x<p class="nextTimeOnButtons">(${days})</p>`
     }
-    return buttonRatio + daysStr(ifNumberAppendD(next))
+    return buttonFactor + daysStr(ifNumberAppendD(next))
   }
   public static async nextTimeStringForButton(i: number):Promise<string> {
     const returnValueFromApi: string = await JsApi.nextTimeStringForButtonRaw(i)
@@ -1018,7 +1018,7 @@ class Anki {
   public static async nextTimeValueAndUnitForButton(i: number) {
     return this.parseButtonTimeStrNumberAndUnit(await this.nextTimeStringForButton(i))
   }
-  static async buttonRatio(daysOfButton: number | string ) {
+  static async buttonFactor(daysOfButton: number | string ) {
     if (CssVars.asBoolean('showFactorsOnAnswerButtons') === false) {
       return ""
     }
