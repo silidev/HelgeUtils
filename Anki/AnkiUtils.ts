@@ -1019,6 +1019,9 @@ class Anki {
     return this.parseButtonTimeStrNumberAndUnit(await this.nextTimeStringForButton(i))
   }
   static async buttonRatio(daysOfButton: number | string ) {
+    if (CssVars.asBoolean('showFactorsOnAnswerButtons') === false) {
+      return ""
+    }
     const daysSinceLastSeen = await this.daysSinceLastSeen()
     if (typeof daysOfButton === "string" || daysSinceLastSeen=== 0)
       return ""
