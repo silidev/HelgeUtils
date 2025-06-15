@@ -375,8 +375,9 @@ namespace HtmlUtils { /* Putting this in a namespace is needed for my AnkiDroid 
   export namespace BrowserStorage {
     export interface BsProvider {
       isAvailable(): boolean
-      /** Delete all entries whose keys begin with prefix */
-      clear(prefix: string): void
+      /** Delete all entries whose keys begin with prefix.
+       * If the given prefix is null, all keys are deleted. */
+      clear(prefix: string | null): void
       getAllKeys(): Object
       setString(key: string, value: string | null): void
       getString(itemName: string): string | null
@@ -433,14 +434,13 @@ namespace HtmlUtils { /* Putting this in a namespace is needed for my AnkiDroid 
         return true
 
       }
-      clear(prefix: string): void {
+      clear(prefix?: string | null): void {
         Object.keys(localStorage).forEach(key => {
-          if (key.startsWith(prefix)) {
-            localStorage.removeItem(key)
+          if (!prefix || key.startsWith(prefix)) {
+            localStorage.removeItem(key);
           }
-        })
-      }
-      getAllKeys(): Object {
+        });
+      }      getAllKeys(): Object {
         return Object.keys(localStorage)
 
       }
