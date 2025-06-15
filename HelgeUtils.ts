@@ -701,8 +701,7 @@ namespace HelgeUtils { /* Putting this in a namespace is needed for my AnkiDroid
     }
 
     /* As of 2023 this is not built into JS or TS. */
-    export const isNotBlank = (input: string) => input.trim().length !== 0
-
+    export const isNotBlank = (input: string | null) => !isBlank(input);
     export const removeLineBreaks = (input: string) => {
       if (!input) {
         return input
