@@ -4,6 +4,7 @@ declare global {
 
   type JsApiAny = {"success": boolean, value: any}
   type JsApiString = {"success": boolean, value: string}
+  type JsApiStringArray = {"success": boolean, value: string[]}
   type JsApiNumber = {"success": boolean, value: number}
   type JsApiBoolean = {"success": boolean, value: boolean}
 
@@ -37,11 +38,17 @@ declare global {
     ankiTtsIsSpeaking: () => Promise<JsApiBoolean>,
     ankiTtsSetLanguage: (lang: string) => Promise<void>,
     ankiTtsSetSpeechRate: (speed: number) => Promise<void>,
+    ankiGetNoteTags: (noteId: string) => Promise<JsApiStringArray>,
+    ankiSetNoteTags: (noteId: string, tags: string[]) => Promise<JsApiStringArray>,
   }
 
   class AnkiDroidJS implements AnkiDroidJsInterface {
 
     constructor(options: { version: string; developer: string })
+
+    ankiGetNoteTags: () => Promise<JsApiStringArray>
+
+    ankiSetNoteTags(noteId: string, tags: string[]): Promise<JsApiStringArray>
 
     ankiAddTagToCard(): Promise<void>
 

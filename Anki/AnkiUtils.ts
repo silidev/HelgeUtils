@@ -833,6 +833,24 @@ class JsApi {
     }
     await (await JsApi.getApi())["ankiShowToast"](msg)
   }
+  public static async testNewApiMethod(): Promise<any>  {
+    const jsApi = await JsApi.getApi()
+    return await jsApi["ankiGetNoteTags"](this.noteId().toString())
+    /* This yields "Failed to make the request" in AnkiDroid 2.21.0beta1
+    *
+    * Siehe auch https://github.com/ankidroid/Anki-Android/issues/17716#issuecomment-2993621461*/
+  }
+  public static async getNoteTags(): Promise<string[]>  {
+    if (testingMode) {
+      console.log("getNoteTags")
+      return ["demo1", "demo2", "demo3"]
+    }
+    // if (JsApi.mock) {
+      return ["demo1", "demo2", "demo3"]
+    // }
+    // return this.CallWithFailNotification.asStringArray("ankiGetNoteTags")
+    // return await (await JsApi.getApi())["ankiGetNoteTags"]()
+  }
   public static TTS = class {
     public static readonly QUEUE_ADD = 1
     public static readonly QUEUE_FLUSH = 0
@@ -914,6 +932,14 @@ class JsApi {
         {
           const retVal: string = await this.valueAsAnyIfSuccess(methodName)
           assertTypeEquals(retVal,"string")
+          return retVal
+        }
+
+    public static asStringArray =
+        async (methodName: string): Promise<string[]> =>
+        {
+          const retVal: string[] = await this.valueAsAnyIfSuccess(methodName)
+          assertTypeEquals(retVal,"string[]")
           return retVal
         }
 
@@ -1280,5 +1306,11 @@ class Anki {
       await JsApi.TTS.setDefaultLanguage()
       await JsApi.TTS.speak(text)
     }
+  }
+  public static async getNoteTags(): Promise<string[]> {
+    return (await JsApi.getNoteTags())
+  }
+  public static async testNewApiMethod(): Promise<any> {
+    return (await JsApi.testNewApiMethod())
   }
 }
