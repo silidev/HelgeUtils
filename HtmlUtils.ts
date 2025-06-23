@@ -384,7 +384,7 @@ namespace HtmlUtils { /* Putting this in a namespace is needed for my AnkiDroid 
       getAndJsonParse<T>(name: string): T | null
       setJsonStringified(itemName: string, itemValue: unknown): void
       getNumber(name: string): number | null
-      setNumber(name: string, value: number): void
+      setNumber(name: string , value: number | null): void
       setDate(name: string, value: Date): void
       getDate(name: string): Date | null
       removeItem(name: string): void
@@ -392,7 +392,7 @@ namespace HtmlUtils { /* Putting this in a namespace is needed for my AnkiDroid 
       setBoolean(name: string, value: boolean): void
     }
     export abstract class BsProviderExtras {
-      abstract setString(itemName: string, itemValue: string): void
+      abstract setString(itemName: string, itemValue: string | null): void
       abstract getString(name: string): string | null
       setJsonStringified(itemName: string, itemValue: unknown): void {
         this.setString(itemName, JSON.stringify(itemValue))
@@ -413,8 +413,11 @@ namespace HtmlUtils { /* Putting this in a namespace is needed for my AnkiDroid 
       getNumber(name: string) {
         return parseFloatWithNull(this.getString(name))
       }
-      setNumber(name: string, value: number) {
-        this.setString(name,value.toString())
+      setNumber(name: string , value: number | null) {
+        if (!value) {
+          return
+        }
+        this.setString(name, value.toString())
       }
       /** Untested */
       getDate(name: string): Date | null {
@@ -446,9 +449,11 @@ namespace HtmlUtils { /* Putting this in a namespace is needed for my AnkiDroid 
       }
       /** Sets a local storage item with the given name and value.
        * @throws Error if the local storage item value exceeds 5242880 characters.*/
-      setString(itemName: string, itemValue: string): void {
+      setString(itemName: string, itemValue: string | null): void {
+        if (!itemValue) {
+          return
+        }
         localStorage.setItem(itemName, itemValue)
-
       }
       getString(name: string): string | null {
         return localStorage.getItem(name)
