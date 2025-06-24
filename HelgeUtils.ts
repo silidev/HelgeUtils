@@ -1122,6 +1122,21 @@ namespace HelgeUtils { /* Putting this in a namespace is needed for my AnkiDroid
     public static runTests() {
       this.testParseRelaxedIsoDate()
     }
+
+    public static dayToDaysMonthsOrYears(days: number): string {
+      // Over 365 days -> convert to years (y), rounded to one decimal place
+      if (days >= 365) {
+        const years = (days / 365).toFixed(1)
+        return `${years}y`
+      }
+      // Over 30 days -> convert to months (m), rounded to one decimal place
+      if (days >= 30) {
+        const months = (days / 30).toFixed(1)
+        return `${months}m`
+      }
+      // Otherwise, output in days (d)
+      return `${days}d`
+    }
     // end of DatesAndTimes:
   }
   export const DatesAndTimes = DatesAndTimesInternal

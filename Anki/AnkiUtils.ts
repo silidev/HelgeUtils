@@ -736,7 +736,7 @@ class JsApi {
 
     return (await JsApi.CallWithFailNotification.asNumber("ankiGetCardODue"))
   }
-  public static async intervalOfCard() {
+  public static async intervalOfCard(): Promise<number> {
     if (JsApi.mock) return 42
     return (await JsApi.CallWithFailNotification.asNumber("ankiGetCardInterval"))
   }
@@ -1155,7 +1155,7 @@ class Anki {
   }
   /** @return the number of days since the card was due.
    * */
-  public static async daysSinceCardWasDue() {
+  public static async daysSinceCardWasDue() : Promise<number> {
 
     const daysSinceCreationOfCollection = this.daysSinceCreationOfCollection()
 
