@@ -24,12 +24,11 @@ class AfterGradingService {
     if (noteId) {
       localStorageWrapper.removeItem(this._key)
       console.log("AfterGradingService.executeAtCardLoad: noteId=" + noteId)
-      await openSearch("nid:" + noteId)
+      await Anki.searchCard("nid:" + noteId)
     }
   }
 }
 const afterGradingService = new AfterGradingService()
-afterGradingService.executeAtCardLoad().then()
 
 /** Used to stop TTS if too much time has passed. */
 class LastTTS {
@@ -1330,5 +1329,9 @@ class Anki {
   }
   public static async testNewApiMethod(): Promise<any> {
     return (await JsApi.testNewApiMethod())
+  }
+
+  public static init = async () => {
+    await afterGradingService.executeAtCardLoad()
   }
 }
