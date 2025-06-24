@@ -161,8 +161,8 @@ namespace TTS {
   import Switch = HelgeUtils.Types.Switch
   namespace Config {
     /** If you have a CSS config that would override these. */
-    export const speaking_pause_after_each_sentence = 2
-    export const sleepMode_pause_after_each_sentence = 3
+    export const speaking_pause_after_each_split = 2
+    export const sleepMode_pause_after_each_split = 3
     export const ttsEndMarkerGerman = "" // was "Ende der Notiz"
     export const ttsEndMarkerEnglish = "" // was "The End of the note"
   }
@@ -408,10 +408,10 @@ namespace TTS {
   export namespace SpeakingPauseAfterEachSentenceInSeconds {
     export const normalModeValue: number =
         CssVars.asNumber("--ttsNormalMode_pause_after_sentences_in_seconds")
-        ?? Config.speaking_pause_after_each_sentence
+        ?? Config.speaking_pause_after_each_split
     export const sleepModeValue: number =
         CssVars.asNumber("--ttsSleepMode_pause_after_sentences_in_seconds")
-        ?? Config.sleepMode_pause_after_each_sentence
+        ?? Config.sleepMode_pause_after_each_split
     export const getFromStorage = () => {{
       return localStorageWrapper.getNumber("SpeakingPauseAfterEachSentenceInSeconds.current")
           ?? normalModeValue
