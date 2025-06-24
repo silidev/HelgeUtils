@@ -13,6 +13,24 @@ import removeEmojis = HelgeUtils.Strings.removeEmojis
 
 const localStorageWrapper: BsProvider = new HtmlUtils.BrowserStorage.LocalStorage()
 
+class AfterGradingService {
+  private readonly _key = 'AfterGradingService.noteId'
+
+  public async markThisNoteForBrowse() {
+    localStorageWrapper.setString(this._key, (await Anki.noteId()).toString())
+  }
+  public async executeAtCardLoad() {
+    const noteId = localStorageWrapper.getString(this._key)
+    if (noteId) {
+      localStorageWrapper.removeItem(this._key)
+      console.log("AfterGradingService.executeAtCardLoad: noteId=" + noteId)
+      await openSearch("nid:" + noteId)
+    }
+  }
+}
+const afterGradingService = new AfterGradingService()
+afterGradingService.executeAtCardLoad().then()
+
 /** Used to stop TTS if too much time has passed. */
 class LastTTS {
   private getDiffSeconds() {
