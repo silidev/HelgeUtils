@@ -13,6 +13,19 @@ import removeEmojis = HelgeUtils.Strings.removeEmojis
 
 const localStorageWrapper: BsProvider = new HtmlUtils.BrowserStorage.LocalStorage()
 
+/*
+class PreviousNoteId {
+  public async write() {
+    localStorageWrapper.setString('previousNoteId', localStorageWrapper.getString('currentNoteId'))
+    localStorageWrapper.setString('currentNoteId', (await Anki.noteId()).toString())
+  }
+  public async read() {
+    return localStorageWrapper.getString('previousNoteId')
+  }
+}
+const previousNoteId = new PreviousNoteId()
+*/
+
 class BrowseService {
   private readonly _key = 'AfterGradingService.noteId'
 
