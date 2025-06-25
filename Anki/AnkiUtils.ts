@@ -303,14 +303,16 @@ namespace TTS {
       if (this.recursion)
         await this.recursion.stop()
     }
-    private static removeSplitCharsAtEnd(input: string)  {
-      return input.replace(/[.?!]+\s*$/, "")
+    private static removeSplitCharsAtEnds(input: string)  {
+      return input
+           .replace(/(([.?!]+\s*)|\n*)$/, "")
+          .replace(/^(([.?!]+\s*)|\n*)/, "")
 
     }
     private static testRemoveSplitCharsAtEnd() {
-      const input = "Hello. World! "
+      const input = "\nHello. World!\n"
       const expectedOutput = "Hello. World"
-      const output = LoopSpeaker.removeSplitCharsAtEnd(input)
+      const output = LoopSpeaker.removeSplitCharsAtEnds(input)
 
       assertEquals(output,expectedOutput, `Expected ${expectedOutput} but got ${output}`)
     }
@@ -394,7 +396,7 @@ namespace TTS {
       await JsApi.TTS.flushQueue()
 
       const step1 = input.replaceAll(".e ","\n"+internalEnglishMarker) // NOT .en
-      const step2 = LoopSpeaker.removeSplitCharsAtEnd(step1)
+      const step2 = LoopSpeaker.removeSplitCharsAtEnds(step1)
       const step3 = step2 + (isBack ? ": " + this.ttsEndMarker : "")
       const sentencesArrayStep1 = step3.split(ttsRepeatSplitChars)
       const alwaysText = localStorageWrapper.getString("alwaysText");
