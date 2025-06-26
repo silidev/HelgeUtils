@@ -1105,6 +1105,7 @@ class Anki {
         roundedAsString = ratio.toFixed(1)
       return this.numToStr(roundedAsString)
     } catch (err) {
+      console.log(err)
       return "" // Intentially swallowed.
     }
   }
