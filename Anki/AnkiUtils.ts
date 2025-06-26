@@ -81,39 +81,46 @@ I want them to be dashes because that is how JetBrains marks it in double-click 
   import toBoolean = HelgeUtils.Types.SafeConversions.toBoolean
   import TypeException = HelgeUtils.Types.TypeException
   import memoize = HelgeUtils.memoize
-  const asStringRaw = (varName: string):string => {
-    return getComputedStyle(document.documentElement).getPropertyValue(varName)
+  /** @param varNameWithDashes The name of the CSS variable with dashes, e.g. "--someVar" */
+  const asStringRaw = (varNameWithDashes: string):string => {
+    return getComputedStyle(document.documentElement).getPropertyValue(varNameWithDashes)
   }
   /** Read this as: A CSS variable defined as a string in quotes. */
-  const asStringInQuotesRaw = (varName: string):string => {
-    return eval(asString(varName))
+  const asStringInQuotesRaw = (varNameWithDashes: string):string => {
+    return eval(asString(varNameWithDashes))
   }
-  const asBooleanRaw = (varName: string): boolean|null => {
-    const resultAsString = asString(varName)
+  /** @param varNameWithDashes The name of the CSS variable with dashes, e.g. "--someVar" */
+  const asBooleanRaw = (varNameWithDashes: string): boolean|null => {
+    const resultAsString = asString(varNameWithDashes)
     try {
       return toBoolean(resultAsString)
     } catch (e) {
-      throw new TypeException(`CSS var ${varName
+      throw new TypeException(`CSS var ${varNameWithDashes
       } does not contain a boolean: "${resultAsString
       }"`)
     }
   }
-  const asNumberRaw = (varName: string): number | null => {
-    const resultAsString = asString(varName)
+  /** @param varNameWithDashes The name of the CSS variable with dashes, e.g. "--someVar" */
+  const asNumberRaw = (varNameWithDashes: string): number | null => {
+    const resultAsString = asString(varNameWithDashes)
     if (!resultAsString) {
       return null
     }
     const result = parseFloat(resultAsString)
     if (isNaN(result)) {
-      throw new Error(`CSS var ${varName
+      throw new Error(`CSS var ${varNameWithDashes
       } does not contain a number: "${resultAsString
       }"`)
     }
     return result
   }
+  /** @param varNameWithDashes The name of the CSS variable with dashes, e.g. "--someVar" */
   export const asString = memoize(asStringRaw)
+  /** @param varNameWithDashes The name of the CSS variable with dashes, e.g. "--someVar" */
   export const asStringInQuotes = memoize(asStringInQuotesRaw)
+  /** @param varNameWithDashes The name of the CSS variable with dashes, e.g. "--someVar" */
   export const asBoolean = memoize(asBooleanRaw)
+  /** @param varNameWithDashes The name of the CSS variable with dashes, e.g. "--someVar" */
   export const asNumber = memoize(asNumberRaw)
 
 }
