@@ -75,7 +75,9 @@ const lastTTS = new LastTTS()
  }
  TS: CssVars.asBoolean("--someVar") !== true
  */
-namespace CssVars {
+namespace CssVarsWithDashes { /* Named "withDashes b/c I keep forgetting them in the call.
+I want them to be dashes because that is how JetBrains marks it in double-click on the name
+ in style files.*/
   import toBoolean = HelgeUtils.Types.SafeConversions.toBoolean
   import TypeException = HelgeUtils.Types.TypeException
   import memoize = HelgeUtils.memoize
@@ -86,7 +88,7 @@ namespace CssVars {
   const asStringInQuotesRaw = (varName: string):string => {
     return eval(asString(varName))
   }
-  const asBooleanRaw = (varName: string): boolean => {
+  const asBooleanRaw = (varName: string): boolean|null => {
     const resultAsString = asString(varName)
     try {
       return toBoolean(resultAsString)
@@ -444,10 +446,10 @@ namespace TTS {
   /** speakingPause: Pause between readings of the text in seconds */
   export namespace SpeakingPauseAfterEachSentenceInSeconds {
     export const normalModeValue: number =
-        CssVars.asNumber("--ttsNormalMode_pause_after_sentences_in_seconds")
+        CssVarsWithDashes.asNumber("--ttsNormalMode_pause_after_sentences_in_seconds")
         ?? Config.speaking_pause_after_each_split
     export const sleepModeValue: number =
-        CssVars.asNumber("--ttsSleepMode_pause_after_sentences_in_seconds")
+        CssVarsWithDashes.asNumber("--ttsSleepMode_pause_after_sentences_in_seconds")
         ?? Config.sleepMode_pause_after_each_split
     export const getFromStorage = () => {{
       return localStorageWrapper.getNumber("SpeakingPauseAfterEachSentenceInSeconds.current")
@@ -560,7 +562,7 @@ namespace TTS {
       if (this.repeatSentenceMode.enabled() && isBack && !this.sentenceIndex.isLastSentence()) {
         await JsApi.TTS.english()
         await JsApi.TTS.speak(
-            " "+ CssVars.asStringInQuotes("--ttsTextBetweenSentenceRepetitions") +" "
+            " "+ CssVarsWithDashes.asStringInQuotes("--ttsTextBetweenSentenceRepetitions") +" "
             , JsApi.TTS.QUEUE_ADD)
         await JsApi.TTS.setDefaultLanguage()
       }
@@ -647,7 +649,7 @@ namespace TTS {
  * */
 class JsApi {
   private static mock = isAnkiDesktop
-  private static safeModeJsApi = CssVars.asBoolean('--safeModeJsApi')
+  private static safeModeJsApi = CssVarsWithDashes.asBoolean('--safeModeJsApi')
   private static api: AnkiDroidJsInterface
   private static async getApi(): Promise<AnkiDroidJsInterface> {
     if (this.api)
@@ -1082,7 +1084,7 @@ class Anki {
     return this.parseButtonTimeStrNumberAndUnit(await this.nextTimeStringForButton(i))
   }
   static async buttonFactor(daysOfButton: number | string ) {
-    if (CssVars.asBoolean('showFactorsOnAnswerButtons') === false) {
+    if (CssVarsWithDashes.asBoolean('--showFactorsOnAnswerButtons') === false) {
       return ""
     }
     const daysSinceLastSeen = await this.daysSinceLastSeen()

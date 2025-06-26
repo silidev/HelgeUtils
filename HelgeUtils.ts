@@ -221,7 +221,7 @@ namespace HelgeUtils { /* Putting this in a namespace is needed for my AnkiDroid
           case "n":
             return false
           default:
-            return false
+            return null
             // throw new TypeException(`Not a boolean: "${resultAsString}"`)
         }
       }
