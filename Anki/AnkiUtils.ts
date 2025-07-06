@@ -260,7 +260,11 @@ namespace TTS {
         english: boolean = true): string => {
       const asDom = new DOMParser().parseFromString(
           LoopSpeaker.convertNewLinesToSpeakingPauses(str), "text/html")
-      removeBySelector(asDom,'a')
+      // old version: removeBySelector(asDom,'a')
+      // new:
+      asDom.querySelectorAll('a').forEach(linkElement =>
+        linkElement.replaceWith(" Link ")
+      )
       removeBySelector(asDom,'[style*="display: none"]')
       removeBySelector(asDom,'span.redacted')
 
