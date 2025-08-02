@@ -862,6 +862,11 @@ class JsApi {
       return
     return (await JsApi.getApi())["ankiMarkCard"]()
   }
+  public static async resetProgress() {
+    if (JsApi.mock)
+      return
+    return (await JsApi.getApi())["ankiResetProgress"]()
+  }
   public static async eta() {
     if (JsApi.mock) return 1
 
@@ -1303,6 +1308,9 @@ class Anki {
   }
   public static async toggleMarkCard(): Promise<void> {
     return JsApi.toggleMarkCard()
+  }
+  public static async resetProgress(): Promise<void> {
+    return JsApi.resetProgress()
   }
   public static async eta(): Promise<number> {
     return JsApi.eta()
