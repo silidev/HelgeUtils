@@ -1020,6 +1020,13 @@ namespace HelgeUtils { /* Putting this in a namespace is needed for my AnkiDroid
       return this.isValidDate(date) && date.toISOString() === str
     }
 
+    public static isToday (timestamp: Date) {
+      const today = new Date()
+      return timestamp.getFullYear() === today.getFullYear()
+          && timestamp.getMonth() === today.getMonth()
+          && timestamp.getDate() === today.getDate()
+    }
+
     public static isValidDate(date: Date) {
       return !isNaN(date.getTime())
     }

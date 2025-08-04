@@ -187,30 +187,24 @@ class ForCardPersistence {
   private readonly _pressedButtonPersistencePrefix = "pressedButton"
 
   public async setPressedButton(button: ClickableName) {
-    await this.setString(this._pressedButtonPersistencePrefix+"Key",button)
+    await this.setString(this._pressedButtonPersistencePrefix+"Button",button)
     await this.setString(this._pressedButtonPersistencePrefix+"CardId",Anki.cardId().toString())
     await this.setString(this._pressedButtonPersistencePrefix+"Timestamp",new Date().toISOString())
-    autoAnswerService.setAutoAnswerFlag()
+    await autoAnswerService.setAutoAnswerFlag()
   }
   public async getPressedButton() {
-    const isToday = (timestamp: Date) => {
-      const today = new Date()
-      return timestamp.getFullYear() === today.getFullYear()
-          && timestamp.getMonth() === today.getMonth()
-          && timestamp.getDate() === today.getDate()
-    }
     const fromPersistence = await this.getString(this._pressedButtonPersistencePrefix+"CardId");
-    const timestamp = new Date(
-        await this.getString(this._pressedButtonPersistencePrefix+"Timestamp") as string)
-    if ( ! isToday(timestamp) ) {
-      showToast("The pressed button persistence is not for today, so it is ignored.")
-      return
-    }
     if (fromPersistence === Anki.cardId().toString()) {
-      /* If everythings works, this if is always executed, b/c we are in
+      /* If everythings works, this block is always executed, b/c we are in
        "ForCardsPersistence", but I want to double check, b/c very bad things would
        happen if this goes wrong.*/
-      return await this.getString(this._pressedButtonPersistencePrefix+"Key") as ClickableName
+      const timestampDate = new Date(await this.getString(
+          this._pressedButtonPersistencePrefix+"Timestamp") as string)
+      if ( ! DatesAndTimes.isToday(timestampDate) ) {
+        showToast("The pressed button persistence is not for today, so it is ignored.")
+        return
+      }
+      return await this.getString(this._pressedButtonPersistencePrefix+"Button") as ClickableName
     }
     throw new Error("ForCardPersistence.getPressedButton: The pressed button persistence is not for this card!!!")
   }
