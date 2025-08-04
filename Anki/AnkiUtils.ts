@@ -144,19 +144,19 @@ class ForCardPersistence {
   }
   public async getString(key: string) {
     await this.clearOldItems()
-    return this.getRaw(key)
+    return this.getUnchecked(key)
   }
   /** Usually use get instead! */
-  private getRaw(key: string): string | null {
+  private getUnchecked(key: string): string | null {
     return this.bsProvider.getString(this.prefix + key)
 
   }
   public async setString(key: string, value: string) {
     await this.clearOldItems()
-    this.setRaw(key, value)
+    this.setUnchecked(key, value)
   }
   /** Usually use set instead! */
-  private setRaw = (key: string, value: string) => {
+  private setUnchecked = (key: string, value: string) => {
     this.bsProvider.setString(this.prefix + key, value)
 
   }
@@ -165,11 +165,17 @@ class ForCardPersistence {
     if (this.correctCardCheckDone)
       return
 
-    if (parseIntWithNull(this.getRaw('cardId')) !== await Anki.cardId()) {
+    if (await this.isSameCard()) {
       this.clear()
       this.correctCardCheckDone = true
-      this.setRaw('cardId', (await Anki.cardId()).toString())
+      this.setUnchecked('cardId', (await Anki.cardId()).toString())
     }
+  }
+  public async isSameCard() {
+    return this.getCardId() !== await Anki.cardId()
+  }
+  public getCardId(): number | null {
+    return parseIntWithNull(this.getUnchecked('cardId'))
   }
   /**
    * Deletes all items which are ours. */
@@ -188,9 +194,12 @@ class ForCardPersistence {
   public async getPressedButton() {
     const fromPersistence = await this.getString(this._pressedButtonPersistencePrefix+"CardId")
     if (fromPersistence === Anki.cardId().toString()) {
+      /* If everythings works, this if is always executed, b/c we are in
+       "ForCardsPersistence", but I want to double check, b/c very bad things would
+       happen if this goes wrong.*/
       return await this.getString(this._pressedButtonPersistencePrefix+"Key") as ClickableName
     }
-    return null;
+    throw new Error("ForCardPersistence.getPressedButton: The pressed button persistence is not for this card!!!")
   }
   async getNumber(name: string) {
     return parseFloatWithNull(await this.getString(name))
@@ -371,16 +380,18 @@ namespace TTS {
 
       /**
        * Modifies the given array in-place by joining its last two string elements.
-       * The original last two elements are replaced by a single string which is their concatenation,
-       * effectively reducing the array length by one.
-       * If the array has fewer than two elements, it is returned unchanged.
-       * If the input array is null or undefined, an empty array is returned.
+       * The original last two elements are replaced by a single string which is their
+       * concatenation, effectively reducing the array length by one. If the array has
+       * fewer than two elements, it is returned unchanged. If the input array is null or
+       * undefined, an empty array is returned.
        *
        * @param arr The array of strings to modify. Can be null or undefined.
-       * @param separator An optional string to insert between the two joined strings. Defaults to an empty string (direct concatenation).
-       * @returns The modified array. If the input `arr` was null/undefined, a new empty array is returned.
-       *          If `arr` had fewer than 2 elements, the original `arr` is returned unchanged.
-       *          Otherwise, the original `arr` (now modified) is returned.
+       * @param separator An optional string to insert between the two joined strings.
+       *     Defaults to an empty string (direct concatenation).
+       * @returns The modified array. If the input `arr` was null/undefined, a new empty
+       *     array is returned. If `arr` had fewer than 2 elements, the original `arr` is
+       *     returned unchanged. Otherwise, the original `arr` (now modified) is
+       *     returned.
        */
       const joinLastTwoElementsInPlace = (
           arr: string[] | null | undefined,
