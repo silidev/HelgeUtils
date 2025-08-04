@@ -190,7 +190,7 @@ class ForCardPersistence {
     await this.setString(this._pressedButtonPersistencePrefix+"Key",button)
     await this.setString(this._pressedButtonPersistencePrefix+"CardId",Anki.cardId().toString())
     await this.setString(this._pressedButtonPersistencePrefix+"Timestamp",new Date().toISOString())
-    await this.setString(showAnswerPersistenceKey, "true")
+    autoAnswerService.setAutoAnswerFlag()
   }
   public async getPressedButton() {
     const isToday = (timestamp: Date) => {
