@@ -177,13 +177,20 @@ class ForCardPersistence {
     this.bsProvider.clear(this.prefix)
 
   }
+
+  private readonly _pressedButtonPersistencePrefix = "pressedButton"
+
   public async setPressedButton(button: ClickableName) {
-    await this.setString("pressedButton",button)
+    await this.setString(this._pressedButtonPersistencePrefix+"Key",button)
+    await this.setString(this._pressedButtonPersistencePrefix+"CardId",Anki.cardId().toString())
 
   }
   public async getPressedButton() {
-    return await this.getString("pressedButton") as ClickableName
-
+    const fromPersistence = await this.getString(this._pressedButtonPersistencePrefix+"CardId")
+    if (fromPersistence === Anki.cardId().toString()) {
+      return await this.getString(this._pressedButtonPersistencePrefix+"Key") as ClickableName
+    }
+    return null;
   }
   async getNumber(name: string) {
     return parseFloatWithNull(await this.getString(name))
