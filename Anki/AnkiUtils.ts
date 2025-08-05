@@ -75,8 +75,8 @@ const lastTTS = new LastTTS()
  }
  TS: CssVars.asBoolean("--someVar") !== true
  */
-namespace CssVarsWithDashes { /* Named "withDashes b/c I keep forgetting them in the call.
-I want them to be dashes because that is how JetBrains marks it in double-click on the name
+namespace CssVarsWithDashes {  /* Named "withDashes b/c I keep forgetting them in the call.
+ I want them to be dashes because that is how JetBrains marks it in double-click on the name
  in style files.*/
   import toBoolean = HelgeUtils.Types.SafeConversions.toBoolean
   import TypeException = HelgeUtils.Types.TypeException
@@ -122,7 +122,58 @@ I want them to be dashes because that is how JetBrains marks it in double-click 
   export const asBoolean = memoize(asBooleanRaw)
   /** @param varNameWithDashes The name of the CSS variable with dashes, e.g. "--someVar" */
   export const asNumber = memoize(asNumberRaw)
+}
+class PressedButtonStorage {
+  constructor(private readonly mother: ForCardPersistence) {}
+  private readonly _pressedButtonPersistencePrefix = "pressedButton"
 
+  public async setButtonWithTimestamp(button: ClickableName) {
+    await this.setButtonRaw(button)
+    await this.setCardId(await Anki.cardId())
+    await this.setTimestamp()
+    await autoAnswerService.setAutoAnswerFlag()
+  }
+  private async setButtonRaw(button: ClickableName) {
+    await this.set('Button', button)
+  }
+  private async getButtonRaw(): Promise<ClickableName | null> {
+    return await this.get('Button') as ClickableName | null
+  }
+  private async setCardId(cardId: number) {
+    await this.set('CardId', cardId.toString())
+  }
+  private async getCardId(): Promise<number | null> {
+    return parseIntWithNull(await this.get('CardId'))
+  }
+  private async setTimestamp() {
+    await this.set('Timestamp', new Date().toISOString())
+  }
+  private async getTimestamp(): Promise<Date | null> {
+    const timestampString = await this.get('Timestamp')
+    if (timestampString) {
+      return new Date(timestampString)
+    }
+    return null
+  }
+  private async set(key: string, value: string) {
+    await this.mother.setString(this._pressedButtonPersistencePrefix + key, value)
+  }
+  private async get(key: string): Promise<string | null> {
+    return this.mother.getString(this._pressedButtonPersistencePrefix + key)
+  }
+  public async getButtonIfFromToday() {
+    if (await this.getCardId() === await Anki.cardId()) {
+      /* If everythings works, this block is always executed, b/c we are in
+       "ForCardPersistence", but I want to double check, b/c very bad things would
+       happen if this goes wrong.*/
+      if ( ! DatesAndTimes.isToday(await this.getTimestamp()) ) {
+        showToast("The pressed button persistence is not for today, so it is ignored.")
+        return
+      }
+      return await this.getButtonRaw()
+    }
+    throw new Error("ForCardPersistence.getPressedButton: The pressed button persistence is not for this card!!!")
+  }
 }
 /** This persists values, BUT they are deleted when the card changes. */
 class ForCardPersistence {
@@ -184,30 +235,6 @@ class ForCardPersistence {
 
   }
 
-  private readonly _pressedButtonPersistencePrefix = "pressedButton"
-
-  public async setPressedButton(button: ClickableName) {
-    await this.setString(this._pressedButtonPersistencePrefix+"Button",button)
-    await this.setString(this._pressedButtonPersistencePrefix+"CardId",Anki.cardId().toString())
-    await this.setString(this._pressedButtonPersistencePrefix+"Timestamp",new Date().toISOString())
-    await autoAnswerService.setAutoAnswerFlag()
-  }
-  public async getPressedButton() {
-    const fromPersistence = await this.getString(this._pressedButtonPersistencePrefix+"CardId");
-    if (fromPersistence === Anki.cardId().toString()) {
-      /* If everythings works, this block is always executed, b/c we are in
-       "ForCardsPersistence", but I want to double check, b/c very bad things would
-       happen if this goes wrong.*/
-      const timestampDate = new Date(await this.getString(
-          this._pressedButtonPersistencePrefix+"Timestamp") as string)
-      if ( ! DatesAndTimes.isToday(timestampDate) ) {
-        showToast("The pressed button persistence is not for today, so it is ignored.")
-        return
-      }
-      return await this.getString(this._pressedButtonPersistencePrefix+"Button") as ClickableName
-    }
-    throw new Error("ForCardPersistence.getPressedButton: The pressed button persistence is not for this card!!!")
-  }
   async getNumber(name: string) {
     return parseFloatWithNull(await this.getString(name))
 
