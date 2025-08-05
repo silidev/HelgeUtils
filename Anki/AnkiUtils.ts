@@ -1108,20 +1108,20 @@ class Anki {
     if (isHourOrMinute)
       return value+" "+unit
 
-    const next = this.tryToConvertButtonTimeStrToDays(nextTimeString)
-    const ifNumberAppendD = (input: number | string ) => {
+    const nextDaysOrString = this.tryToConvertButtonTimeStrToDays(nextTimeString)
+    const ifNumberMakeNice = (input: number | string ) : string => {
       if (typeof input === "number")
-        return input + " d"
+        return DatesAndTimes.dayToDaysMonthsOrYears(input)
       return input
     }
-    const buttonFactor = await this.buttonFactor(next)
-    const daysStr = (days: string) => {
+    const buttonFactor = await this.buttonFactor(nextDaysOrString)
+    const daysStr = (days: string): string => {
       const buttonFactorIsEmpty = buttonFactor === ""
       if (buttonFactorIsEmpty)
         return days
       return `x<p class="nextTimeOnButtons">(${days})</p>`
     }
-    return buttonFactor + daysStr(ifNumberAppendD(next))
+    return buttonFactor + daysStr(ifNumberMakeNice(nextDaysOrString))
   }
   public static async nextTimeStringForButton(i: number):Promise<string> {
     const returnValueFromApi: string = await JsApi.nextTimeStringForButtonRaw(i)
@@ -1212,7 +1212,7 @@ class Anki {
   public static runTests() {
     this.testParseButtonTimeStrNumberAndUnit()
   }
-  public static tryToConvertButtonTimeStrToDays(input: string) {
+  public static tryToConvertButtonTimeStrToDays(input: string): number | string {
     try {
       const {value, unit} = this.parseButtonTimeStrNumberAndUnit(input)
 
