@@ -123,54 +123,66 @@ namespace CssVarsWithDashes {  /* Named "withDashes b/c I keep forgetting them i
   /** @param varNameWithDashes The name of the CSS variable with dashes, e.g. "--someVar" */
   export const asNumber = memoize(asNumberRaw)
 }
-class PressedButtonStorage {
+class UserAction {
+  constructor(
+      public dueDays: number | null,
+      public buttonId: ClickableName | null) {}
+}
+class UserActionPersistence {
   constructor(private readonly mother: ForCardPersistence) {}
-  private readonly _pressedButtonPersistencePrefix = "pressedButton"
+  private readonly _DueDaysPersistencePrefix = "DueDaysPersistence"
 
-  public async setButtonWithTimestamp(button: ClickableName) {
-    await this.setButtonRaw(button)
+  public async setUserActionWithTimestamp(userAction: UserAction) {
+    await this.setUserActionRaw(userAction)
     await this.setCardId(await Anki.cardId())
     await this.setTimestamp()
     await autoAnswerService.setAutoAnswerFlag()
   }
-  private async setButtonRaw(button: ClickableName) {
-    await this.set('Button', button)
+  private async setUserActionRaw(userAction: UserAction) {
+    await this.setString('UserAction', JSON.stringify(userAction))
   }
-  private async getButtonRaw(): Promise<ClickableName | null> {
-    return await this.get('Button') as ClickableName | null
+  private async getUserActionRaw(): Promise<UserAction | null> {
+    const str = await this.getString('UserAction')
+    if (!str) {
+      return null
+    }
+    return JSON.parse(str)
   }
   private async setCardId(cardId: number) {
-    await this.set('CardId', cardId.toString())
+    await this.setString('CardId', cardId.toString())
   }
   private async getCardId(): Promise<number | null> {
-    return parseIntWithNull(await this.get('CardId'))
+    return parseIntWithNull(await this.getString('CardId'))
   }
   private async setTimestamp() {
-    await this.set('Timestamp', new Date().toISOString())
+    await this.setString('Timestamp', new Date().toISOString())
   }
   private async getTimestamp(): Promise<Date | null> {
-    const timestampString = await this.get('Timestamp')
+    const timestampString = await this.getString('Timestamp')
     if (timestampString) {
       return new Date(timestampString)
     }
     return null
   }
-  private async set(key: string, value: string) {
-    await this.mother.setString(this._pressedButtonPersistencePrefix + key, value)
+  private async setString(key: string, value: string) {
+    await this.mother.setString(this._DueDaysPersistencePrefix + key, value)
   }
-  private async get(key: string): Promise<string | null> {
-    return this.mother.getString(this._pressedButtonPersistencePrefix + key)
+  private async setNumber(key: string, value: number) {
+    await this.mother.setString(this._DueDaysPersistencePrefix + key, value.toString())
   }
-  public async getButtonIfFromToday() {
+  private async getString(key: string): Promise<string | null> {
+    return this.mother.getString(this._DueDaysPersistencePrefix + key)
+  }
+  public async getUserActionIfFromToday(): Promise<UserAction | null> {
     if (await this.getCardId() === await Anki.cardId()) {
       /* If everythings works, this block is always executed, b/c we are in
        "ForCardPersistence", but I want to double check, b/c very bad things would
        happen if this goes wrong.*/
       if ( ! DatesAndTimes.isToday(await this.getTimestamp()) ) {
         showToast("The pressed button persistence is not for today, so it is ignored.")
-        return
+        return new UserAction(null,null)
       }
-      return await this.getButtonRaw()
+      return await this.getUserActionRaw()
     }
     throw new Error("ForCardPersistence.getPressedButton: The pressed button persistence is not for this card!!!")
   }
@@ -1287,6 +1299,9 @@ class Anki {
   }
   /** @return the time since the card was last shown to the user
    * */
+  public static async wasResetOrRaytedToday() {
+    return await this.daysSinceLastSeen() == 0
+  }
   public static async daysSinceLastSeen() {
     if (testingMode)
       return await this.daysSinceCardWasDue() + await JsApi.intervalOfCard()
