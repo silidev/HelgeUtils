@@ -184,7 +184,9 @@ class UserActionPersistence {
       }
       return await this.getUserActionRaw()
     }
-    throw new Error("ForCardPersistence.getPressedButton: The pressed button persistence is not for this card!!!")
+    const message = "ForCardPersistence.getPressedButton: The pressed button persistence is not for this card!!!"
+    alert(message)
+    throw new Error(message)
   }
 }
 /** This persists values, BUT they are deleted when the card changes. */
