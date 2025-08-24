@@ -1336,6 +1336,16 @@ class Anki {
     return JsApi.nextTimeStringForButtonRaw(i)
 
   }
+  /**
+   * Returns card type
+   *
+   * 0 = new
+   * 1 = learning
+   * 2 = review
+   * 3 = relearning
+   *
+   * https://github.com/ankidroid/Anki-Android/wiki/AnkiDroid-Javascript-API#card-type
+   */
   public static async statusOfCard(): Promise<number> {
     return JsApi.cardStatus()
   }
