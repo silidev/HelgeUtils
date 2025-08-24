@@ -1311,7 +1311,7 @@ class Anki {
     // }
     //
     // if (await JsApi.cardStatus()===2)
-      return daysSinceCardWasDue + await JsApi.intervalOfCard() - 1
+      return daysSinceCardWasDue + await JsApi.intervalOfCard()
 
     // return daysSinceCardWasDue
   }
