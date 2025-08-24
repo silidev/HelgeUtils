@@ -1305,18 +1305,13 @@ class Anki {
     return await this.daysSinceLastSeen() == 0
   }
   public static async daysSinceLastSeen() {
-    if (testingMode)
-      return await this.daysSinceCardWasDue() + await JsApi.intervalOfCard()
-
-
     const daysSinceCardWasDue = await this.daysSinceCardWasDue()
-
     // if (daysSinceCardWasDue === 0) {
     //   return 0
     // }
     //
     // if (await JsApi.cardStatus()===2)
-      return daysSinceCardWasDue + await JsApi.intervalOfCard()
+      return daysSinceCardWasDue + await JsApi.intervalOfCard() - 1
 
     // return daysSinceCardWasDue
   }
