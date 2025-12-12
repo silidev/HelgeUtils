@@ -327,7 +327,7 @@ namespace TTS {
       // old version: removeBySelector(asDom,'a')
       // new:
       asDom.querySelectorAll('a').forEach(linkElement =>
-        linkElement.replaceWith(" Link ")
+        linkElement.replaceWith(", Link ,")
       )
       removeBySelector(asDom,'[style*="display: none"]')
       removeBySelector(asDom,'span.redacted')
