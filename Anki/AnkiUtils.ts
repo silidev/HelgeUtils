@@ -747,10 +747,10 @@ class JsApi {
     }
     throw "ignoredException"
   }
-  public static async addTagToCard() {
+  public static async setNoteTags(tagsArray: string[]) {
     if (JsApi.mock) return
 
-    await (await JsApi.getApi()).ankiAddTagToCard()
+    await (await JsApi.getApi()).ankiSetNoteTags(tagsArray)
   }
   public static async buryCard() {
     if (JsApi.mock || JsApi.safeModeJsApi)
@@ -1315,8 +1315,8 @@ class Anki {
     // return daysSinceCardWasDue
   }
   /* Proxy methods for the JsApi: */
-  public static async addTag(): Promise<void> {
-    return JsApi.addTagToCard()
+  public static async setNoteTags(tagsArray: string[]): Promise<void> {
+    return JsApi.setNoteTags(tagsArray)
 
   }
   public static async buryCard(): Promise<void> {

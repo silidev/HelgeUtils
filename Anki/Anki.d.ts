@@ -39,7 +39,7 @@ declare global {
     ankiTtsSetLanguage: (lang: string) => Promise<void>,
     ankiTtsSetSpeechRate: (speed: number) => Promise<void>,
     ankiGetNoteTags: (noteId: string) => Promise<JsApiStringArray>,
-    ankiSetNoteTags: (noteId: string, tags: string[]) => Promise<JsApiStringArray>,
+    ankiSetNoteTags: (tags: string[]) => Promise<JsApiStringArray>,
   }
 
   class AnkiDroidJS implements AnkiDroidJsInterface {
@@ -48,7 +48,7 @@ declare global {
 
     ankiGetNoteTags: () => Promise<JsApiStringArray>
 
-    ankiSetNoteTags(noteId: string, tags: string[]): Promise<JsApiStringArray>
+    ankiSetNoteTags(tags: string[]): Promise<JsApiStringArray>
 
     ankiAddTagToCard(): Promise<void>
 
