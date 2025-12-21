@@ -167,6 +167,7 @@ class UserActionPersistence {
   private async setString(key: string, value: string) {
     await this.mother.setString(this._DueDaysPersistencePrefix + key, value)
   }
+  //@ts-ignore
   private async setNumber(key: string, value: number) {
     await this.mother.setString(this._DueDaysPersistencePrefix + key, value.toString())
   }
@@ -747,6 +748,11 @@ class JsApi {
     }
     throw "ignoredException"
   }
+  public static async openTagsDialog() {
+    if (JsApi.mock) return
+
+    await (await JsApi.getApi()).ankiAddTagToCard()
+  }
   public static async setNoteTags(tagsArray: string[]) {
     if (JsApi.mock) return
 
@@ -1313,6 +1319,11 @@ class Anki {
       return daysSinceCardWasDue + await JsApi.intervalOfCard()
 
     // return daysSinceCardWasDue
+  }
+  /* Proxy methods for the JsApi: */
+  public static async openTagsDialog(): Promise<void> {
+    return JsApi.openTagsDialog()
+
   }
   /* Proxy methods for the JsApi: */
   public static async setNoteTags(tagsArray: string[]): Promise<void> {
