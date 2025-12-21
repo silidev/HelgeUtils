@@ -966,11 +966,10 @@ class JsApi {
       console.log("getNoteTags")
       return ["demo1", "demo2", "demo3"]
     }
-    // if (JsApi.mock) {
+    if (JsApi.mock) {
       return ["demo1", "demo2", "demo3"]
-    // }
-    // return this.CallWithFailNotification.asStringArray("ankiGetNoteTags")
-    // return await (await JsApi.getApi())["ankiGetNoteTags"]()
+    }
+    return await this.CallWithFailNotification.asStringArray("ankiGetNoteTags")
   }
   public static TTS = class {
     public static readonly QUEUE_ADD = 1
