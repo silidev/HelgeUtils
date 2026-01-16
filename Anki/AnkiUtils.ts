@@ -185,6 +185,7 @@ class UserActionPersistence {
       }
       return await this.getUserActionRaw()
     }
+    if (testingMode) return new UserAction(null,null)
     const message = "ForCardPersistence.getPressedButton: The pressed button persistence is not for this card!!!"
     alert(message)
     throw new Error(message)
