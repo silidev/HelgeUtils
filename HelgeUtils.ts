@@ -608,6 +608,7 @@ export namespace HelgeUtils {
 
     export const runTests = function (){
       testRemoveEmojis()
+      testNumToStr()
       Whitespace.runTests()
       DelimiterSearch.runTests()
     }
@@ -624,7 +625,20 @@ export namespace HelgeUtils {
 
     /** Return a string representation of a number, with the leading zero removed.
      * Example: numToStr(0.5) returns ".5". */
-    export const numToStr = (num: number| string) => num.toString().replace("0.", ".")
+    export const numToStr = (num: number| string) => num.toString().replace(/^(-?)0\./, "$1.")
+
+    export const testNumToStr = () => {
+      const runTest = (num: number | string, expected: string) => {
+        assertEquals(numToStr(num), expected, `testNumToStr failed for ${num}`)
+      }
+      runTest(0.5, ".5")
+      runTest(0.05, ".05")
+      runTest(-0.5, "-.5")
+      runTest(10.5, "10.5")
+      runTest(-10.5, "-10.5")
+      runTest("0.5", ".5")
+      runTest("10.5", "10.5")
+    }
 
     export const tagsStringToArray = (input: string) => Whitespace.replaceWhitespaceStretchesWithASingleSpace(input).trim().split(" ")
 
