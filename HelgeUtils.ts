@@ -434,11 +434,12 @@ export namespace HelgeUtils {
    *
    * @return *[] list with the elements removed
    */
-  export const removeElements = (input: any[], toBeRemoved: any) => {
-    let output: string[] = []
+  export const removeElements = <T>(input: T[], toBeRemoved: any): T[] => {
+    const toBeRemovedSet = new Set(Array.isArray(toBeRemoved) ? toBeRemoved : [toBeRemoved])
+    let output: T[] = []
     for (let i = 0; i < input.length; i++) {
       let element = input[i]
-      if (!toBeRemoved.includes(element)) {
+      if (!toBeRemovedSet.has(element)) {
         output.push(element)
       }
     }
