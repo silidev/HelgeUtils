@@ -1156,7 +1156,8 @@ Please note that certain strong accents can possibly cause this mode to transcri
      *
      * Anki search: ((re:\bdu\b) OR (re:\bdir\b) OR (re:\bdein\b) OR (re:\bdeiner\b) OR (re:\bdeines\b)) -tag:du
      */
-    export const du2ich = (input: string) => {
+    let du2IchCache: { regex: RegExp, replacement: string }[] | null = null;
+    const initDu2IchCache = () => {
       // noinspection SpellCheckingInspection
       const wordEndReplacements = [
         ["abstellst","abstelle"                ],
@@ -2226,9 +2227,10 @@ Please note that certain strong accents can possibly cause this mode to transcri
             ["deines","meines"                           ],
       ];
 
-      let output = input
 
-      const replace = (replacements1: string[][], wordBoundaryAtStart: boolean) => {
+      du2IchCache = [];
+
+      const compile = (replacements1: string[][], wordBoundaryAtStart: boolean) => {
 
         /* If you remove the \\b word boundary at the beginning in the following, it
          would mess up many words, e. g. all words which end with "du" or "dein". */
@@ -2245,16 +2247,28 @@ Please note that certain strong accents can possibly cause this mode to transcri
         }
 
         for (const [duWort, ichWort] of replacements1) {
-
-          output = output
-              .replaceAll(regex(duWort),
-                  ichWort)
-              .replaceAll(regex(Strings.toUppercaseFirstChar(duWort)),
-                  Strings.toUppercaseFirstChar(ichWort))
+          // noinspection JSUnusedAssignment
+          du2IchCache!.push({
+            regex: regex(duWort),
+            replacement: ichWort
+          });
+          // noinspection JSUnusedAssignment
+          du2IchCache!.push({
+            regex: regex(Strings.toUppercaseFirstChar(duWort)),
+            replacement: Strings.toUppercaseFirstChar(ichWort)
+          });
         }
       }
-      replace(wholeWordReplacements,true)
-      replace(wordEndReplacements,false)
+      compile(wholeWordReplacements,true)
+      compile(wordEndReplacements,false)
+    }
+    export const du2ich = (input: string) => {
+      if (!du2IchCache) initDu2IchCache()
+
+      let output = input
+      for (const {regex, replacement} of du2IchCache!) {
+        output = output.replaceAll(regex, replacement)
+      }
       return output
     }
     //end of namespace Misc:
