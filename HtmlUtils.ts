@@ -203,7 +203,7 @@ export namespace HtmlUtils {
         return this
       }
       /**
-       * @deprecated */
+       * @deprecated Must be kept for downward compatibility for external users. */
       public goToEnd() {
         return this.setCursorAtEnd()
       }
@@ -497,7 +497,7 @@ export namespace HtmlUtils {
   }
 
   /**
-   * @deprecated Use copyToClipboard instead.
+   * @deprecated Use copyToClipboard instead. Must be kept for downward compatibility for external users.
    * @param str
    */
   export const putIntoClipboard = (str: string) => {
@@ -592,7 +592,7 @@ export namespace HtmlUtils {
   }
 
   /**
-   * @deprecated Use showToast instead. */
+   * @deprecated Use showToast instead. Must be kept for downward compatibility for external users. */
   export const alertAutoDismissing = showToast
 
   export namespace Misc {

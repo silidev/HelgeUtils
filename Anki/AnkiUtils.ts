@@ -629,7 +629,7 @@ class JsApi {
 
     await (await JsApi.getApi())["ankiSearchCard"](query)
   }
-  /** @deprecated */
+  /** @deprecated Must be kept for downward compatibility for external users. */
   public static async cardInterval() {
     return  this.intervalOfCard()
   }

@@ -108,11 +108,11 @@ export namespace HelgeUtils {
     ;
 
     /** Alias for swallowAll
-     * @deprecated */
+     * @deprecated Must be kept for downward compatibility for external users. */
     export const catchAll = swallowAll;
 
     /** Alias for swallowAll
-     * @deprecated */
+     * @deprecated Must be kept for downward compatibility for external users. */
     export const unthrow = swallowAll;
 
 
@@ -150,7 +150,7 @@ export namespace HelgeUtils {
       }
     }
 
-    /** @deprecated Inline this everywhere! */
+    /** @deprecated Inline this everywhere! Must be kept for downward compatibility for external users. */
     export const throwError = (msg: string) => {
       throw new Error(msg)
     }
@@ -460,7 +460,7 @@ export namespace HelgeUtils {
     };
 
     /**
-     * @deprecated Use regexIndexOf instead.
+     * @deprecated Use regexIndexOf instead. Must be kept for downward compatibility for external users.
      * @see regexIndexOf
      */
     export const indexOfWithRegex = regexIndexOf
@@ -484,7 +484,7 @@ export namespace HelgeUtils {
     };
 
     /**
-     * @deprecated Use regexLastIndexOf instead.
+     * @deprecated Use regexLastIndexOf instead. Must be kept for downward compatibility for external users.
      */
     export const lastIndexOfWithRegex = regexLastIndexOf
 
