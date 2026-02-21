@@ -299,9 +299,9 @@ export namespace HtmlUtils {
       }
       export const wholeWord = (textArea: HTMLTextAreaElement,
                                 target: string) => {
-        const regex = new RegExp(`\\b${escapeRegExp(target).toLowerCase()}\\b`);
+        const regex = new RegExp(`\\b${escapeRegExp(target)}\\b`, 'i');
         const cursor =
-            Strings.regexIndexOf(textArea.value.toLowerCase(),regex, textArea.selectionEnd)
+            Strings.regexIndexOf(textArea.value,regex, textArea.selectionEnd)
         step2(cursor, textArea, target)
       }
       export const normal = (textArea: HTMLTextAreaElement, target: string) => {
