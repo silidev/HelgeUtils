@@ -85,6 +85,10 @@ export namespace HtmlUtils {
 
   import printError = HtmlUtils.ErrorHandling.printError
 
+  /**
+   * Note: This function uses innerHTML which is potentially unsafe.
+   * However, it is currently used only with safe, trusted HTML.
+   */
   export const createDivElementFromHtml = (html: string) => {
     const tempElement = document.createElement('div')
     tempElement.innerHTML = html
