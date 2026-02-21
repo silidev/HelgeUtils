@@ -331,16 +331,27 @@ namespace TTS {
       set(normalModeValue)
     }
   }
+  class Sentences {
+    private readonly list: string[]
+    constructor(input: string[]) {
+      const containsSpeech = (str: string): boolean => str.trim().length > 0;
+      this.list = input.filter(containsSpeech)
+    }
+    public getAt(index: number): string {
+      return this.list[index]
+    }
+    public get length(): number {
+      return this.list.length
+    }
+  }
   class SpeakRecursion {
     private intervalId: number | undefined
     private timeoutId: number | undefined
     private stopSpeakingFlag = false
-    private readonly sentencesArray: string[] //TODO: Make this a class.
+    private readonly sentences: Sentences
     constructor(input: string[], startSentenceIndex: number) {
-      const containsSpeech = (str: string): boolean => str.trim().length > 0;
-      const removeEmptyStrings = (arr: string[]): string[] => arr.filter(containsSpeech)
-      this.sentencesArray = removeEmptyStrings(input)
-      this.sentenceIndex = new SentenceIndex(startSentenceIndex, this.sentencesArray.length)
+      this.sentences = new Sentences(input)
+      this.sentenceIndex = new SentenceIndex(startSentenceIndex, this.sentences.length)
     }
     async stop() {
       clearInterval(this.intervalId)
@@ -403,13 +414,13 @@ namespace TTS {
     /** The index of the sentence to speak */
     private sentenceIndex: SentenceIndex
     public async nextSentence() {
-      const sentenceToSpeak = this.sentencesArray[this.sentenceIndex.get()]
+      const sentenceToSpeak = this.sentences.getAt(this.sentenceIndex.get())
       await this.sentenceIndex.increment()
       return sentenceToSpeak
     }
     public async prevSentence() {
       await this.sentenceIndex.decrement()
-      return this.sentencesArray[this.sentenceIndex.get()]
+      return this.sentences.getAt(this.sentenceIndex.get())
     }
     // end recursion:
   }
